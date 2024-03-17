@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace GingaGame
@@ -19,12 +16,12 @@ namespace GingaGame
         {
             Elements.Add(element);
         }
-        
+
         public void Render(Graphics g, Size size)
         {
             for (int s = 0; s < Elements.Count; s++)
             {
-                Elements[s].Render(g);
+                Elements[s].Render(g, size);
             }
         }
     }

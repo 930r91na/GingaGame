@@ -43,5 +43,10 @@ namespace GingaGame
         {
 
         }
+
+        private void PCT_CANVAS_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace GingaGame
 {
-    public struct Vector2(float x, float y)
+    public struct Vector2
     {
-        public float X { get; set; } = x;
-        public float Y { get; set; } = y;
+        public float X { get; set; }
+        public float Y { get; set; }
+
+        public Vector2(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
 
         public static Vector2 operator *(Vector2 a, float b)
         {

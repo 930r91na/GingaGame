@@ -21,6 +21,7 @@ namespace GingaGame
         int pixelFormatSize, stride;
         int bytesPerPixel, heightInPixels, widthInBytes;
         Rectangle rect;
+        private Container gameContainer;
 
         public Canvas(PictureBox pctCanvas)
         {
@@ -28,8 +29,18 @@ namespace GingaGame
             this.size = pctCanvas.Size;
             Init(size.Width, size.Height);
             pctCanvas.Image = bmp;
+            InitializeContainer();
         }
-
+        private void InitializeContainer()
+        {
+            float verticalMargin = 50;
+            float horizontalMargin = (Width - (Width / 3)) / 2; 
+            VPoint topLeft = new VPoint(horizontalMargin, verticalMargin);
+            VPoint topRight = new VPoint(Width - horizontalMargin, verticalMargin);
+            VPoint bottomLeft = new VPoint(horizontalMargin, Height - verticalMargin);
+            VPoint bottomRight = new VPoint(Width - horizontalMargin, Height - verticalMargin);
+            gameContainer = new Container(topLeft, topRight, bottomLeft, bottomRight);
+        }
         private void Init(int width, int height)
         {
             PixelFormat format;
@@ -83,6 +94,8 @@ namespace GingaGame
         public void Render(Scene scene, float deltaTime)
         {
             FastClear();
+
+            gameContainer.Render(g);
 
             scene.Render(g, size);
 
