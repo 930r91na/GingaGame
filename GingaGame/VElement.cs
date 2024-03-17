@@ -20,17 +20,6 @@ namespace GingaGame
             get { return points; }
         }
 
-        public VElement()
-        {
-            points = new List<VPoint>();
-            poles = new List<VPole>();
-
-            // Assuming you have a way to access your resources here
-            string imagePath = @"C:\Users\ansko\OneDrive\Documentos\GingaGame\GingaGame\Resources\Tierra.png";
-            tierraImage = Image.FromFile(imagePath);
-            img = new Bitmap(img, 50, 50);
-        }
-
         public void AddPoint(VPoint pt)
         {
             points.Add(pt);
@@ -85,34 +74,6 @@ namespace GingaGame
             Util.DrawImage(g, img, points.ToArray());
         }
 
-        public class ImageObject : VElement
-        {
-            public Image Image { get; private set; }
-            public VPoint Position { get; set; } // Assuming you want to control the image object's position with this
-
-            public ImageObject(string imagePath, VPoint position) : base()
-            {
-                // Instead of loading the image here, use the already loaded image from VElement if applicable
-                // Or ensure you're loading it correctly from your resources
-                Image = Image.FromFile(imagePath); // Consider accessing Resources directly if possible
-                Position = position;
-            }
-
-            public void Render(Graphics g, Size space)
-            {
-                if (Image != null && Position != null)
-                {
-                    // Access X and Y through Position's Vector2 structure
-                    float x = Position.Position.X;
-                    float y = Position.Position.Y;
-
-                    // Draw the image at the object's current position
-                    // Adjust the drawing position if necessary to handle the image's size
-                    g.DrawImage(Image, x - (Image.Width / 2), y - (Image.Height / 2), Image.Width, Image.Height);
-                }
-            }
-
-        }
     }
 }
 
