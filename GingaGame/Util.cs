@@ -48,7 +48,7 @@ namespace GingaGame
             float dx = pts[1].Position.X - pts[0].Position.X;
             float dy = pts[1].Position.Y - pts[0].Position.Y;
 
-            float angle = (float)(Math.Atan2(dy, dx) * (57.2958));// 180.0 / Math.PI rad2deg
+            float angle = (float)(Math.Atan2(dy, dx) * (57.2958));
 
             RotateImage(g, img, angle, pts[0].Position.X, pts[0].Position.Y);
         }

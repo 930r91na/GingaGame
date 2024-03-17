@@ -7,7 +7,7 @@ namespace GingaGame
     public class VElement
     {
         int p, l;
-        Image img, tierraImage;
+        Image img;
         List<VPoint> points;
         List<VPole> poles;
 
@@ -29,51 +29,41 @@ namespace GingaGame
         {
             poles.Add(pl);
         }
-
-        // This is the Update method you need to add or modify
         public void Update(float deltaTime)
         {
-            // Your logic to update the element based on deltaTime
-            // This could involve updating the positions of points, checking for collisions, etc.
-
-            // Example update logic for each point
             foreach (var point in points)
             {
-                // Example method call, assuming VPoint has an Update method that accepts deltaTime
                 point.Update(deltaTime);
             }
-
-            // You might also update poles or any other properties of VElement here
         }
 
         public void Render(Graphics g, Size space)
         {
             for (p = 0; p < points.Count; p++)
-                points[p].Update(space.Height);
+                points[p].Update(space.Height); 
 
             for (l = 0; l < 5; l++)
             {
                 for (p = 0; p < poles.Count; p++)
-                    poles[p].Update();
-
+                    poles[p].Update(); 
                 for (p = 0; p < points.Count; p++)
-                    points[p].DetectCollision(points);
-
-                for (p = 0; p < points.Count; p++)
-                    points[p].Constraints(space.Width, space.Height);
+                    points[p].DetectCollision(points); 
             }
 
             for (p = 0; p < points.Count; p++)
             {
                 if (points[p].IsVisible)
-                    points[p].Render(g);
+                    points[p].Render(g, space.Width, space.Height);
             }
             for (p = 0; p < poles.Count; p++)
-                poles[p].Render(g);
-
+                poles[p].Render(g); 
             Util.DrawImage(g, img, points.ToArray());
         }
-
     }
+    public class Planet : VElement
+    {
+        
+    }
+
 }
 

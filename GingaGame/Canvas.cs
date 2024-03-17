@@ -51,15 +51,15 @@ namespace GingaGame
             format              = PixelFormat.Format32bppArgb;
             Width               = width;
             Height              = height;
-            pixelFormatSize     = Image.GetPixelFormatSize(format) / 8; // 8 bits = 1 byte
-            stride              = width * pixelFormatSize; // total pixels (width) times ARGB (4)
-            padding             = (stride % 4); // PADD = move every pixel in bytes
-            stride             += padding == 0 ? 0 : 4 - padding; // 4 byte multiple Alpha, Red, Green, Blue
-            bits                = new byte[stride * height]; // total pixels (width) times ARGB (4) times Height
-            handle              = GCHandle.Alloc(bits, GCHandleType.Pinned); // TO LOCK THE MEMORY
+            pixelFormatSize     = Image.GetPixelFormatSize(format) / 8; 
+            stride              = width * pixelFormatSize;
+            padding             = (stride % 4); 
+            stride             += padding == 0 ? 0 : 4 - padding; 
+            bits                = new byte[stride * height]; 
+            handle              = GCHandle.Alloc(bits, GCHandleType.Pinned); 
             bitPtr              = Marshal.UnsafeAddrOfPinnedArrayElement(bits, 0);
             bmp                 = new Bitmap(width, height, stride, format, bitPtr);
-            g                   = Graphics.FromImage(bmp); // Para hacer pruebas regulares}
+            g                   = Graphics.FromImage(bmp); 
             rect                = new Rectangle(0, 0, bmp.Width, bmp.Height);
         }
 
