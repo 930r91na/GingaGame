@@ -3,17 +3,12 @@
 
 namespace GingaGame
 {
-    public struct Vector2
+    public struct Vector2(float x, float y)
     {
-        public float X { get; set; }
-        public float Y { get; set; }
+        public float X { get; set; } = x;
+        public float Y { get; set; } = y;
 
-        public Vector2(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
-
+       
         public static Vector2 operator *(Vector2 a, float b)
         {
             return new Vector2(a.X * b, a.Y * b);

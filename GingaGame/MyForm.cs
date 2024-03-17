@@ -48,5 +48,21 @@ namespace GingaGame
         {
 
         }
+
+        private void PCT_CANVAS_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Determine if a planet was clicked and set it as the currently dragged planet
+        }
+
+        private void PCT_CANVAS_MouseMove(object sender, MouseEventArgs e)
+        {
+            // If a planet is being dragged, update its position
+        }
+
+        private void PCT_CANVAS_MouseUp(object sender, MouseEventArgs e)
+        {
+            // Release the dragged planet
+        }
+
     }
 }
