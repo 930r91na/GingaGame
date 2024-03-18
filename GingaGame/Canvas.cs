@@ -3,104 +3,169 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using GingaGame;
 
-namespace GingaGame
+namespace GingaGame;
+
+public class Canvas
 {
-    public class Canvas
+    private byte[] _bits = null!;
+    private int _stride, _pixelFormatSize;
+    public Bitmap? Bitmap;
+    public int Height;
+    public float Width;
+
+    public Canvas(Size size)
     {
-        static PictureBox pctCanvas;
-        static BitmapData bitmapData;
+        Init(size.Width, size.Height);
+    }
 
-        Size size;
-        Bitmap bmp;
-        public float Width, Height;
-        byte[] bits;
-        Graphics g;
-        int pixelFormatSize, stride;
-        int bytesPerPixel, heightInPixels, widthInBytes;
-        Rectangle rect;
-        private Container gameContainer;
+    public Graphics? Graphics { get; private set; }
 
-        public Canvas(PictureBox pctCanvas)
+    private void Init(int initWidth, int initHeight)
+    {
+        // Define the pixel format for the bitmap
+        const PixelFormat format = PixelFormat.Format32bppArgb;
+
+        // Create a new bitmap with the specified width, height, and pixel format
+        Bitmap = new Bitmap(initWidth, initHeight, format);
+
+        // Create a Graphics object from the bitmap
+        Graphics.FromImage(Bitmap);
+
+        // Set the width and height of the canvas
+        Width = initWidth;
+        Height = initHeight;
+
+        // Calculate the size of each pixel in bytes
+        _pixelFormatSize = Image.GetPixelFormatSize(format) / 8;
+
+        // Calculate the stride (the width of a single row of pixels, in bytes)
+        _stride = _pixelFormatSize * initWidth;
+
+        // Calculate any necessary padding to ensure that each row aligns to a 4-byte boundary
+        var padding = _stride % 4;
+        _stride += padding == 0 ? 0 : 4 - padding;
+
+        // Create a byte array to hold the pixel data
+        _bits = new byte[_stride * initHeight];
+
+        // Pin the byte array in memory so that it can't be moved by the garbage collector
+        var handle = GCHandle.Alloc(_bits, GCHandleType.Pinned);
+
+        // Get a pointer to the first element of the pinned byte array
+        var bitsPtr = handle.AddrOfPinnedObject();
+
+        // Create a new bitmap using the byte array for pixel data
+        Bitmap = new Bitmap(initWidth, initHeight, _stride, format, bitsPtr);
+
+        // Create a Graphics object from the bitmap
+        Graphics = Graphics.FromImage(Bitmap);
+    }
+
+    private void DrawPixel(int x, int y, Color color)
+    {
+        // Check if the x and y coordinates are within the valid range
+        if (x < 0 || x >= Width || y < 0 || y >= Height) return;
+
+        // Calculate the index of the first byte of the pixel in the byte array
+        var index = x * _pixelFormatSize + y * _stride;
+
+        _bits[index] = color.B; // (byte)Blue
+        _bits[index + 1] = color.G; // (byte)Green
+        _bits[index + 2] = color.R; // (byte)Red
+        _bits[index + 3] = color.A; // (byte)Alpha
+    }
+
+    public void FastClear()
+    {
+        // Use unsafe code to allow pointer manipulation
+        unsafe
         {
-            Canvas.pctCanvas = pctCanvas;
-            this.size = pctCanvas.Size;
-            Init(size.Width, size.Height);
-            pctCanvas.Image = bmp;
-            InitializeContainer();
-        }
-        private void InitializeContainer()
-        {
-            float verticalMargin = 50;
-            float horizontalMargin = (Width - (Width / 3)) / 2; 
-            VPoint topLeft = new VPoint(horizontalMargin, verticalMargin);
-            VPoint topRight = new VPoint(Width - horizontalMargin, verticalMargin);
-            VPoint bottomLeft = new VPoint(horizontalMargin, Height - verticalMargin);
-            VPoint bottomRight = new VPoint(Width - horizontalMargin, Height - verticalMargin);
-            gameContainer = new Container(topLeft, topRight, bottomLeft, bottomRight);
-        }
-        private void Init(int width, int height)
-        {
-            PixelFormat format;
-            GCHandle handle;
-            IntPtr bitPtr;
-            int padding;
+            // Lock the bitmaps bits in system memory so that they can be changed
+            var bitmapData = Bitmap!.LockBits(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), ImageLockMode.ReadWrite,
+                Bitmap.PixelFormat);
 
-            format              = PixelFormat.Format32bppArgb;
-            Width               = width;
-            Height              = height;
-            pixelFormatSize     = Image.GetPixelFormatSize(format) / 8; 
-            stride              = width * pixelFormatSize;
-            padding             = (stride % 4); 
-            stride             += padding == 0 ? 0 : 4 - padding; 
-            bits                = new byte[stride * height]; 
-            handle              = GCHandle.Alloc(bits, GCHandleType.Pinned); 
-            bitPtr              = Marshal.UnsafeAddrOfPinnedArrayElement(bits, 0);
-            bmp                 = new Bitmap(width, height, stride, format, bitPtr);
-            g                   = Graphics.FromImage(bmp); 
-            rect                = new Rectangle(0, 0, bmp.Width, bmp.Height);
-        }
+            // Calculate the number of bytes per pixel
+            var bytesPerPixel = Image.GetPixelFormatSize(Bitmap.PixelFormat) / 8;
 
-        public void FastClear()
-        {
-            int div = 16;
+            // Get the height of the bitmap in pixels
+            var heightInPixels = bitmapData.Height;
 
-            Parallel.For(0, bits.Length / div, i => // unrolling 
+            // Get the width of the bitmap in bytes
+            var widthInBytes = bitmapData.Width * bytesPerPixel;
+
+            // Get a pointer to the first pixel in the bitmap
+            var ptrFirstPixel = (byte*)bitmapData.Scan0;
+
+            // Use parallel processing to clear each row of pixels
+            Parallel.For(0, heightInPixels, y =>
             {
-                bits[(i * div) + 0] = 0;
-                bits[(i * div) + 1] = 0;
-                bits[(i * div) + 2] = 0;
-                bits[(i * div) + 3] = 0;
+                // Get a pointer to the first pixel in the current row
+                var currentLine = ptrFirstPixel + y * bitmapData.Stride;
 
-                bits[(i * div) + 4] = 0;
-                bits[(i * div) + 5] = 0;
-                bits[(i * div) + 6] = 0;
-                bits[(i * div) + 7] = 0;
+                // Clear each pixel in the current row
+                for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                {
+                    // Set the blue component to 0
+                    currentLine[x] = 0;
 
-                bits[(i * div) + 8] = 0;
-                bits[(i * div) + 9] = 0;
-                bits[(i * div) + 10] = 0;
-                bits[(i * div) + 11] = 0;
+                    // Set the green component to 0
+                    currentLine[x + 1] = 0;
 
-                bits[(i * div) + 12] = 0;
-                bits[(i * div) + 13] = 0;
-                bits[(i * div) + 14] = 0;
-                bits[(i * div) + 15] = 0;
+                    // Set the red component to 0
+                    currentLine[x + 2] = 0;
+
+                    // Set the alpha component to 0
+                    currentLine[x + 3] = 0;
+                }
             });
+
+            // Unlock the bitmaps bits from system memory
+            Bitmap.UnlockBits(bitmapData);
         }
+    }
 
-        public void Render(Scene scene, float deltaTime)
+    public void DrawLine(int x1, int y1, int x2, int y2, Color color)
+    {
+        // Bresenham's line algorithm is used to draw a line between two points
+        // This algorithm chooses the pixel at each step that will be closest to the true line
+
+        // Calculate the absolute difference in x and y coordinates
+        var dx = Math.Abs(x2 - x1);
+        var dy = Math.Abs(y2 - y1);
+
+        // Determine the direction of the line in x and y coordinates
+        var sx = x1 < x2 ? 1 : -1;
+        var sy = y1 < y2 ? 1 : -1;
+
+        // Initialize the error term to compensate for the difference in variation in x and y
+        var err = dx - dy;
+
+        // Loop until the line is drawn from (x1, y1) to (x2, y2)
+        while (true)
         {
-            FastClear();
+            // Draw a pixel at the current position
+            DrawPixel(x1, y1, color);
 
-            gameContainer.Render(g);
+            // If the current position is the end position, break the loop
+            if (x1 == x2 && y1 == y2) break;
 
-            scene.Render(g, size);
+            // Calculate the double of the error term
+            var e2 = 2 * err;
 
-            pctCanvas.Invalidate();
+            // Adjust the error term and the current position based on the slope of the line
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x1 += sx;
+            }
 
+            // If the double of the error term is greater than or equal to the difference in x, continue to the next iteration
+            if (e2 >= dx) continue;
+
+            // Adjust the error term and the current position based on the slope of the line
+            err += dx;
+            y1 += sy;
         }
     }
 }

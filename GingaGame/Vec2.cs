@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PLAYGROUND;
 
-namespace PLAYGROUND
+internal class Vec2
 {
-    internal class Vec2
-    {
-    }
 }
