@@ -57,4 +57,14 @@ public struct Vector2(float x, float y)
     {
         return (int)Math.Sqrt(a.X * a.X + a.Y * a.Y);
     }
+
+    public Vector2 Normalized()
+    {
+        return this / Magnitude();
+    }
+
+    public double Dot(Vector2 normal)
+    {
+        return X * normal.X + Y * normal.Y;
+    }
 }

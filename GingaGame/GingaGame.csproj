@@ -67,7 +67,6 @@
         <Compile Include="Vector2.cs"/>
         <Compile Include="VElement.cs"/>
         <Compile Include="VPoint.cs"/>
-        <Compile Include="VPole.cs"/>
         <EmbeddedResource Include="MyForm.resx">
             <DependentUpon>MyForm.cs</DependentUpon>
         </EmbeddedResource>

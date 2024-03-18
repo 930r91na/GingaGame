@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -13,6 +14,7 @@ public class Canvas
     public Bitmap? Bitmap;
     public int Height;
     public float Width;
+    public Container? Container;
 
     public Canvas(Size size)
     {
@@ -167,5 +169,17 @@ public class Canvas
             err += dx;
             y1 += sy;
         }
+    }
+
+    public void InitializeContainer()
+    {
+        const float verticalMargin = 50;
+        var horizontalMargin = (Width - Width / 3) / 2;
+        var topLeft = new PointF(horizontalMargin, verticalMargin);
+        var topRight = new PointF(Width - horizontalMargin, verticalMargin);
+        var bottomLeft = new PointF(horizontalMargin, Height - verticalMargin);
+        var bottomRight = new PointF(Width - horizontalMargin, Height - verticalMargin);
+        
+        Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
     }
 }
