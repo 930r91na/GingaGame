@@ -2,7 +2,7 @@
 
 namespace GingaGame;
 
-public class VPole
+public class VPole : VElement
 {
     public VPole(VPoint pointA, VPoint pointB)
     {
@@ -11,34 +11,44 @@ public class VPole
         Length = Vector2.Distance(PointA.Position, PointB.Position);
     }
 
-    public VPoint PointA { get; set; }
-    public VPoint PointB { get; set; }
-    public float Length { get; set; }
+    private VPoint PointA { get; }
+    private VPoint PointB { get; }
+    private float Length { get; }
 
-    public void Update()
+    public override void Update()
     {
         var delta = PointB.Position - PointA.Position;
         var currentLength = delta.Magnitude();
         var difference = Length - currentLength;
         var direction = delta / currentLength;
 
-        if (!PointA.IsPinned && !PointB.IsPinned)
+        switch (PointA.IsPinned)
         {
-            PointA.Position -= direction * (difference / 2f);
-            PointB.Position += direction * (difference / 2f);
-        }
-        else if (PointA.IsPinned)
-        {
-            PointB.Position += direction * difference;
-        }
-        else if (PointB.IsPinned)
-        {
-            PointA.Position -= direction * difference;
+            case false when !PointB.IsPinned:
+                PointA.Position -= direction * (difference / 2f);
+                PointB.Position += direction * (difference / 2f);
+                break;
+            case true:
+                PointB.Position += direction * difference;
+                break;
+            default:
+            {
+                if (PointB.IsPinned)
+                {
+                    PointA.Position -= direction * difference;
+                }
+                break;
+            }
         }
     }
 
-    public void Render(Graphics g)
+    public override void Render(Graphics g)
     {
-        g.DrawLine(Pens.Black, PointA.Position.X, PointA.Position.Y, PointB.Position.X, PointB.Position.Y);
+        g?.DrawLine(Pens.White, PointA.Position.X, PointA.Position.Y, PointB.Position.X, PointB.Position.Y);
+    }
+
+    public override void Constraints()
+    {
+        // No constraints
     }
 }
