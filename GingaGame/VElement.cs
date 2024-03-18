@@ -37,7 +37,7 @@ namespace GingaGame
             }
         }
 
-        public void Render(Graphics g, Size space)
+        public virtual void Render(Graphics g, Size space)
         {
             for (p = 0; p < points.Count; p++)
                 points[p].Update(space.Height); 
@@ -47,7 +47,7 @@ namespace GingaGame
                 for (p = 0; p < poles.Count; p++)
                     poles[p].Update(); 
                 for (p = 0; p < points.Count; p++)
-                    points[p].DetectCollision(points); 
+                    points[p].DetectAndResolveCollisions(points); 
             }
 
             for (p = 0; p < points.Count; p++)
@@ -62,7 +62,34 @@ namespace GingaGame
     }
     public class Planet : VElement
     {
+        public Vector2 Position { get; set; }
+        public Image Texture { get; set; }
+        public float Mass { get; set; }
+        public float Radius { get; set; }
+        public Vector2 Velocity { get; set; }
+
+        public void ApplyForce(Vector2 force)
+        {
+         
+            Vector2 acceleration = force / Mass;
+
+            Velocity += acceleration; 
+        }
         
+        public Planet(Vector2 position, Image texture, float mass, float radius)
+        {
+            this.Position = position;
+            this.Texture = texture;
+            this.Mass = mass;
+            this.Radius = radius;
+
+        }
+        public override void Render(Graphics g, Size space)
+        {
+            g.DrawImage(this.Texture, Position.X - Radius, Position.Y - Radius, Radius * 2, Radius * 2);
+        }
+
+
     }
 
 }

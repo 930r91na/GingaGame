@@ -5,13 +5,8 @@ namespace GingaGame
 {
     public class Scene
     {
-        public List<VElement> Elements { get; set; }
-
-        public Scene()
-        {
-            Elements = new List<VElement>();
-        }
-
+        public List<VElement> Elements { get; set; } = [];
+        
         public void AddElement(VElement element)
         {
             Elements.Add(element);

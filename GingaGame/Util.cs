@@ -58,7 +58,7 @@ namespace GingaGame
             Matrix originalTransform = g.Transform;
             Matrix traMatrix, rotMatrix;
             rotMatrix = new Matrix();
-            traMatrix = new Matrix();  
+            traMatrix = new Matrix();
             traMatrix.Translate(x, y);
             rotMatrix.Rotate(angle);
             rotMatrix.Multiply(traMatrix, MatrixOrder.Append);
@@ -69,4 +69,4 @@ namespace GingaGame
 
     }
 
-    }
+}

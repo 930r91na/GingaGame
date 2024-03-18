@@ -15,6 +15,11 @@ namespace GingaGame
         Scene scene;
         Canvas canvas;
         float delta;
+        
+        private Planet selectedPlanet = null;
+        private bool isDragging = false;
+        Planet planetaTierra = new Planet(new Vector2(100, 100), Resource1.Tierra, 1f, 20f);
+
 
         public MyForm()
         {
@@ -46,23 +51,48 @@ namespace GingaGame
 
         private void PCT_CANVAS_Click(object sender, EventArgs e)
         {
-
+           
         }
 
         private void PCT_CANVAS_MouseDown(object sender, MouseEventArgs e)
         {
-            // Determine if a planet was clicked and set it as the currently dragged planet
+            foreach (var element in scene.Elements)
+            {
+                if (element is Planet planet)
+                {
+                    float distance = Vector2.Distance(new Vector2(e.X, e.Y), planet.Position);
+                    if (distance <= planet.Radius)
+                    {
+                        selectedPlanet = planet;
+                        isDragging = true;
+                        break;
+                    }
+                }
+            }
         }
+
 
         private void PCT_CANVAS_MouseMove(object sender, MouseEventArgs e)
         {
-            // If a planet is being dragged, update its position
+            if (isDragging && selectedPlanet != null)
+            {
+                selectedPlanet.Position = new Vector2(e.X, e.Y);
+                canvas.Render(scene, delta);
+            }
         }
+
 
         private void PCT_CANVAS_MouseUp(object sender, MouseEventArgs e)
         {
-            // Release the dragged planet
+            if (isDragging)
+            {
+                isDragging = false;
+                selectedPlanet = null;
+
+                canvas.Render(scene, delta);
+            }
         }
+
 
     }
 }
