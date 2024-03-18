@@ -15,7 +15,7 @@ namespace GingaGame
 
         Size size;
         Bitmap bmp;
-        float Width, Height;
+        public float Width, Height;
         byte[] bits;
         Graphics g;
         int pixelFormatSize, stride;
@@ -100,6 +100,7 @@ namespace GingaGame
             scene.Render(g, size);
 
             pctCanvas.Invalidate();
+
         }
     }
 }
