@@ -121,6 +121,12 @@
   <data name="Luna" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Luna.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Mercurio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Mercurio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Neptuno" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Neptuno.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Tierra" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Tierra.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
