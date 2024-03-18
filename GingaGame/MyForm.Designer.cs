@@ -70,6 +70,7 @@
             this.PCT_CANVAS.TabIndex = 6;
             this.PCT_CANVAS.TabStop = false;
             this.PCT_CANVAS.Click += new System.EventHandler(this.PCT_CANVAS_Click);
+            
             // 
             // panel2
             // 
@@ -120,7 +121,7 @@
             // TIMER
             // 
             this.TIMER.Enabled = true;
-            this.TIMER.Interval = 10;
+            this.TIMER.Interval = 16;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
             // 
             // MyForm
