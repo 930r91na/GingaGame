@@ -73,6 +73,26 @@ namespace GingaGame {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Mercurio {
+            get {
+                object obj = ResourceManager.GetObject("Mercurio", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Neptuno {
+            get {
+                object obj = ResourceManager.GetObject("Neptuno", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Tierra {
             get {
                 object obj = ResourceManager.GetObject("Tierra", resourceCulture);
