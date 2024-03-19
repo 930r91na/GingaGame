@@ -92,8 +92,10 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Resources\Luna.png"/>
-        <Content Include="Resources\Tierra.png"/>
+      <Content Include="Resources\Luna.png" />
+      <Content Include="Resources\Mercurio.png" />
+      <Content Include="Resources\Neptuno.png" />
+      <Content Include="Resources\Tierra.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

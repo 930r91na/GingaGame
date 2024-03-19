@@ -16,11 +16,15 @@ public partial class MyForm : Form
         PCT_CANVAS.Image = _canvas.Bitmap;
         var middle = _canvas.Width / 2;
         _scene = new Scene();
-        var earth = new VPoint(middle, 100, _canvas, Resource1.Tierra, 1f, 20f);
-        var moon = new VPoint(middle, 20, _canvas, Resource1.Luna, 0.5f, 10f);
+        var earth = new VPoint(middle, 200, _canvas, Resource1.Tierra, 1f, 60);
+        var moon = new VPoint(middle, 0, _canvas, Resource1.Luna, 0.5f, 30);
+        var mercury = new VPoint(middle + 20, 0, _canvas, Resource1.Mercurio, 0.5f, 40);
+        var neptune = new VPoint(middle, 250, _canvas, Resource1.Neptuno, 1f, 70);
         _canvas.InitializeContainer();
         _scene.AddElement(earth);
         _scene.AddElement(moon);
+        _scene.AddElement(mercury);
+        _scene.AddElement(neptune);
     }
     
     private void TIMER_Tick(object sender, EventArgs e)

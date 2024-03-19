@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace GingaGame;
 
@@ -13,7 +14,8 @@ public class VPoint : VElement
     public Vector2 Position;
     private Vector2 _velocity;
     private Image _texture;
-    public bool IsPinned { get; set; }
+    private static bool IsPinned => false;
+
     private float Mass { get; set; }
 
     public VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius)
@@ -29,13 +31,12 @@ public class VPoint : VElement
     public override void Update()
     {
         if (IsPinned) return;
-
+        
         _velocity = Position - _oldPosition;
         _velocity *= Friction;
         _oldPosition = Position;
         Position += _velocity + _gravity * Mass;
     }
-
     public override void Constraints()
     {
         WallConstraints();
@@ -83,25 +84,41 @@ public class VPoint : VElement
     public override void HandleCollision(VElement other)
     {
         if (other is not VPoint otherPoint) return;
-        
+
         // 1. Overlap Correction
         var overlap = _radius + otherPoint._radius - Vector2.Distance(Position, otherPoint.Position);
         var normal = (Position - otherPoint.Position).Normalized(); // Collision direction
-        Position += normal * overlap / 2;
-        otherPoint.Position -= normal * overlap / 2;
+        var positionAdjustment = normal * overlap / 2;
 
-        // 2. Simulating Bounce with Position Adjustment
-        const float bounceFactor = 0.8f;
-        var separationVelocity = normal * bounceFactor;
-        Position += separationVelocity;
-        otherPoint.Position -= separationVelocity;
+        // 2. Velocity Threshold Check
+        const float velocityThreshold = 0.8f; // Adjust this value as needed
+        var relativeVelocity = _velocity - otherPoint._velocity;
+        var velocityAlongNormal = relativeVelocity.Dot(normal); 
 
-        // Merging Logic
-        if (_texture != otherPoint._texture) return;
-        // Replace '_texture' and adjust mass/radius based on a table or logic
-        _texture = GetNextPlanetTexture(_texture); 
-        _radius *= 1.5f;  
-        Mass *= 2f; 
+        if (Math.Abs(velocityAlongNormal) < velocityThreshold)
+        {
+            Position += positionAdjustment;
+            otherPoint.Position -= positionAdjustment;
+        }
+        else
+        {
+            // 1. Overlap Correction
+            Position += positionAdjustment;
+            otherPoint.Position -= positionAdjustment;
+            
+            // 2. Simulating bounce and merging logic if velocity is high enough
+            const float bounceFactor = 0.8f;
+            var separationVelocity = normal * bounceFactor;
+            Position += separationVelocity;
+            otherPoint.Position -= separationVelocity;
+
+            // Merging Logic
+            if (_texture != otherPoint._texture) return;
+            // Replace '_texture' and adjust mass/radius based on a table or logic
+            _texture = GetNextPlanetTexture(_texture);
+            _radius *= 1.5f;
+            Mass *= 2f;
+        }
     }
     
     private Image GetNextPlanetTexture(Image currentTexture)
