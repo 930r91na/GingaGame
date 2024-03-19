@@ -14,9 +14,6 @@ public class Scene
 
     public void Render(Graphics g)
     {
-        foreach (var element in Elements)
-        {
-            element.Render(g);
-        }
+        foreach (var element in Elements) element.Render(g);
     }
 }

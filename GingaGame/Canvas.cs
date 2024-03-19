@@ -12,9 +12,9 @@ public class Canvas
     private byte[] _bits = null!;
     private int _stride, _pixelFormatSize;
     public Bitmap? Bitmap;
+    public Container? Container;
     public int Height;
     public float Width;
-    public Container? Container;
 
     public Canvas(Size size)
     {
@@ -179,7 +179,7 @@ public class Canvas
         var topRight = new PointF(Width - horizontalMargin, verticalMargin);
         var bottomLeft = new PointF(horizontalMargin, Height - verticalMargin);
         var bottomRight = new PointF(Width - horizontalMargin, Height - verticalMargin);
-        
+
         Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
     }
 }

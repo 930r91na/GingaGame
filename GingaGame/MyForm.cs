@@ -8,7 +8,7 @@ public partial class MyForm : Form
 {
     private readonly Canvas _canvas;
     private readonly Scene _scene;
-    
+
     public MyForm()
     {
         InitializeComponent();
@@ -26,7 +26,7 @@ public partial class MyForm : Form
         _scene.AddElement(mercury);
         _scene.AddElement(neptune);
     }
-    
+
     private void TIMER_Tick(object sender, EventArgs e)
     {
         _canvas.FastClear();
@@ -36,34 +36,28 @@ public partial class MyForm : Form
         foreach (var planet in _scene.Elements)
         {
             planet.Update(); // Apply forces, Verlet integration
-            planet.Constraints(); 
+            planet.Constraints();
         }
 
         // Collision Detection and Handling
-        foreach (var planet in _scene.Elements) 
-        {
-            foreach (var otherPlanet in _scene.Elements.Where(otherPlanet => planet != otherPlanet && planet.CollidesWith(otherPlanet)))
-            {
-                planet.HandleCollision(otherPlanet);
-            }
-        }
+        foreach (var planet in _scene.Elements)
+        foreach (var otherPlanet in _scene.Elements.Where(otherPlanet =>
+                     planet != otherPlanet && planet.CollidesWith(otherPlanet)))
+            planet.HandleCollision(otherPlanet);
 
         _scene.Render(_canvas.Graphics); // Now render everything
         PCT_CANVAS.Invalidate();
     }
-    
+
     private void MyForm_SizeChanged(object sender, EventArgs e)
     {
-        
     }
 
     private void MyForm_Load(object sender, EventArgs e)
     {
-        
     }
 
     private void PCT_CANVAS_Click(object sender, EventArgs e)
     {
-        
     }
 }

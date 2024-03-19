@@ -6,17 +6,14 @@ namespace GingaGame;
 public class VPoint : VElement
 {
     private const float Friction = 0.95f;
-
-    private float _radius;
+    private readonly Canvas _canvas;
     private readonly Vector2 _gravity = new(0, 1);
     private Vector2 _oldPosition;
-    private readonly Canvas _canvas;
-    public Vector2 Position;
-    private Vector2 _velocity;
-    private Image _texture;
-    private static bool IsPinned => false;
 
-    private float Mass { get; set; }
+    private float _radius;
+    private Image _texture;
+    private Vector2 _velocity;
+    public Vector2 Position;
 
     public VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius)
     {
@@ -28,15 +25,20 @@ public class VPoint : VElement
         Position = _oldPosition = new Vector2(x, y);
     }
 
+    private static bool IsPinned => false;
+
+    private float Mass { get; set; }
+
     public override void Update()
     {
         if (IsPinned) return;
-        
+
         _velocity = Position - _oldPosition;
         _velocity *= Friction;
         _oldPosition = Position;
         Position += _velocity + _gravity * Mass;
     }
+
     public override void Constraints()
     {
         WallConstraints();
@@ -50,30 +52,23 @@ public class VPoint : VElement
         if (Position.Y < _radius) Position.Y = _radius;
         if (Position.Y > _canvas.Height - _radius) Position.Y = _canvas.Height - _radius;
     }
-    
+
     private void ContainerConstraints()
     {
         var container = _canvas.Container;
 
         // Check if the point is outside the left boundary of the container
-        if (container != null && Position.X < container.TopLeft.X + _radius)
-        {
-            Position.X = container.TopLeft.X + _radius;
-        }
+        if (container != null && Position.X < container.TopLeft.X + _radius) Position.X = container.TopLeft.X + _radius;
 
         // Check if the point is outside the right boundary of the container
         if (container != null && Position.X > container.TopRight.X - _radius)
-        {
             Position.X = container.TopRight.X - _radius;
-        }
 
         // Check if the point is outside the bottom boundary of the container
         if (container != null && Position.Y > container.BottomLeft.Y - _radius)
-        {
             Position.Y = container.BottomLeft.Y - _radius;
-        }
     }
-    
+
     public override bool CollidesWith(VElement other)
     {
         if (other is not VPoint otherPoint) return false;
@@ -93,7 +88,7 @@ public class VPoint : VElement
         // 2. Velocity Threshold Check
         const float velocityThreshold = 0.8f; // Adjust this value as needed
         var relativeVelocity = _velocity - otherPoint._velocity;
-        var velocityAlongNormal = relativeVelocity.Dot(normal); 
+        var velocityAlongNormal = relativeVelocity.Dot(normal);
 
         if (Math.Abs(velocityAlongNormal) < velocityThreshold)
         {
@@ -105,7 +100,7 @@ public class VPoint : VElement
             // 1. Overlap Correction
             Position += positionAdjustment;
             otherPoint.Position -= positionAdjustment;
-            
+
             // 2. Simulating bounce and merging logic if velocity is high enough
             const float bounceFactor = 0.8f;
             var separationVelocity = normal * bounceFactor;
@@ -120,7 +115,7 @@ public class VPoint : VElement
             Mass *= 2f;
         }
     }
-    
+
     private Image GetNextPlanetTexture(Image currentTexture)
     {
         // Placeholder! Replace with logic to get the next planet texture
