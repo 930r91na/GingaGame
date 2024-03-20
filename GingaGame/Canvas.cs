@@ -173,12 +173,13 @@ public class Canvas
 
     public void InitializeContainer()
     {
-        const float verticalMargin = 50;
+        const float verticalTopMargin = 70;
+        const float verticalBottomMargin = 20;
         var horizontalMargin = (Width - Width / 3) / 2;
-        var topLeft = new PointF(horizontalMargin, verticalMargin);
-        var topRight = new PointF(Width - horizontalMargin, verticalMargin);
-        var bottomLeft = new PointF(horizontalMargin, Height - verticalMargin);
-        var bottomRight = new PointF(Width - horizontalMargin, Height - verticalMargin);
+        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
+        var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
+        var bottomLeft = new PointF(horizontalMargin, Height - verticalBottomMargin);
+        var bottomRight = new PointF(Width - horizontalMargin, Height - verticalBottomMargin);
 
         Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
     }

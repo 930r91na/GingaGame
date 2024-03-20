@@ -59,10 +59,13 @@
         <Compile Include="MyForm.Designer.cs">
             <DependentUpon>MyForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Planet.cs" />
+        <Compile Include="PlanetProperties.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Resource1.Designer.cs"/>
         <Compile Include="Scene.cs"/>
+        <Compile Include="Score.cs" />
         <Compile Include="Util.cs"/>
         <Compile Include="Vector2.cs"/>
         <Compile Include="VElement.cs"/>

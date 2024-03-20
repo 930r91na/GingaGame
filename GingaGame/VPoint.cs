@@ -14,8 +14,9 @@ public class VPoint : VElement
     private Image _texture;
     private Vector2 _velocity;
     public Vector2 Position;
-
-    public VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius)
+    public bool IsPinned;
+    
+    protected VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius)
     {
         Position = new Vector2(x, y);
         _canvas = canvas;
@@ -25,17 +26,19 @@ public class VPoint : VElement
         Position = _oldPosition = new Vector2(x, y);
     }
 
-    private static bool IsPinned => false;
-
     private float Mass { get; set; }
 
     public override void Update()
     {
         if (IsPinned) return;
-
+        
         _velocity = Position - _oldPosition;
         _velocity *= Friction;
+        
+        // Save current position
         _oldPosition = Position;
+        
+        // Perform Verlet integration
         Position += _velocity + _gravity * Mass;
     }
 
@@ -86,7 +89,7 @@ public class VPoint : VElement
         var positionAdjustment = normal * overlap / 2;
 
         // 2. Velocity Threshold Check
-        const float velocityThreshold = 0.8f; // Adjust this value as needed
+        const float velocityThreshold = 0.8f;
         var relativeVelocity = _velocity - otherPoint._velocity;
         var velocityAlongNormal = relativeVelocity.Dot(normal);
 
@@ -102,7 +105,7 @@ public class VPoint : VElement
             otherPoint.Position -= positionAdjustment;
 
             // 2. Simulating bounce and merging logic if velocity is high enough
-            const float bounceFactor = 0.8f;
+            const float bounceFactor = 0.2f;
             var separationVelocity = normal * bounceFactor;
             Position += separationVelocity;
             otherPoint.Position -= separationVelocity;

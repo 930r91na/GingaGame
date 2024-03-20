@@ -30,13 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.PNL_MAIN = new System.Windows.Forms.Panel();
+            this.nextPlanetLabel = new System.Windows.Forms.Label();
             this.PCT_CANVAS = new System.Windows.Forms.PictureBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.PNL_BOTTOM = new System.Windows.Forms.Panel();
-            this.LBL_STATUS = new System.Windows.Forms.Label();
-            this.PNL_HEADER = new System.Windows.Forms.Panel();
             this.TIMER = new System.Windows.Forms.Timer(this.components);
+            this.scoreLabel = new System.Windows.Forms.Label();
             this.PNL_MAIN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).BeginInit();
             this.SuspendLayout();
@@ -44,20 +41,30 @@
             // PNL_MAIN
             // 
             this.PNL_MAIN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.PNL_MAIN.Controls.Add(this.scoreLabel);
+            this.PNL_MAIN.Controls.Add(this.nextPlanetLabel);
             this.PNL_MAIN.Controls.Add(this.PCT_CANVAS);
-            this.PNL_MAIN.Controls.Add(this.panel2);
-            this.PNL_MAIN.Controls.Add(this.panel1);
-            this.PNL_MAIN.Controls.Add(this.PNL_BOTTOM);
-            this.PNL_MAIN.Controls.Add(this.LBL_STATUS);
-            this.PNL_MAIN.Controls.Add(this.PNL_HEADER);
             this.PNL_MAIN.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PNL_MAIN.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PNL_MAIN.ForeColor = System.Drawing.Color.Silver;
             this.PNL_MAIN.Location = new System.Drawing.Point(0, 0);
-            this.PNL_MAIN.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PNL_MAIN.Margin = new System.Windows.Forms.Padding(4);
             this.PNL_MAIN.Name = "PNL_MAIN";
             this.PNL_MAIN.Size = new System.Drawing.Size(1540, 846);
             this.PNL_MAIN.TabIndex = 0;
+            // 
+            // nextPlanetLabel
+            // 
+            this.nextPlanetLabel.AutoSize = true;
+            this.nextPlanetLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.nextPlanetLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nextPlanetLabel.ForeColor = System.Drawing.SystemColors.Info;
+            this.nextPlanetLabel.Location = new System.Drawing.Point(12, 13);
+            this.nextPlanetLabel.Name = "nextPlanetLabel";
+            this.nextPlanetLabel.Size = new System.Drawing.Size(167, 27);
+            this.nextPlanetLabel.TabIndex = 7;
+            this.nextPlanetLabel.Text = "NEXT PLANET:";
+            this.nextPlanetLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // PCT_CANVAS
             // 
@@ -66,64 +73,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PCT_CANVAS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.PCT_CANVAS.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PCT_CANVAS.Location = new System.Drawing.Point(275, 130);
-            this.PCT_CANVAS.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.PCT_CANVAS.Location = new System.Drawing.Point(252, 13);
+            this.PCT_CANVAS.Margin = new System.Windows.Forms.Padding(4);
             this.PCT_CANVAS.Name = "PCT_CANVAS";
-            this.PCT_CANVAS.Size = new System.Drawing.Size(991, 556);
+            this.PCT_CANVAS.Size = new System.Drawing.Size(1182, 820);
             this.PCT_CANVAS.TabIndex = 6;
             this.PCT_CANVAS.TabStop = false;
             this.PCT_CANVAS.Click += new System.EventHandler(this.PCT_CANVAS_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(1273, 123);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(267, 572);
-            this.panel2.TabIndex = 5;
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 123);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(267, 572);
-            this.panel1.TabIndex = 4;
-            // 
-            // PNL_BOTTOM
-            // 
-            this.PNL_BOTTOM.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.PNL_BOTTOM.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.PNL_BOTTOM.Location = new System.Drawing.Point(0, 695);
-            this.PNL_BOTTOM.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.PNL_BOTTOM.Name = "PNL_BOTTOM";
-            this.PNL_BOTTOM.Size = new System.Drawing.Size(1540, 123);
-            this.PNL_BOTTOM.TabIndex = 3;
-            // 
-            // LBL_STATUS
-            // 
-            this.LBL_STATUS.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.LBL_STATUS.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LBL_STATUS.Location = new System.Drawing.Point(0, 818);
-            this.LBL_STATUS.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LBL_STATUS.Name = "LBL_STATUS";
-            this.LBL_STATUS.Size = new System.Drawing.Size(1540, 28);
-            this.LBL_STATUS.TabIndex = 2;
-            this.LBL_STATUS.Text = "WELCOME !!!";
-            // 
-            // PNL_HEADER
-            // 
-            this.PNL_HEADER.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.PNL_HEADER.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PNL_HEADER.Location = new System.Drawing.Point(0, 0);
-            this.PNL_HEADER.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.PNL_HEADER.Name = "PNL_HEADER";
-            this.PNL_HEADER.Size = new System.Drawing.Size(1540, 123);
-            this.PNL_HEADER.TabIndex = 0;
+            this.PCT_CANVAS.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PCT_CANVAS_MouseMove);
             // 
             // TIMER
             // 
@@ -131,18 +88,32 @@
             this.TIMER.Interval = 16;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
             // 
+            // scoreLabel
+            // 
+            this.scoreLabel.AutoSize = true;
+            this.scoreLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scoreLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.scoreLabel.Location = new System.Drawing.Point(12, 285);
+            this.scoreLabel.Name = "scoreLabel";
+            this.scoreLabel.Size = new System.Drawing.Size(95, 27);
+            this.scoreLabel.TabIndex = 8;
+            this.scoreLabel.Text = "SCORE: ";
+            this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // MyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1540, 846);
             this.Controls.Add(this.PNL_MAIN);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MyForm";
             this.Text = "PLAYGROUND || VERLETS";
             this.Load += new System.EventHandler(this.MyForm_Load);
             this.SizeChanged += new System.EventHandler(this.MyForm_SizeChanged);
             this.PNL_MAIN.ResumeLayout(false);
+            this.PNL_MAIN.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).EndInit();
             this.ResumeLayout(false);
 
@@ -152,12 +123,9 @@
 
         private System.Windows.Forms.Panel PNL_MAIN;
         private System.Windows.Forms.PictureBox PCT_CANVAS;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel PNL_BOTTOM;
-        private System.Windows.Forms.Label LBL_STATUS;
-        private System.Windows.Forms.Panel PNL_HEADER;
         private System.Windows.Forms.Timer TIMER;
+        private System.Windows.Forms.Label nextPlanetLabel;
+        private System.Windows.Forms.Label scoreLabel;
     }
 }
 
