@@ -21,7 +21,7 @@ public partial class MyForm : Form
         _scene = new Scene();
         _score = new Score();
         _currentPlanet = _nextPlanet =
-            new Planet("Moon", 0, 0, _canvas, new PlanetPropertiesMap(), new PlanetPoints())
+            new Planet(0, 0, 0, _canvas, new PlanetPropertiesMap(), new PlanetPoints())
             {
                 IsPinned = true
             };

@@ -95,10 +95,17 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Resources\Luna.png"/>
-        <Content Include="Resources\Mercurio.png"/>
-        <Content Include="Resources\Neptuno.png"/>
-        <Content Include="Resources\Tierra.png"/>
+      <Content Include="Resources\Earth.png" />
+      <Content Include="Resources\Jupiter.png" />
+      <Content Include="Resources\Mars.png" />
+      <Content Include="Resources\Mercury.png" />
+      <Content Include="Resources\Moon.png" />
+      <Content Include="Resources\Neptune.png" />
+      <Content Include="Resources\Pluto.png" />
+      <Content Include="Resources\Saturn.png" />
+      <Content Include="Resources\Sun.png" />
+      <Content Include="Resources\Uranus.png" />
+      <Content Include="Resources\Venus.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

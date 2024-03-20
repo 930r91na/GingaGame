@@ -3,9 +3,9 @@ using System.Drawing;
 
 namespace GingaGame;
 
-public class PlanetProperties(string planetType, float size, float mass, Image texture)
+public class PlanetProperties(int planetIndex, float size, float mass, Image texture)
 {
-    public string PlanetType { get; set; } = planetType;
+    public int PlanetIndex { get; set; } = planetIndex;
     public float Size { get; set; } = size;
     public float Mass { get; set; } = mass;
     public Image Texture { get; set; } = texture;
@@ -13,22 +13,36 @@ public class PlanetProperties(string planetType, float size, float mass, Image t
 
 public class PlanetPropertiesMap
 {
-    public Dictionary<string, PlanetProperties> PropertiesPerPlanet { get; private set; } = new()
+    public Dictionary<int, PlanetProperties> PropertiesPerPlanet { get; private set; } = new()
     {
-        {"Moon", new PlanetProperties("Moon", 10, 1f, Resource1.Luna)},
-        {"Mercury", new PlanetProperties("Mercury", 15, 1.5f, Resource1.Mercurio)},
-        {"Earth", new PlanetProperties("Earth", 20, 2f, Resource1.Tierra)},
-        {"Neptune", new PlanetProperties("Neptune", 25, 2.5f, Resource1.Neptuno)}
+        {0, new PlanetProperties(0, 10f, 1, Resource1.Pluto)},
+        {1, new PlanetProperties(1, 15f, 1.5f, Resource1.Moon)},
+        {2, new PlanetProperties(2, 20f, 2, Resource1.Mercury)},
+        {3, new PlanetProperties(3, 25f, 2.5f, Resource1.Mars)},
+        {4, new PlanetProperties(4, 30f, 3, Resource1.Venus)},
+        {5, new PlanetProperties(5, 35f, 3.5f, Resource1.Earth)},
+        {6, new PlanetProperties(6, 40f, 4, Resource1.Neptune)},
+        {7, new PlanetProperties(7, 45f, 4.5f, Resource1.Uranus)},
+        {8, new PlanetProperties(8, 50f, 5, Resource1.Saturn)},
+        {9, new PlanetProperties(9, 55f, 5.5f, Resource1.Jupiter)},
+        {10, new PlanetProperties(10, 60f, 6, Resource1.Sun)}
     };
 }
 
 public class PlanetPoints
 {
-    public Dictionary<string, int> PointsPerPlanet { get; private set; } = new()
+    public Dictionary<int, int> PointsPerPlanet { get; private set; } = new()
     {
-        {"Moon", 10},
-        {"Mercury", 12},
-        {"Earth", 14},
-        {"Neptune", 12}
+        {0, 10},
+        {1, 12},
+        {2, 14},
+        {3, 16},
+        {4, 18},
+        {5, 20},
+        {6, 22},
+        {7, 24},
+        {8, 26},
+        {9, 28},
+        {10, 30}
     };
 }

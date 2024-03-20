@@ -60,42 +60,79 @@ namespace GingaGame {
             }
         }
         
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Luna {
+        internal static System.Drawing.Bitmap Pluto {
             get {
-                object obj = ResourceManager.GetObject("Luna", resourceCulture);
+                object obj = ResourceManager.GetObject("Pluto", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap Moon {
+            get {
+                object obj = ResourceManager.GetObject("Moon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap Mercury {
+            get {
+                object obj = ResourceManager.GetObject("Mercury", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Mercurio {
+        internal static System.Drawing.Bitmap Mars {
             get {
-                object obj = ResourceManager.GetObject("Mercurio", resourceCulture);
+                object obj = ResourceManager.GetObject("Mars", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Neptuno {
+        internal static System.Drawing.Bitmap Venus {
             get {
-                object obj = ResourceManager.GetObject("Neptuno", resourceCulture);
+                object obj = ResourceManager.GetObject("Venus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Tierra {
+        internal static System.Drawing.Bitmap Earth {
             get {
-                object obj = ResourceManager.GetObject("Tierra", resourceCulture);
+                object obj = ResourceManager.GetObject("Earth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Neptune {
+            get {
+                object obj = ResourceManager.GetObject("Neptune", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Uranus {
+            get {
+                object obj = ResourceManager.GetObject("Uranus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Saturn {
+            get {
+                object obj = ResourceManager.GetObject("Saturn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Jupiter {
+            get {
+                object obj = ResourceManager.GetObject("Jupiter", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Sun {
+            get {
+                object obj = ResourceManager.GetObject("Sun", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

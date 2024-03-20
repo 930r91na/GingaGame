@@ -3,7 +3,7 @@
 namespace GingaGame
 {
     public class Planet(
-        string planetType,
+        int planetType,
         float x,
         float y,
         Canvas canvas,
@@ -12,7 +12,7 @@ namespace GingaGame
         : VPoint(x, y, canvas, propertiesMap.PropertiesPerPlanet[planetType].Texture,
             propertiesMap.PropertiesPerPlanet[planetType].Mass, propertiesMap.PropertiesPerPlanet[planetType].Size)
     {
-        public string PlanetType { get; private set; } = planetType;
+        public int PlanetType { get; private set; } = planetType;
         public Image Texture { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Texture;
         public float Mass { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Mass;
         public float Radius { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Size;

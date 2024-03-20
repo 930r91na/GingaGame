@@ -125,25 +125,59 @@
     </resheader>
     <assembly alias="System.Windows.Forms"
               name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-    <data name="Luna" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\Luna.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+    <data name="Moon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Moon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
-    <data name="Mercurio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\Mercurio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+    <data name="Sun" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Sun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
-    <data name="Neptuno" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\Neptuno.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+    <data name="Pluto" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Pluto.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
-    <data name="Tierra" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\Tierra.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+    <data name="Mercury" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Mercury.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
-
+    <data name="Neptune" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Neptune.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Earth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Earth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Venus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Venus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Mars" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Mars.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Jupiter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Jupiter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Saturn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Saturn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
+    <data name="Uranus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>Resources\Uranus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
+    </data>
 </root>
