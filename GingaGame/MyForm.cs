@@ -92,6 +92,8 @@ public partial class MyForm : Form
         GenerateNextPlanet();
 
         _planetSwitchTimer.Stop(); 
+        
+        _scene.AddElement(_currentPlanet);
 
         // Re-enable input after the switch logic is complete
         PCT_CANVAS.Enabled = true;
