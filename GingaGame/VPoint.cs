@@ -12,15 +12,17 @@ public class VPoint : VElement
 
     private float _radius;
     private Image _texture;
+    private int _index;
     private Vector2 _velocity;
     public Vector2 Position;
     public bool IsPinned;
     
-    protected VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius)
+    protected VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius, int index)
     {
         Position = new Vector2(x, y);
         _canvas = canvas;
         _texture = texture;
+        _index = index;
         Mass = mass;
         _radius = radius;
         Position = _oldPosition = new Vector2(x, y);
@@ -113,19 +115,19 @@ public class VPoint : VElement
             // Merging Logic
             if (_texture != otherPoint._texture) return;
             // Replace '_texture' and adjust mass/radius based on a table or logic
-            _texture = GetNextPlanetTexture(_texture);
-            _radius *= 1.5f;
-            Mass *= 2f;
+            
         }
     }
-
-    private Image GetNextPlanetTexture(Image currentTexture)
+    
+    private Image GetNextPlanet(VPoint currentPoint)
     {
-        // Placeholder! Replace with logic to get the next planet texture
-        return currentTexture;
+        // Check for next index in the list
+        var newPlanet = new Planet(_index++,0,0,_canvas,new PlanetPropertiesMap(),new PlanetPoints());
+        //newplanet.PlanetType
+        
+        return currentPoint._texture;
     }
-
-
+    
     public override void Render(Graphics g)
     {
         Constraints();

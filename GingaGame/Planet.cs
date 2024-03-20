@@ -3,19 +3,18 @@
 namespace GingaGame
 {
     public class Planet(
-        int planetType,
+        int planetIndex,
         float x,
         float y,
         Canvas canvas,
         PlanetPropertiesMap propertiesMap,
         PlanetPoints pointsMap)
-        : VPoint(x, y, canvas, propertiesMap.PropertiesPerPlanet[planetType].Texture,
-            propertiesMap.PropertiesPerPlanet[planetType].Mass, propertiesMap.PropertiesPerPlanet[planetType].Size)
+        : VPoint(x, y, canvas, propertiesMap.PropertiesPerPlanet[planetIndex].Texture,
+            propertiesMap.PropertiesPerPlanet[planetIndex].Mass, propertiesMap.PropertiesPerPlanet[planetIndex].Size,propertiesMap.PropertiesPerPlanet[planetIndex].PlanetIndex)
     {
-        public int PlanetType { get; private set; } = planetType;
-        public Image Texture { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Texture;
-        public float Mass { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Mass;
-        public float Radius { get; private set; } = propertiesMap.PropertiesPerPlanet[planetType].Size;
-        public int Points { get; private set; } = pointsMap.PointsPerPlanet[planetType];
+        public Image Texture { get; private set; } = propertiesMap.PropertiesPerPlanet[planetIndex].Texture;
+        public float Mass { get; private set; } = propertiesMap.PropertiesPerPlanet[planetIndex].Mass;
+        public float Radius { get; private set; } = propertiesMap.PropertiesPerPlanet[planetIndex].Size;
+        public int Points { get; private set; } = pointsMap.PointsPerPlanet[planetIndex];
     }
 }
