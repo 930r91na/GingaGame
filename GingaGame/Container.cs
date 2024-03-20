@@ -7,7 +7,7 @@ public class Container(PointF topLeft, PointF topRight, PointF bottomLeft, Point
     public PointF TopLeft { get; } = topLeft;
     public PointF TopRight { get; } = topRight;
     public PointF BottomLeft { get; } = bottomLeft;
-    private PointF BottomRight { get; } = bottomRight;
+    public PointF BottomRight { get; } = bottomRight;
 
     public void Render(Graphics g)
     {

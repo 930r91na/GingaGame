@@ -8,15 +8,15 @@ public class VPoint : VElement
     private const float Friction = 0.95f;
     private readonly Canvas _canvas;
     private readonly Vector2 _gravity = new(0, 1);
-    private Vector2 _oldPosition;
-
-    private float _radius;
-    private Image _texture;
     private int _index;
+
+    private readonly float _radius;
+    private readonly Image _texture;
     private Vector2 _velocity;
-    public Vector2 Position;
     public bool IsPinned;
-    
+    public Vector2 Position;
+    public Vector2 OldPosition;
+
     protected VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius, int index)
     {
         Position = new Vector2(x, y);
@@ -25,21 +25,21 @@ public class VPoint : VElement
         _index = index;
         Mass = mass;
         _radius = radius;
-        Position = _oldPosition = new Vector2(x, y);
+        Position = OldPosition = new Vector2(x, y);
     }
 
-    private float Mass { get; set; }
+    private float Mass { get; }
 
     public override void Update()
     {
         if (IsPinned) return;
-        
-        _velocity = Position - _oldPosition;
+
+        _velocity = Position - OldPosition;
         _velocity *= Friction;
-        
+
         // Save current position
-        _oldPosition = Position;
-        
+        OldPosition = Position;
+
         // Perform Verlet integration
         Position += _velocity + _gravity * Mass;
     }
@@ -115,22 +115,26 @@ public class VPoint : VElement
             // Merging Logic
             if (_texture != otherPoint._texture) return;
             // Replace '_texture' and adjust mass/radius based on a table or logic
-            
         }
     }
-    
+
     private Image GetNextPlanet(VPoint currentPoint)
     {
         // Check for next index in the list
-        var newPlanet = new Planet(_index++,0,0,_canvas,new PlanetPropertiesMap(),new PlanetPoints());
-        //newplanet.PlanetType
-        
+        var newPlanet = new Planet(_index++, 0, 0, _canvas, new PlanetPropertiesMap(), new PlanetPoints());
+        //new planet.PlanetType
+
         return currentPoint._texture;
     }
-    
+
     public override void Render(Graphics g)
     {
         Constraints();
+        // Draw a trajectory line if the point is pinned from the position to the bottom of the container
+        // if (IsPinned)
+        // {
+        //     g?.DrawLine(new Pen(Color.LightSeaGreen, 1), Position.X, Position.Y, Position.X, _canvas.Container!.BottomLeft.Y);
+        // }
         var imageWidth = _radius * 2;
         var imageHeight = _radius * 2;
         g?.DrawImage(_texture, Position.X - imageWidth / 2, Position.Y - imageHeight / 2, imageWidth, imageHeight);

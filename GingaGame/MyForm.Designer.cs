@@ -30,17 +30,20 @@
         {
             this.components = new System.ComponentModel.Container();
             this.PNL_MAIN = new System.Windows.Forms.Panel();
+            this.scoreLabel = new System.Windows.Forms.Label();
             this.nextPlanetLabel = new System.Windows.Forms.Label();
             this.PCT_CANVAS = new System.Windows.Forms.PictureBox();
             this.TIMER = new System.Windows.Forms.Timer(this.components);
-            this.scoreLabel = new System.Windows.Forms.Label();
+            this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
             this.PNL_MAIN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // PNL_MAIN
             // 
             this.PNL_MAIN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.PNL_MAIN.Controls.Add(this.nextPlanetPictureBox);
             this.PNL_MAIN.Controls.Add(this.scoreLabel);
             this.PNL_MAIN.Controls.Add(this.nextPlanetLabel);
             this.PNL_MAIN.Controls.Add(this.PCT_CANVAS);
@@ -52,6 +55,19 @@
             this.PNL_MAIN.Name = "PNL_MAIN";
             this.PNL_MAIN.Size = new System.Drawing.Size(1540, 846);
             this.PNL_MAIN.TabIndex = 0;
+            // 
+            // scoreLabel
+            // 
+            this.scoreLabel.AutoSize = true;
+            this.scoreLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scoreLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.scoreLabel.Location = new System.Drawing.Point(12, 285);
+            this.scoreLabel.Name = "scoreLabel";
+            this.scoreLabel.Size = new System.Drawing.Size(95, 27);
+            this.scoreLabel.TabIndex = 8;
+            this.scoreLabel.Text = "SCORE: ";
+            this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // nextPlanetLabel
             // 
@@ -73,10 +89,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PCT_CANVAS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.PCT_CANVAS.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PCT_CANVAS.Location = new System.Drawing.Point(252, 13);
+            this.PCT_CANVAS.Location = new System.Drawing.Point(205, 13);
             this.PCT_CANVAS.Margin = new System.Windows.Forms.Padding(4);
             this.PCT_CANVAS.Name = "PCT_CANVAS";
-            this.PCT_CANVAS.Size = new System.Drawing.Size(1182, 820);
+            this.PCT_CANVAS.Size = new System.Drawing.Size(1229, 820);
             this.PCT_CANVAS.TabIndex = 6;
             this.PCT_CANVAS.TabStop = false;
             this.PCT_CANVAS.Click += new System.EventHandler(this.PCT_CANVAS_Click);
@@ -88,18 +104,13 @@
             this.TIMER.Interval = 16;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
             // 
-            // scoreLabel
+            // nextPlanetPictureBox
             // 
-            this.scoreLabel.AutoSize = true;
-            this.scoreLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scoreLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.scoreLabel.Location = new System.Drawing.Point(12, 285);
-            this.scoreLabel.Name = "scoreLabel";
-            this.scoreLabel.Size = new System.Drawing.Size(95, 27);
-            this.scoreLabel.TabIndex = 8;
-            this.scoreLabel.Text = "SCORE: ";
-            this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.nextPlanetPictureBox.Location = new System.Drawing.Point(39, 66);
+            this.nextPlanetPictureBox.Name = "nextPlanetPictureBox";
+            this.nextPlanetPictureBox.Size = new System.Drawing.Size(130, 130);
+            this.nextPlanetPictureBox.TabIndex = 9;
+            this.nextPlanetPictureBox.TabStop = false;
             // 
             // MyForm
             // 
@@ -115,6 +126,7 @@
             this.PNL_MAIN.ResumeLayout(false);
             this.PNL_MAIN.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -126,6 +138,7 @@
         private System.Windows.Forms.Timer TIMER;
         private System.Windows.Forms.Label nextPlanetLabel;
         private System.Windows.Forms.Label scoreLabel;
+        private System.Windows.Forms.PictureBox nextPlanetPictureBox;
     }
 }
 

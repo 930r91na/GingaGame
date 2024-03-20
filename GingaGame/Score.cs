@@ -8,7 +8,7 @@ public class Score
     {
         CurrentScore += amount;
     }
-    
+
     public void ResetScore()
     {
         CurrentScore = 0;
