@@ -11,6 +11,7 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
     private readonly int _endLinetreshold = 70;
     private bool _renderEndLine = false;
     private bool _gameOverTriggered = false;
+    private bool _gameWonTriggered = false;
     
     public void CheckGameState()
     {
@@ -21,6 +22,11 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
         if (!_gameOverTriggered)
         {
             CheckLoseCondition();
+        }
+        
+        if (!_gameWonTriggered)
+        {
+            checkWinCondition();
         }
     }
     
@@ -46,10 +52,30 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
             {
                 _gameOverTriggered = true;
                 // Trigger Game Over condition
-                MessageBox.Show("You died! Try again!");
-                    
+
+                if (_gameWonTriggered)
+                {
+                    MessageBox.Show("Keep trying!");
+                }
+                else
+                {
+                    MessageBox.Show("You died! Try again!");
+                }
                 ResetGame();
                 break; 
+            }
+        }
+    }
+
+    private void checkWinCondition()
+    {
+        foreach (var planet in _planets)
+        {
+            if (planet.PlanetType == 10)
+            {
+                _gameWonTriggered = true;
+                MessageBox.Show("Congratulations! You won!");
+                break;
             }
         }
     }
