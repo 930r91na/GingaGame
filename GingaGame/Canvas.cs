@@ -124,4 +124,24 @@ public class Canvas
 
         Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
     }
+
+    public void RenderEndLine(bool rendered)
+    {
+        const float verticalTopMargin = 70;
+        var horizontalMargin = (Width - Width / 3) / 2;
+
+        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
+        var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
+
+        // Draw the end line
+        if (rendered)
+        {
+            Graphics?.DrawLine(Pens.White, topLeft, topRight);
+        }
+        else
+        {
+            Graphics?.DrawLine(Pens.Black, topLeft, topRight);
+        }
+
+    }
 }

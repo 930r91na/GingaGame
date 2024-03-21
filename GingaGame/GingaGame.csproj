@@ -54,6 +54,7 @@
         <Compile Include="Canvas.cs"/>
         <Compile Include="CollisionHandler.cs"/>
         <Compile Include="Container.cs"/>
+        <Compile Include="GameStateHandler.cs" />
         <Compile Include="MyForm.cs">
             <SubType>Form</SubType>
         </Compile>

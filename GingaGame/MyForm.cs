@@ -7,6 +7,7 @@ public partial class MyForm : Form
 {
     private readonly Canvas _canvas;
     private readonly CollisionHandler _collisionHandler;
+    private readonly GameStateHandler _gameStateHandler;
     private readonly Timer _fpsTimer = new();
     private readonly Canvas _nextPlanetCanvas;
     private readonly PlanetFactory _planetFactory;
@@ -59,6 +60,10 @@ public partial class MyForm : Form
 
         // Initialize the collision handler
         _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
+        
+        // Initialize the game state handler
+        _gameStateHandler = new GameStateHandler(_scene, _canvas, _planetFactory, _score);
+        
     }
 
     private void GenerateNextPlanet()
@@ -82,6 +87,9 @@ public partial class MyForm : Form
 
         // Call collision detection after updates and before rendering
         _collisionHandler.CheckCollisions();
+        
+        // Check game state
+        _gameStateHandler.CheckGameState();
         
         // Check if the score has changed
         if (_score.HasChanged)

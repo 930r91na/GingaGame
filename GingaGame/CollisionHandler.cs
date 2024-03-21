@@ -132,6 +132,10 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
                 var separationVelocity = normal * bounceFactor;
                 planet1.Position += separationVelocity;
                 planet2.Position -= separationVelocity;
+                
+                // Update has collided
+                planet1.HasCollided = true;
+                planet2.HasCollided = true;
             }
         }
     }
