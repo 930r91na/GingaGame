@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -132,11 +133,15 @@ public class Canvas
 
         var topLeft = new PointF(horizontalMargin, verticalTopMargin);
         var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
+        
+        bool blinkOn = (DateTime.Now.Millisecond % 2) == 0;
 
+        Pen currentPen = blinkOn ? Pens.White : Pens.Red; // Alternate between white and red
+        
         // Draw the end line
         if (rendered)
         {
-            Graphics?.DrawLine(Pens.White, topLeft, topRight);
+            Graphics?.DrawLine(currentPen, topLeft, topRight);
         }
         else
         {
