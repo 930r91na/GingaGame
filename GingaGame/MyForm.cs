@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace GingaGame;
@@ -8,12 +7,12 @@ public partial class MyForm : Form
 {
     private readonly Canvas _canvas;
     private readonly Canvas _nextPlanetCanvas;
+    private readonly PlanetFactory _planetFactory;
+    private readonly Timer _planetSwitchTimer = new();
     private readonly Scene _scene;
     private Planet _currentPlanet;
     private Planet _nextPlanet;
     private Score _score;
-    private readonly Timer _planetSwitchTimer = new();
-    private readonly PlanetFactory _planetFactory;
 
     public MyForm()
     {
@@ -21,19 +20,19 @@ public partial class MyForm : Form
         _canvas = new Canvas(PCT_CANVAS.Size);
         _canvas.InitializeContainer();
         PCT_CANVAS.Image = _canvas.Bitmap;
-        
+
         _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
-        
+
         _scene = new Scene();
         _score = new Score();
         _currentPlanet =
-            new Planet(0, 0, 0, _canvas, new PlanetPropertiesMap(), new PlanetPoints())
+            new Planet(0, 0, 0, _canvas)
             {
                 IsPinned = true
             };
         _scene.AddElement(_currentPlanet);
-        _planetFactory = new PlanetFactory(new PlanetPropertiesMap(), new PlanetPoints());
+        _planetFactory = new PlanetFactory();
 
         // Timer setup
         _planetSwitchTimer.Interval = 1000; // 1 second interval
@@ -54,17 +53,13 @@ public partial class MyForm : Form
         _canvas.Container?.Render(_canvas.Graphics); // Container rendering
 
         // Update and Constraints Logic in one loop
-        foreach (var planet in _scene.Elements)
+        foreach (var planet in _scene.Planets)
         {
             planet.Update(); // Apply forces, Verlet integration
             planet.Constraints();
         }
 
         // Collision Detection and Handling
-        foreach (var planet in _scene.Elements)
-        foreach (var otherPlanet in _scene.Elements.Where(otherPlanet =>
-                     planet != otherPlanet && planet.CollidesWith(otherPlanet)))
-            planet.HandleCollision(otherPlanet);
 
         _scene.Render(_canvas.Graphics); // Now render everything
 
@@ -77,22 +72,29 @@ public partial class MyForm : Form
     {
         // Draw the next planet texture below the label
         _nextPlanetCanvas.FastClear();
-        _nextPlanetCanvas.Graphics?.DrawImage(_nextPlanet.Texture, 0, 0, _nextPlanetCanvas.Width,
-            _nextPlanetCanvas.Height);
-        
+
+        var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
+
+        // Draw the next planet texture in the center of the canvas with the correct size
+        var imageWidth = _nextPlanet.Radius * 2;
+        var imageHeight = _nextPlanet.Radius * 2;
+        var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
+        var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
+
+        _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
+
         nextPlanetPictureBox.Invalidate();
     }
 
     private void PlanetSwitchTimer_Tick(object sender, EventArgs e)
     {
         _currentPlanet = _nextPlanet;
-        _currentPlanet.IsPinned = true; 
-        // Reset _currentPlanet position to the top of the container
+        _currentPlanet.IsPinned = true;
 
         GenerateNextPlanet();
 
-        _planetSwitchTimer.Stop(); 
-        
+        _planetSwitchTimer.Stop();
+
         _scene.AddElement(_currentPlanet);
 
         // Re-enable input after the switch logic is complete
@@ -110,6 +112,11 @@ public partial class MyForm : Form
     private void PCT_CANVAS_Click(object sender, EventArgs e)
     {
         if (!_currentPlanet.IsPinned) return;
+        
+        var mouseArgs = (MouseEventArgs)e;
+        
+        _currentPlanet.Position.X = mouseArgs.X;
+        _currentPlanet.OldPosition.X = mouseArgs.X;
 
         _currentPlanet.IsPinned = false;
 
@@ -122,21 +129,26 @@ public partial class MyForm : Form
     private void PCT_CANVAS_MouseMove(object sender, MouseEventArgs e)
     {
         if (!_currentPlanet.IsPinned) return;
-        // Adjust x position of the planet based on the mouse position and the container width
+
+        UpdateCurrentPlanetPosition(e);
+    }
+
+    private void UpdateCurrentPlanetPosition(MouseEventArgs e)
+    {
         if (e.X < _canvas.Container!.TopLeft.X + _currentPlanet.Radius)
         {
-         _currentPlanet.Position.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
-         _currentPlanet.OldPosition.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
+            _currentPlanet.Position.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
+            _currentPlanet.OldPosition.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
         }
         else if (e.X > _canvas.Container.BottomRight.X - _currentPlanet.Radius)
         {
-         _currentPlanet.Position.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
-         _currentPlanet.OldPosition.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
+            _currentPlanet.Position.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
+            _currentPlanet.OldPosition.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
         }
         else
         {
-         _currentPlanet.Position.X = e.X;
-         _currentPlanet.OldPosition.X = e.X;
+            _currentPlanet.Position.X = e.X;
+            _currentPlanet.OldPosition.X = e.X;
         }
     }
 }

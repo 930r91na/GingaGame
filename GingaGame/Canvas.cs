@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -124,50 +123,6 @@ public class Canvas
 
             // Unlock the bitmaps bits from system memory
             Bitmap.UnlockBits(bitmapData);
-        }
-    }
-
-    public void DrawLine(int x1, int y1, int x2, int y2, Color color)
-    {
-        // Bresenham's line algorithm is used to draw a line between two points
-        // This algorithm chooses the pixel at each step that will be closest to the true line
-
-        // Calculate the absolute difference in x and y coordinates
-        var dx = Math.Abs(x2 - x1);
-        var dy = Math.Abs(y2 - y1);
-
-        // Determine the direction of the line in x and y coordinates
-        var sx = x1 < x2 ? 1 : -1;
-        var sy = y1 < y2 ? 1 : -1;
-
-        // Initialize the error term to compensate for the difference in variation in x and y
-        var err = dx - dy;
-
-        // Loop until the line is drawn from (x1, y1) to (x2, y2)
-        while (true)
-        {
-            // Draw a pixel at the current position
-            DrawPixel(x1, y1, color);
-
-            // If the current position is the end position, break the loop
-            if (x1 == x2 && y1 == y2) break;
-
-            // Calculate the double of the error term
-            var e2 = 2 * err;
-
-            // Adjust the error term and the current position based on the slope of the line
-            if (e2 > -dy)
-            {
-                err -= dy;
-                x1 += sx;
-            }
-
-            // If the double of the error term is greater than or equal to the difference in x, continue to the next iteration
-            if (e2 >= dx) continue;
-
-            // Adjust the error term and the current position based on the slope of the line
-            err += dx;
-            y1 += sy;
         }
     }
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace GingaGame;
 
-public class PlanetFactory(PlanetPropertiesMap propertiesMap, PlanetPoints pointsMap)
+public class PlanetFactory
 {
-    private readonly List<int> _unlockedPlanets = [0]; // Start with Pluto
     private readonly Random _randomGenerator = new();
+    private readonly List<int> _unlockedPlanets = [0]; // Start with Pluto
 
     public Planet GenerateNextPlanet(Canvas canvas)
     {
@@ -16,7 +16,9 @@ public class PlanetFactory(PlanetPropertiesMap propertiesMap, PlanetPoints point
             nextIndex = _randomGenerator.Next(0, 5);
         } while (!_unlockedPlanets.Contains(nextIndex));
 
-        return new Planet(nextIndex, 0, 0, canvas, propertiesMap, pointsMap)
+        var middleX = canvas.Width / 2;
+
+        return new Planet(nextIndex, middleX, 0, canvas)
         {
             IsPinned = false
         };
@@ -25,9 +27,6 @@ public class PlanetFactory(PlanetPropertiesMap propertiesMap, PlanetPoints point
     // Method to unlock a new planet (when merging happens)
     public void UnlockPlanet(int planetIndex)
     {
-        if (!_unlockedPlanets.Contains(planetIndex))
-        {
-            _unlockedPlanets.Add(planetIndex);
-        }
+        if (!_unlockedPlanets.Contains(planetIndex)) _unlockedPlanets.Add(planetIndex);
     }
 }

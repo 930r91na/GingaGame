@@ -5,15 +5,15 @@ namespace GingaGame;
 
 public class Scene
 {
-    public List<VElement> Elements { get; } = [];
+    public List<Planet> Planets { get; } = [];
 
-    public void AddElement(VElement element)
+    public void AddElement(Planet planet)
     {
-        Elements.Add(element);
+        Planets.Add(planet);
     }
 
     public void Render(Graphics g)
     {
-        foreach (var element in Elements) element.Render(g);
+        foreach (var planet in Planets) planet.Render(g);
     }
 }

@@ -1,36 +1,29 @@
-﻿using System;
-using System.Drawing;
+﻿namespace GingaGame;
 
-namespace GingaGame;
-
-public class VPoint : VElement
+public class VPoint
 {
-    private const float Friction = 0.95f;
+    private const float Friction = 0.90f;
     private readonly Canvas _canvas;
     private readonly Vector2 _gravity = new(0, 1);
-    private int _index;
 
     private readonly float _radius;
-    private readonly Image _texture;
     private Vector2 _velocity;
     public bool IsPinned;
-    public Vector2 Position;
     public Vector2 OldPosition;
+    public Vector2 Position;
 
-    protected VPoint(float x, float y, Canvas canvas, Image texture, float mass, float radius, int index)
+    protected VPoint(float x, float y, Canvas canvas, float radius)
     {
         Position = new Vector2(x, y);
         _canvas = canvas;
-        _texture = texture;
-        _index = index;
-        Mass = mass;
         _radius = radius;
+        Mass = radius / 10;
         Position = OldPosition = new Vector2(x, y);
     }
 
     private float Mass { get; }
 
-    public override void Update()
+    public void Update()
     {
         if (IsPinned) return;
 
@@ -44,7 +37,7 @@ public class VPoint : VElement
         Position += _velocity + _gravity * Mass;
     }
 
-    public override void Constraints()
+    public void Constraints()
     {
         WallConstraints();
         ContainerConstraints();
@@ -72,73 +65,5 @@ public class VPoint : VElement
         // Check if the point is outside the bottom boundary of the container
         if (container != null && Position.Y > container.BottomLeft.Y - _radius)
             Position.Y = container.BottomLeft.Y - _radius;
-    }
-
-    public override bool CollidesWith(VElement other)
-    {
-        if (other is not VPoint otherPoint) return false;
-        float distance = Vector2.Distance(Position, otherPoint.Position);
-        return distance <= _radius + otherPoint._radius;
-    }
-
-    public override void HandleCollision(VElement other)
-    {
-        if (other is not VPoint otherPoint) return;
-
-        // 1. Overlap Correction
-        var overlap = _radius + otherPoint._radius - Vector2.Distance(Position, otherPoint.Position);
-        var normal = (Position - otherPoint.Position).Normalized(); // Collision direction
-        var positionAdjustment = normal * overlap / 2;
-
-        // 2. Velocity Threshold Check
-        const float velocityThreshold = 0.8f;
-        var relativeVelocity = _velocity - otherPoint._velocity;
-        var velocityAlongNormal = relativeVelocity.Dot(normal);
-
-        if (Math.Abs(velocityAlongNormal) < velocityThreshold)
-        {
-            Position += positionAdjustment;
-            otherPoint.Position -= positionAdjustment;
-        }
-        else
-        {
-            // 1. Overlap Correction
-            Position += positionAdjustment;
-            otherPoint.Position -= positionAdjustment;
-
-            // 2. Simulating bounce and merging logic if velocity is high enough
-            const float bounceFactor = 0.2f;
-            var separationVelocity = normal * bounceFactor;
-            Position += separationVelocity;
-            otherPoint.Position -= separationVelocity;
-
-            // Merging Logic
-            if (_texture != otherPoint._texture) return;
-            // Replace '_texture' and adjust mass/radius based on a table or logic
-        }
-    }
-
-    private Image GetNextPlanet(VPoint currentPoint)
-    {
-        // Check for next index in the list
-        var newPlanet = new Planet(_index++, 0, 0, _canvas, new PlanetPropertiesMap(), new PlanetPoints());
-        //new planet.PlanetType
-
-        return currentPoint._texture;
-    }
-
-    public override void Render(Graphics g)
-    {
-        Constraints();
-        // Draw a trajectory line if the point is pinned from the position to the bottom of the container
-        // if (IsPinned)
-        // {
-        //     g?.DrawLine(new Pen(Color.LightSeaGreen, 1), Position.X, Position.Y, Position.X, _canvas.Container!.BottomLeft.Y);
-        // }
-        var imageWidth = _radius * 2;
-        var imageHeight = _radius * 2;
-        g?.DrawImage(_texture, Position.X - imageWidth / 2, Position.Y - imageHeight / 2, imageWidth, imageHeight);
-        // Draw the collision circle
-        g?.DrawEllipse(new Pen(Color.Red, 1), Position.X - _radius, Position.Y - _radius, _radius * 2, _radius * 2);
     }
 }
