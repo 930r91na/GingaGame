@@ -134,9 +134,9 @@ public class Canvas
         var topLeft = new PointF(horizontalMargin, verticalTopMargin);
         var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
         
-        bool blinkOn = (DateTime.Now.Millisecond % 2) == 0;
+        bool blinkOn = (DateTime.Now.Millisecond % 100) == 0;
 
-        Pen currentPen = blinkOn ? Pens.White : Pens.Red; // Alternate between white and red
+        Pen currentPen = blinkOn ? Pens.Red : Pens.White; // Alternate between white and red
         
         // Draw the end line
         if (rendered)

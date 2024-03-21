@@ -62,7 +62,7 @@ public partial class MyForm : Form
         _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
         
         // Initialize the game state handler
-        _gameStateHandler = new GameStateHandler(_scene, _canvas, _planetFactory, _score);
+        _gameStateHandler = new GameStateHandler(_scene, _canvas, _score);
         
     }
 

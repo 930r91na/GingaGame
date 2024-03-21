@@ -1,17 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;   
 
 namespace GingaGame;
 
-public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetFactory, Score score)
+public class GameStateHandler (Scene scene, Canvas canvas, Score score)
 {
     private readonly List<Planet> _planets = scene.Planets;
-    private readonly float _endLineHeight = 70;
-    private readonly int _endLinetreshold = 70;
-    private bool _renderEndLine = false;
-    private bool _gameOverTriggered = false;
-    private bool _gameWonTriggered = false;
+    private const float EndLineHeight = 70;
+    private const int EndLineThreshold = 70;
+    private const int Tolerance = 3;
+    private bool _renderEndLine;
+    private bool _gameOverTriggered;
+    private bool _gameWonTriggered;
     
     public void CheckGameState()
     {
@@ -26,7 +27,7 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
         
         if (!_gameWonTriggered)
         {
-            checkWinCondition();
+            CheckWinCondition();
         }
     }
     
@@ -35,7 +36,7 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
         _renderEndLine = false;
         foreach (var planet in _planets)
         {
-            if ((planet.Position.Y < _endLineHeight + _endLinetreshold + planet.Radius) && planet.HasCollided)
+            if ((planet.Position.Y < EndLineHeight + EndLineThreshold + planet.Radius) && planet.HasCollided)
             {
                 if (planet.IsPinned) continue;
                 _renderEndLine = true;
@@ -48,42 +49,29 @@ public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetF
     {
         foreach (var planet in _planets)
         {
-            if (planet.Position.Y < _endLineHeight + planet.Radius && planet.HasCollided)
+            if (planet.Position.Y < EndLineHeight + planet.Radius - Tolerance && planet.HasCollided)
             {
                 _gameOverTriggered = true;
                 // Trigger Game Over condition
 
-                if (_gameWonTriggered)
-                {
-                    MessageBox.Show("Keep trying!");
-                }
-                else
-                {
-                    MessageBox.Show("You died! Try again!");
-                }
+                MessageBox.Show(_gameWonTriggered ? @"Keep trying!" : @"You died! Try again!");
                 ResetGame();
                 break; 
             }
         }
     }
 
-    private void checkWinCondition()
+    private void CheckWinCondition()
     {
-        foreach (var planet in _planets)
-        {
-            if (planet.PlanetType == 10)
-            {
-                _gameWonTriggered = true;
-                MessageBox.Show("Congratulations! You won!");
-                break;
-            }
-        }
+        if (_planets.All(planet => planet.PlanetType != 10)) return;
+        _gameWonTriggered = true;
+        MessageBox.Show(@"Congratulations! You won!");
     }
 
     private void ResetGame()
     {
         score.ResetScore();
-        List<Planet> planetsToRemove = new List<Planet>(_planets);
+        List<Planet> planetsToRemove = [.._planets];
         foreach (var planet in planetsToRemove)
         {
             if (planet.IsPinned) continue;
