@@ -18,6 +18,9 @@ public sealed class Planet(
 
     public void Render(Graphics g)
     {
+        // Apply constraints
+        Constraints();
+        
         var imageWidth = Radius * 2;
         var imageHeight = Radius * 2;
         var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version
@@ -27,7 +30,7 @@ public sealed class Planet(
 
 public static class PlanetTextures
 {
-    private static readonly Dictionary<int, Image> CachedTextures = new(); 
+    private static readonly Dictionary<int, Image> CachedTextures = new();
 
     public static Image GetCachedTexture(int planetType)
     {
@@ -38,7 +41,7 @@ public static class PlanetTextures
 
         return CachedTextures[planetType];
     }
-    
+
     private static Image LoadTexture(int planetType)
     {
         return planetType switch

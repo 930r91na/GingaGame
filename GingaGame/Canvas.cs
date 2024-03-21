@@ -63,20 +63,6 @@ public class Canvas
         Graphics = Graphics.FromImage(Bitmap);
     }
 
-    private void DrawPixel(int x, int y, Color color)
-    {
-        // Check if the x and y coordinates are within the valid range
-        if (x < 0 || x >= Width || y < 0 || y >= Height) return;
-
-        // Calculate the index of the first byte of the pixel in the byte array
-        var index = x * _pixelFormatSize + y * _stride;
-
-        _bits[index] = color.B; // (byte)Blue
-        _bits[index + 1] = color.G; // (byte)Green
-        _bits[index + 2] = color.R; // (byte)Red
-        _bits[index + 3] = color.A; // (byte)Alpha
-    }
-
     public void FastClear()
     {
         // Use unsafe code to allow pointer manipulation

@@ -7,10 +7,14 @@ public struct Vector2(float x, float y)
     public float X { get; set; } = x;
     public float Y { get; set; } = y;
 
-
     public static Vector2 operator *(Vector2 a, float b)
     {
         return new Vector2(a.X * b, a.Y * b);
+    }
+
+    public static Vector2 operator *(float a, Vector2 b)
+    {
+        return new Vector2(a * b.X, a * b.Y);
     }
 
     public static Vector2 operator *(Vector2 a, Vector2 b)
@@ -43,7 +47,7 @@ public struct Vector2(float x, float y)
         return new Vector2(-a.X, -a.Y);
     }
 
-    public float Magnitude()
+    private float Magnitude()
     {
         return (float)Math.Sqrt(X * X + Y * Y);
     }
@@ -66,5 +70,10 @@ public struct Vector2(float x, float y)
     public double Dot(Vector2 normal)
     {
         return X * normal.X + Y * normal.Y;
+    }
+
+    public static double Dot(Vector2 a, Vector2 b)
+    {
+        return a.X * b.X + a.Y * b.Y;
     }
 }

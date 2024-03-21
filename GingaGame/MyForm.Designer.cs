@@ -30,19 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             this.PNL_MAIN = new System.Windows.Forms.Panel();
+            this.fpsLabel = new System.Windows.Forms.Label();
+            this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
             this.scoreLabel = new System.Windows.Forms.Label();
             this.nextPlanetLabel = new System.Windows.Forms.Label();
             this.PCT_CANVAS = new System.Windows.Forms.PictureBox();
             this.TIMER = new System.Windows.Forms.Timer(this.components);
-            this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
             this.PNL_MAIN.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).BeginInit();
             this.SuspendLayout();
             // 
             // PNL_MAIN
             // 
             this.PNL_MAIN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.PNL_MAIN.Controls.Add(this.fpsLabel);
             this.PNL_MAIN.Controls.Add(this.nextPlanetPictureBox);
             this.PNL_MAIN.Controls.Add(this.scoreLabel);
             this.PNL_MAIN.Controls.Add(this.nextPlanetLabel);
@@ -56,6 +58,29 @@
             this.PNL_MAIN.Size = new System.Drawing.Size(1540, 846);
             this.PNL_MAIN.TabIndex = 0;
             // 
+            // fpsLabel
+            // 
+            this.fpsLabel.AutoSize = true;
+            this.fpsLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fpsLabel.Font = new System.Drawing.Font("Gadugi", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fpsLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.fpsLabel.Location = new System.Drawing.Point(1441, 13);
+            this.fpsLabel.Name = "fpsLabel";
+            this.fpsLabel.Size = new System.Drawing.Size(42, 19);
+            this.fpsLabel.TabIndex = 10;
+            this.fpsLabel.Text = "FPS: ";
+            this.fpsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // nextPlanetPictureBox
+            // 
+            this.nextPlanetPictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.nextPlanetPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.nextPlanetPictureBox.Location = new System.Drawing.Point(39, 66);
+            this.nextPlanetPictureBox.Name = "nextPlanetPictureBox";
+            this.nextPlanetPictureBox.Size = new System.Drawing.Size(130, 130);
+            this.nextPlanetPictureBox.TabIndex = 9;
+            this.nextPlanetPictureBox.TabStop = false;
+            // 
             // scoreLabel
             // 
             this.scoreLabel.AutoSize = true;
@@ -66,7 +91,7 @@
             this.scoreLabel.Name = "scoreLabel";
             this.scoreLabel.Size = new System.Drawing.Size(95, 27);
             this.scoreLabel.TabIndex = 8;
-            this.scoreLabel.Text = "SCORE: ";
+            this.scoreLabel.Text = "SCORE: 0";
             this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // nextPlanetLabel
@@ -101,16 +126,7 @@
             // TIMER
             // 
             this.TIMER.Enabled = true;
-            this.TIMER.Interval = 16;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
-            // 
-            // nextPlanetPictureBox
-            // 
-            this.nextPlanetPictureBox.Location = new System.Drawing.Point(39, 66);
-            this.nextPlanetPictureBox.Name = "nextPlanetPictureBox";
-            this.nextPlanetPictureBox.Size = new System.Drawing.Size(130, 130);
-            this.nextPlanetPictureBox.TabIndex = 9;
-            this.nextPlanetPictureBox.TabStop = false;
             // 
             // MyForm
             // 
@@ -125,8 +141,8 @@
             this.SizeChanged += new System.EventHandler(this.MyForm_SizeChanged);
             this.PNL_MAIN.ResumeLayout(false);
             this.PNL_MAIN.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PCT_CANVAS)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -139,6 +155,7 @@
         private System.Windows.Forms.Label nextPlanetLabel;
         private System.Windows.Forms.Label scoreLabel;
         private System.Windows.Forms.PictureBox nextPlanetPictureBox;
+        private System.Windows.Forms.Label fpsLabel;
     }
 }
 

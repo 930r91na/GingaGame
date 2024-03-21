@@ -52,6 +52,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Canvas.cs"/>
+        <Compile Include="CollisionHandler.cs"/>
         <Compile Include="Container.cs"/>
         <Compile Include="MyForm.cs">
             <SubType>Form</SubType>
@@ -81,7 +82,10 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <EmbeddedResource Include="Resource1.resx"/>
+        <EmbeddedResource Include="Resource1.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resource11.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
         <None Include="app.config"/>
         <None Include="Properties\Settings.settings">
             <Generator>SettingsSingleFileGenerator</Generator>
@@ -108,10 +112,10 @@
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
+           Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+      -->
 </Project>

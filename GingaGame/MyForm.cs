@@ -6,17 +6,22 @@ namespace GingaGame;
 public partial class MyForm : Form
 {
     private readonly Canvas _canvas;
+    private readonly CollisionHandler _collisionHandler;
+    private readonly Timer _fpsTimer = new();
     private readonly Canvas _nextPlanetCanvas;
     private readonly PlanetFactory _planetFactory;
     private readonly Timer _planetSwitchTimer = new();
     private readonly Scene _scene;
     private Planet _currentPlanet;
+    private int _frameCounter;
     private Planet _nextPlanet;
-    private Score _score;
+    private readonly Score _score;
 
     public MyForm()
     {
         InitializeComponent();
+
+        // Canvas setup
         _canvas = new Canvas(PCT_CANVAS.Size);
         _canvas.InitializeContainer();
         PCT_CANVAS.Image = _canvas.Bitmap;
@@ -24,6 +29,7 @@ public partial class MyForm : Form
         _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
 
+        // Scene and game setup
         _scene = new Scene();
         _score = new Score();
         _currentPlanet =
@@ -38,8 +44,21 @@ public partial class MyForm : Form
         _planetSwitchTimer.Interval = 1000; // 1 second interval
         _planetSwitchTimer.Tick += PlanetSwitchTimer_Tick;
 
+        // FPS timer setup
+        _fpsTimer.Interval = 1000; // 1 second interval
+        _fpsTimer.Tick += FpsTimer_Tick;
+        _fpsTimer.Start();
+
+        // Game timer setup
+        TIMER.Interval = 1000 / 144; // 144 FPS
+        TIMER.Tick += TIMER_Tick;
+        TIMER.Start();
+
         // Initial next planet setup
         GenerateNextPlanet();
+
+        // Initialize the collision handler
+        _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
     }
 
     private void GenerateNextPlanet()
@@ -49,6 +68,8 @@ public partial class MyForm : Form
 
     private void TIMER_Tick(object sender, EventArgs e)
     {
+        _frameCounter++;
+
         _canvas.FastClear();
         _canvas.Container?.Render(_canvas.Graphics); // Container rendering
 
@@ -56,16 +77,30 @@ public partial class MyForm : Form
         foreach (var planet in _scene.Planets)
         {
             planet.Update(); // Apply forces, Verlet integration
-            planet.Constraints();
+            planet.Constraints(); // Wall and container constraints
         }
 
-        // Collision Detection and Handling
+        // Call collision detection after updates and before rendering
+        _collisionHandler.CheckCollisions();
+        
+        // Check if the score has changed
+        if (_score.HasChanged)
+        {
+            scoreLabel.Text = $@"SCORE: {_score.CurrentScore}";
+            _score.HasChanged = false;
+        }
 
         _scene.Render(_canvas.Graphics); // Now render everything
 
         RenderNextPlanet();
 
         PCT_CANVAS.Invalidate();
+    }
+
+    private void FpsTimer_Tick(object sender, EventArgs e)
+    {
+        fpsLabel.Text = $@"FPS: {_frameCounter}";
+        _frameCounter = 0;
     }
 
     private void RenderNextPlanet()
@@ -88,9 +123,11 @@ public partial class MyForm : Form
 
     private void PlanetSwitchTimer_Tick(object sender, EventArgs e)
     {
+        // Switch the current planet with the next planet
         _currentPlanet = _nextPlanet;
         _currentPlanet.IsPinned = true;
 
+        // Generate a new next planet
         GenerateNextPlanet();
 
         _planetSwitchTimer.Stop();
@@ -112,11 +149,8 @@ public partial class MyForm : Form
     private void PCT_CANVAS_Click(object sender, EventArgs e)
     {
         if (!_currentPlanet.IsPinned) return;
-        
-        var mouseArgs = (MouseEventArgs)e;
-        
-        _currentPlanet.Position.X = mouseArgs.X;
-        _currentPlanet.OldPosition.X = mouseArgs.X;
+
+        UpdateCurrentPlanetPosition((MouseEventArgs)e);
 
         _currentPlanet.IsPinned = false;
 

@@ -20,7 +20,7 @@ public class PlanetFactory
 
         return new Planet(nextIndex, middleX, 0, canvas)
         {
-            IsPinned = false
+            IsPinned = true
         };
     }
 

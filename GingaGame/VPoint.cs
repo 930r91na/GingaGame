@@ -2,15 +2,15 @@
 
 public class VPoint
 {
-    private const float Friction = 0.90f;
+    private const float Friction = 0.85f;
     private readonly Canvas _canvas;
     private readonly Vector2 _gravity = new(0, 1);
 
     private readonly float _radius;
-    private Vector2 _velocity;
     public bool IsPinned;
     public Vector2 OldPosition;
     public Vector2 Position;
+    public Vector2 Velocity;
 
     protected VPoint(float x, float y, Canvas canvas, float radius)
     {
@@ -21,20 +21,20 @@ public class VPoint
         Position = OldPosition = new Vector2(x, y);
     }
 
-    private float Mass { get; }
+    public float Mass { get; }
 
     public void Update()
     {
         if (IsPinned) return;
 
-        _velocity = Position - OldPosition;
-        _velocity *= Friction;
+        Velocity = Position - OldPosition;
+        Velocity *= Friction;
 
         // Save current position
         OldPosition = Position;
 
         // Perform Verlet integration
-        Position += _velocity + _gravity * Mass;
+        Position += Velocity + _gravity; // * Mass;
     }
 
     public void Constraints()
