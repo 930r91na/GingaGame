@@ -4,7 +4,7 @@ public class VPoint
 {
     private const float Friction = 0.85f;
     private readonly Canvas _canvas;
-    private readonly Vector2 _gravity = new(0, 1);
+    private readonly Vector2 _gravity = new(0, 0.6f);
 
     private readonly float _radius;
     public bool IsPinned;
