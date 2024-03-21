@@ -8,14 +8,14 @@ public sealed class Planet(
     int planetType,
     float x,
     float y,
-    Canvas canvas
-)
+    Canvas canvas,
+    bool hasCollided = false)
     : VPoint(x, y, canvas, PlanetSizes.Sizes[planetType])
 {
     public int PlanetType { get; } = planetType;
     public float Radius { get; } = PlanetSizes.Sizes[planetType];
     public int Points { get; private set; } = PlanetPoints.PointsPerPlanet[planetType];
-
+    public bool HasCollided { get; set; } = hasCollided;
     public void Render(Graphics g)
     {
         // Apply constraints
@@ -73,17 +73,17 @@ public static class PlanetSizes
 {
     public static Dictionary<int, float> Sizes { get; } = new()
     {
-        { 0, 10f },
-        { 1, 15f },
-        { 2, 20f },
-        { 3, 25f },
-        { 4, 30f },
-        { 5, 35f },
-        { 6, 40f },
-        { 7, 45f },
-        { 8, 50f },
-        { 9, 55f },
-        { 10, 60f }
+        { 0, 25f },
+        { 1, 30f },
+        { 2, 35f },
+        { 3, 40f },
+        { 4, 45f },
+        { 5, 50f },
+        { 6, 55f },
+        { 7, 60f },
+        { 8, 65f },
+        { 9, 70f },
+        { 10, 75f }
     };
 }
 
