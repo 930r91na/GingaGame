@@ -12,7 +12,7 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
     {
         // Clear the list of potential collision pairs from the previous frame
         _potentialCollisionPairs.Clear();
-        
+
         // Step 1: Broad Phase
         BroadPhaseCheck();
 
@@ -88,20 +88,20 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
             // The position will be the middle point between the two planets
             var middlePoint = (planet1.Position + planet2.Position) / 2;
             var newPlanet = new Planet(planet1.PlanetType + 1, middlePoint.X, middlePoint.Y, canvas);
-            
+
             // Add the new planet to the scene
             scene.AddElement(newPlanet);
-            
+
             // Update scores
             score.IncreaseScore(PlanetPoints.PointsPerPlanet[newPlanet.PlanetType]);
             score.HasChanged = true;
-            
+
             // Handle collisions again, as the new planet might collide with others
             CheckCollisions();
         }
         else
         {
-            const int iterations = 8; 
+            const int iterations = 8;
 
             for (var i = 0; i < iterations; i++)
             {
@@ -116,23 +116,20 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
                 var velocityAlongNormal = relativeVelocity.Dot(normal);
 
                 var totalMass = planet1.Mass + planet2.Mass;
-                var massRatio1 = planet2.Mass / totalMass; 
+                var massRatio1 = planet2.Mass / totalMass;
                 var massRatio2 = planet1.Mass / totalMass;
 
                 planet1.Position += positionAdjustment * massRatio1;
-                planet2.Position -= positionAdjustment * massRatio2; 
-                
-                if (Math.Abs(velocityAlongNormal) < velocityThreshold)
-                {
-                    continue;
-                }
-                
+                planet2.Position -= positionAdjustment * massRatio2;
+
+                if (Math.Abs(velocityAlongNormal) < velocityThreshold) continue;
+
                 // Simulating bounce and merging logic if velocity is high enough
                 const float bounceFactor = 0.1f;
                 var separationVelocity = normal * bounceFactor;
                 planet1.Position += separationVelocity;
                 planet2.Position -= separationVelocity;
-                
+
                 // Update has collided
                 planet1.HasCollided = true;
                 planet2.HasCollided = true;
