@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace GingaGame;
 
 public partial class MyForm : Form
 {
     private readonly Canvas _canvas;
+    private readonly Mutex _canvasMutex = new();
     private readonly CollisionHandler _collisionHandler;
-    private readonly Canvas _evolutionCanvas;
     private readonly Timer _fpsTimer = new();
     private readonly GameStateHandler _gameStateHandler;
     private readonly Canvas _nextPlanetCanvas;
+    private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly PlanetFactory _planetFactory;
     private readonly Timer _planetSwitchTimer = new();
     private readonly Scene _scene;
@@ -30,9 +33,9 @@ public partial class MyForm : Form
 
         _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
-        
-        _evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
-        EvolutionCyclePictureBox.Image = _evolutionCanvas.Bitmap;
+
+        var evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
+        EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
 
         // Scene and game setup
         _scene = new Scene();
@@ -69,7 +72,8 @@ public partial class MyForm : Form
         _gameStateHandler = new GameStateHandler(_scene, _canvas, this);
 
         // Render the evolution cycle once
-        _evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, _evolutionCanvas.Width, _evolutionCanvas.Height);
+        evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
+            evolutionCanvas.Height);
     }
 
     private void GenerateNextPlanet()
@@ -81,34 +85,42 @@ public partial class MyForm : Form
     {
         _frameCounter++;
 
-        _canvas.FastClear();
-        _canvas.Container?.Render(_canvas.Graphics); // Container rendering
-
-        // Update and Constraints Logic in one loop
-        foreach (var planet in _scene.Planets)
+        _canvasMutex.WaitOne(); // Acquire the lock
+        try
         {
-            planet.Update(); // Apply forces, Verlet integration
-            planet.Constraints(); // Wall and container constraints
+            _canvas.FastClear();
+            _canvas.Container?.Render(_canvas.Graphics); // Container rendering
+
+            // Update and Constraints Logic in one loop
+            foreach (var planet in _scene.Planets)
+            {
+                planet.Update(); // Apply forces, Verlet integration
+                planet.Constraints(); // Wall and container constraints
+            }
+
+            // Call collision detection after updates and before rendering
+            _collisionHandler.CheckCollisions();
+
+            // Check game state
+            _gameStateHandler.CheckGameState();
+
+            // Check if the score has changed
+            if (_score.HasChanged)
+            {
+                scoreLabel.Text = $@"SCORE: {_score.CurrentScore}";
+                _score.HasChanged = false;
+            }
+
+            _scene.Render(_canvas.Graphics); // Now render everything
+
+            RenderNextPlanet();
+
+            PCT_CANVAS.Invalidate();
         }
-
-        // Call collision detection after updates and before rendering
-        _collisionHandler.CheckCollisions();
-
-        // Check game state
-        _gameStateHandler.CheckGameState();
-
-        // Check if the score has changed
-        if (_score.HasChanged)
+        finally
         {
-            scoreLabel.Text = $@"SCORE: {_score.CurrentScore}";
-            _score.HasChanged = false;
+            _canvasMutex.ReleaseMutex(); // Release the lock
         }
-
-        _scene.Render(_canvas.Graphics); // Now render everything
-
-        RenderNextPlanet();
-
-        PCT_CANVAS.Invalidate();
     }
 
     private void FpsTimer_Tick(object sender, EventArgs e)
@@ -119,20 +131,28 @@ public partial class MyForm : Form
 
     private void RenderNextPlanet()
     {
-        // Draw the next planet texture below the label
-        _nextPlanetCanvas.FastClear();
+        _nextPlanetCanvasMutex.WaitOne(); // Acquire the lock
+        try
+        {
+            // Draw the next planet texture below the label
+            _nextPlanetCanvas.FastClear();
 
-        var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
+            var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
 
-        // Draw the next planet texture in the center of the canvas with the correct size
-        var imageWidth = _nextPlanet.Radius * 2;
-        var imageHeight = _nextPlanet.Radius * 2;
-        var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
-        var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
+            // Draw the next planet texture in the center of the canvas with the correct size
+            var imageWidth = _nextPlanet.Radius * 2;
+            var imageHeight = _nextPlanet.Radius * 2;
+            var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
+            var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
 
-        _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
+            _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
 
-        nextPlanetPictureBox.Invalidate();
+            nextPlanetPictureBox.Invalidate();
+        }
+        finally
+        {
+            _nextPlanetCanvasMutex.ReleaseMutex(); // Release the lock
+        }
     }
 
     private void PlanetSwitchTimer_Tick(object sender, EventArgs e)

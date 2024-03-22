@@ -131,7 +131,7 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Resources\Background.png" />
+        <Content Include="Resources\Background.png"/>
         <Content Include="Resources\Earth.png"/>
         <Content Include="Resources\EvolutionCycle.png"/>
         <Content Include="Resources\Jupiter.png"/>
