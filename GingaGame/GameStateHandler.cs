@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace GingaGame;
 
-public class GameStateHandler (Scene scene, Canvas canvas, Score score)
+public class GameStateHandler (Scene scene, Canvas canvas, PlanetFactory planetFactory, Score score, MyForm myForm)
 {
     private readonly List<Planet> _planets = scene.Planets;
     private const float EndLineHeight = 70;
@@ -34,31 +34,20 @@ public class GameStateHandler (Scene scene, Canvas canvas, Score score)
     private void IsNearEndLine()
     {
         _renderEndLine = false;
-        foreach (var planet in _planets)
+        foreach (var unused in _planets.Where(planet => planet.Position.Y < EndLineHeight + EndLineThreshold + planet.Radius && planet.HasCollided && !planet.IsPinned))
         {
-            if ((planet.Position.Y < EndLineHeight + EndLineThreshold + planet.Radius) && planet.HasCollided)
-            {
-                if (planet.IsPinned) continue;
-                _renderEndLine = true;
-                break;
-            }
+            _renderEndLine = true;
+            break;
         }
     }
-    
+
     private void CheckLoseCondition()
     {
-        foreach (var planet in _planets)
-        {
-            if (planet.Position.Y < EndLineHeight + planet.Radius - Tolerance && planet.HasCollided)
-            {
-                _gameOverTriggered = true;
-                // Trigger Game Over condition
-
-                MessageBox.Show(_gameWonTriggered ? @"Keep trying!" : @"You died! Try again!");
-                ResetGame();
-                break; 
-            }
-        }
+        if (!_planets.Any(planet =>
+                planet.Position.Y < EndLineHeight + planet.Radius - Tolerance && planet.HasCollided)) return;
+        _gameOverTriggered = true;
+        MessageBox.Show(_gameWonTriggered ? @"Keep trying!" : @"You died! Try again!");
+        ResetGame();
     }
 
     private void CheckWinCondition()
@@ -71,13 +60,15 @@ public class GameStateHandler (Scene scene, Canvas canvas, Score score)
     private void ResetGame()
     {
         score.ResetScore();
-        List<Planet> planetsToRemove = [.._planets];
-        foreach (var planet in planetsToRemove)
+        for (var i = _planets.Count - 1; i >= 0; i--)
         {
-            if (planet.IsPinned) continue;
-            scene.RemoveElement(planet);
+            if (_planets[i].IsPinned) continue;
+            scene.RemoveElement(_planets[i]);
         }
-        _planets.Clear();
-        _gameOverTriggered = false;
+        // Reset the unlocked planets in the PlanetFactory
+        planetFactory.ResetUnlockedPlanets();
+        
+        // Call the ResetGame method in MyForm
+        //myForm.ResetGame();
     }
 }

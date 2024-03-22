@@ -134,19 +134,11 @@ public class Canvas
         var topLeft = new PointF(horizontalMargin, verticalTopMargin);
         var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
         
-        bool blinkOn = (DateTime.Now.Millisecond % 100) == 0;
+        var blinkOn = DateTime.Now.Second % 2 == 0;
 
-        Pen currentPen = blinkOn ? Pens.Red : Pens.White; // Alternate between white and red
+        var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
         
         // Draw the end line
-        if (rendered)
-        {
-            Graphics?.DrawLine(currentPen, topLeft, topRight);
-        }
-        else
-        {
-            Graphics?.DrawLine(Pens.Black, topLeft, topRight);
-        }
-
+        Graphics?.DrawLine(rendered ? currentPen : Pens.Transparent, topLeft, topRight);
     }
 }

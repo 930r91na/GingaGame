@@ -29,4 +29,12 @@ public class PlanetFactory
     {
         if (!_unlockedPlanets.Contains(planetIndex)) _unlockedPlanets.Add(planetIndex);
     }
+
+    public void ResetUnlockedPlanets()
+    {
+        _unlockedPlanets.Clear();
+        
+        // Start with Pluto
+        _unlockedPlanets.Add(0);
+    }
 }

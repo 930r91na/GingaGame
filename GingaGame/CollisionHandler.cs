@@ -101,7 +101,7 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
         }
         else
         {
-            const int iterations = 4; 
+            const int iterations = 8; 
 
             for (var i = 0; i < iterations; i++)
             {

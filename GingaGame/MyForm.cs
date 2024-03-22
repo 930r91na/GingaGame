@@ -62,8 +62,7 @@ public partial class MyForm : Form
         _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
         
         // Initialize the game state handler
-        _gameStateHandler = new GameStateHandler(_scene, _canvas, _score);
-        
+        _gameStateHandler = new GameStateHandler(_scene, _canvas, _planetFactory, _score, this);
     }
 
     private void GenerateNextPlanet()
@@ -145,13 +144,26 @@ public partial class MyForm : Form
         // Re-enable input after the switch logic is complete
         PCT_CANVAS.Enabled = true;
     }
-
+    
     private void MyForm_SizeChanged(object sender, EventArgs e)
     {
     }
 
     private void MyForm_Load(object sender, EventArgs e)
     {
+    }
+    
+    public void ResetGame()
+    {
+        // Generate a new next planet
+        GenerateNextPlanet();
+
+        // Set the current planet to the new next planet
+        _currentPlanet = _nextPlanet;
+        _currentPlanet.IsPinned = true;
+
+        // Add the new current planet to the scene
+        _scene.AddElement(_currentPlanet);
     }
 
     private void PCT_CANVAS_Click(object sender, EventArgs e)
