@@ -16,11 +16,12 @@ public sealed class Planet(
     public float Radius { get; } = PlanetSizes.Sizes[planetType];
     public int Points { get; private set; } = PlanetPoints.PointsPerPlanet[planetType];
     public bool HasCollided { get; set; } = hasCollided;
+
     public void Render(Graphics g)
     {
         // Apply constraints
         Constraints();
-        
+
         var imageWidth = Radius * 2;
         var imageHeight = Radius * 2;
         var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version

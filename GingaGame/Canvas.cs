@@ -133,11 +133,11 @@ public class Canvas
 
         var topLeft = new PointF(horizontalMargin, verticalTopMargin);
         var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
-        
+
         var blinkOn = DateTime.Now.Second % 2 == 0;
 
         var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
-        
+
         // Draw the end line
         Graphics?.DrawLine(rendered ? currentPen : Pens.Transparent, topLeft, topRight);
     }

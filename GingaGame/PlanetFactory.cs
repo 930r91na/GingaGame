@@ -33,7 +33,7 @@ public class PlanetFactory
     public void ResetUnlockedPlanets()
     {
         _unlockedPlanets.Clear();
-        
+
         // Start with Pluto
         _unlockedPlanets.Add(0);
     }

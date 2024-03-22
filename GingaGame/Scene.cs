@@ -11,14 +11,19 @@ public class Scene
     {
         Planets.Add(planet);
     }
-    
+
     public void RemoveElement(Planet planet)
     {
         Planets.Remove(planet);
     }
-    
+
     public void Render(Graphics g)
     {
         foreach (var planet in Planets) planet.Render(g);
+    }
+
+    public void Clear()
+    {
+        Planets.Clear();
     }
 }
