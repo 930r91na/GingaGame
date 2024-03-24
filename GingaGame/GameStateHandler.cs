@@ -8,7 +8,7 @@ public class GameStateHandler(Scene scene, Canvas canvas, MyForm myForm)
 {
     private const float EndLineHeight = 70;
     private const int EndLineThreshold = 70;
-    private const int Tolerance = 3;
+    private const int Tolerance = 10;
     private readonly List<Planet> _planets = scene.Planets;
     private bool _gameOverTriggered;
     private bool _gameWonTriggered;

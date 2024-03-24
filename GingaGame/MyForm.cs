@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -88,7 +89,7 @@ public partial class MyForm : Form
         _canvasMutex.WaitOne(); // Acquire the lock
         try
         {
-            _canvas.FastClear();
+            _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
             _canvas.Container?.Render(_canvas.Graphics); // Container rendering
 
             // Update and Constraints Logic in one loop
@@ -135,7 +136,7 @@ public partial class MyForm : Form
         try
         {
             // Draw the next planet texture below the label
-            _nextPlanetCanvas.FastClear();
+            _nextPlanetCanvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
 
             var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
 
