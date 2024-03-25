@@ -87,13 +87,23 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
             // Create a new planet with the next type
             // The position will be the middle point between the two planets
             var middlePoint = (planet1.Position + planet2.Position) / 2;
+
+            // Check if two planets are the largest type (10)
+            if (planet1.PlanetType + 1 >= 11)
+            {
+                // Update scores
+                score.IncreaseScore(100);
+                score.HasChanged = true;
+                return;
+            }
+
             var newPlanet = new Planet(planet1.PlanetType + 1, middlePoint.X, middlePoint.Y, canvas);
 
             // Add the new planet to the scene
             scene.AddElement(newPlanet);
 
             // Update scores
-            score.IncreaseScore(PlanetPoints.PointsPerPlanet[newPlanet.PlanetType]);
+            score.IncreaseScore(newPlanet.Points);
             score.HasChanged = true;
 
             // Handle collisions again, as the new planet might collide with others

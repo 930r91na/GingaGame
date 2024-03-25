@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -19,6 +20,7 @@ public partial class MyForm : Form
     private readonly Timer _planetSwitchTimer = new();
     private readonly Scene _scene;
     private readonly Score _score;
+    private readonly Scoreboard _scoreboard = new();
     private Planet _currentPlanet;
     private int _frameCounter;
     private Planet _nextPlanet;
@@ -37,6 +39,9 @@ public partial class MyForm : Form
 
         var evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
         EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
+
+        // Scoreboard setup
+        UpdateScoreboardLabel();
 
         // Scene and game setup
         _scene = new Scene();
@@ -70,64 +75,38 @@ public partial class MyForm : Form
         _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
 
         // Initialize the game state handler
-        _gameStateHandler = new GameStateHandler(_scene, _canvas, this);
+        _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
 
         // Render the evolution cycle once
         evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
             evolutionCanvas.Height);
     }
 
+    public void ResetGame()
+    {
+        // Reset the form and initialize the game again
+        _scene.Clear();
+        _score.ResetScore();
+        UpdateScoreboardLabel();
+        _planetFactory.ResetUnlockedPlanets();
+        _currentPlanet = new Planet(0, 0, 0, _canvas)
+        {
+            IsPinned = true
+        };
+        _scene.AddElement(_currentPlanet);
+        GenerateNextPlanet();
+    }
+
+    private void UpdateScoreboardLabel()
+    {
+        var topScores = _scoreboard.GetTopScores();
+        var scoreText = string.Join("\n", topScores.Select(entry => $"{entry.PlayerName}: {entry.Score}"));
+        topScoresLabel.Text = scoreText;
+    }
+
     private void GenerateNextPlanet()
     {
         _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas);
-    }
-
-    private void TIMER_Tick(object sender, EventArgs e)
-    {
-        _frameCounter++;
-
-        _canvasMutex.WaitOne(); // Acquire the lock
-        try
-        {
-            _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
-            _canvas.Container?.Render(_canvas.Graphics); // Container rendering
-
-            // Update and Constraints Logic in one loop
-            foreach (var planet in _scene.Planets)
-            {
-                planet.Update(); // Apply forces, Verlet integration
-                planet.Constraints(); // Wall and container constraints
-            }
-
-            // Call collision detection after updates and before rendering
-            _collisionHandler.CheckCollisions();
-
-            // Check game state
-            _gameStateHandler.CheckGameState();
-
-            // Check if the score has changed
-            if (_score.HasChanged)
-            {
-                scoreLabel.Text = $@"SCORE: {_score.CurrentScore}";
-                _score.HasChanged = false;
-            }
-
-            _scene.Render(_canvas.Graphics); // Now render everything
-
-            RenderNextPlanet();
-
-            PCT_CANVAS.Invalidate();
-        }
-        finally
-        {
-            _canvasMutex.ReleaseMutex(); // Release the lock
-        }
-    }
-
-    private void FpsTimer_Tick(object sender, EventArgs e)
-    {
-        fpsLabel.Text = $@"FPS: {_frameCounter}";
-        _frameCounter = 0;
     }
 
     private void RenderNextPlanet()
@@ -156,6 +135,54 @@ public partial class MyForm : Form
         }
     }
 
+    private void TIMER_Tick(object sender, EventArgs e)
+    {
+        _frameCounter++;
+
+        _canvasMutex.WaitOne(); // Acquire the lock
+        try
+        {
+            _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
+            _canvas.Container?.Render(_canvas.Graphics); // Container rendering
+
+            // Update and Constraints Logic in one loop
+            foreach (var planet in _scene.Planets)
+            {
+                planet.Update(); // Apply forces, Verlet integration
+                planet.Constraints(); // Wall and container constraints
+            }
+
+            // Call collision detection after updates and before rendering
+            _collisionHandler.CheckCollisions();
+
+            // Check game state
+            _gameStateHandler.CheckGameState();
+
+            // Check if the score has changed
+            if (_score.HasChanged)
+            {
+                scoreLabel.Text = $@"Score: {_score.CurrentScore}";
+                _score.HasChanged = false;
+            }
+
+            _scene.Render(_canvas.Graphics); // Now render everything
+
+            RenderNextPlanet();
+
+            PCT_CANVAS.Invalidate();
+        }
+        finally
+        {
+            _canvasMutex.ReleaseMutex(); // Release the lock
+        }
+    }
+
+    private void FpsTimer_Tick(object sender, EventArgs e)
+    {
+        fpsLabel.Text = $@"FPS: {_frameCounter}";
+        _frameCounter = 0;
+    }
+
     private void PlanetSwitchTimer_Tick(object sender, EventArgs e)
     {
         // Switch the current planet with the next planet
@@ -175,20 +202,6 @@ public partial class MyForm : Form
 
     private void MyForm_Load(object sender, EventArgs e)
     {
-    }
-
-    public void ResetGame()
-    {
-        // Reset the form and initialize the game again
-        _scene.Clear();
-        _score.ResetScore();
-        _planetFactory.ResetUnlockedPlanets();
-        _currentPlanet = new Planet(0, 0, 0, _canvas)
-        {
-            IsPinned = true
-        };
-        _scene.AddElement(_currentPlanet);
-        GenerateNextPlanet();
     }
 
     private void PCT_CANVAS_Click(object sender, EventArgs e)

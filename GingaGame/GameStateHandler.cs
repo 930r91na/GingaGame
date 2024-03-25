@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace GingaGame;
 
-public class GameStateHandler(Scene scene, Canvas canvas, MyForm myForm)
+public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboard scoreboard, MyForm myForm)
 {
     private const float EndLineHeight = 70;
     private const int EndLineThreshold = 70;
-    private const int Tolerance = 10;
+    private const int Tolerance = 5;
     private readonly List<Planet> _planets = scene.Planets;
     private bool _gameOverTriggered;
     private bool _gameWonTriggered;
@@ -43,6 +43,19 @@ public class GameStateHandler(Scene scene, Canvas canvas, MyForm myForm)
                 planet.Position.Y < EndLineHeight + planet.Radius - Tolerance && planet.HasCollided)) return;
         _gameOverTriggered = true;
         MessageBox.Show(@"Game Over! You lost!", @"Game Over", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        // Check if the player won the game before losing
+        if (_gameWonTriggered)
+        {
+            var result = ShowInputDialog("Congratulations! You won! Enter your name:", "Game won");
+            if (result.DialogResult != DialogResult.OK) return;
+            if (result.Controls.Count > 0 && result.Controls[0] is TextBox textBox)
+            {
+                var playerName = textBox.Text;
+                scoreboard.AddScore(playerName, score.CurrentScore);
+            }
+        }
+
         ResetGame();
     }
 
@@ -57,5 +70,29 @@ public class GameStateHandler(Scene scene, Canvas canvas, MyForm myForm)
     {
         myForm.ResetGame();
         _gameOverTriggered = false;
+    }
+
+    private static Form ShowInputDialog(string text, string caption)
+    {
+        var prompt = new Form
+        {
+            Width = 500,
+            Height = 150,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            Text = caption,
+            StartPosition = FormStartPosition.CenterScreen
+        };
+        var textLabel = new Label { Left = 50, Top = 20, Text = text };
+        var textBox = new TextBox { Left = 50, Top = 50, Width = 400 };
+        var confirmation = new Button
+            { Text = @"Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+        confirmation.Click += (_, _) => { prompt.Close(); };
+        prompt.Controls.Add(textBox);
+        prompt.Controls.Add(confirmation);
+        prompt.Controls.Add(textLabel);
+        prompt.AcceptButton = confirmation;
+
+        prompt.ShowDialog();
+        return prompt;
     }
 }

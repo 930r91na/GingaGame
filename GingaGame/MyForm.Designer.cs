@@ -38,6 +38,8 @@
             this.nextPlanetLabel = new System.Windows.Forms.Label();
             this.PCT_CANVAS = new System.Windows.Forms.PictureBox();
             this.TIMER = new System.Windows.Forms.Timer(this.components);
+            this.topScoresLabel = new System.Windows.Forms.Label();
+            this.scoreboardLabel = new System.Windows.Forms.Label();
             this.PNL_MAIN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EvolutionCyclePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).BeginInit();
@@ -47,6 +49,10 @@
             // PNL_MAIN
             // 
             this.PNL_MAIN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.PNL_MAIN.BackgroundImage = global::GingaGame.Resource1.Background2;
+            this.PNL_MAIN.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.PNL_MAIN.Controls.Add(this.scoreboardLabel);
+            this.PNL_MAIN.Controls.Add(this.topScoresLabel);
             this.PNL_MAIN.Controls.Add(this.EvolutionCyclePictureBox);
             this.PNL_MAIN.Controls.Add(this.evolutionCycleLabel);
             this.PNL_MAIN.Controls.Add(this.fpsLabel);
@@ -65,8 +71,8 @@
             // 
             // EvolutionCyclePictureBox
             // 
-            this.EvolutionCyclePictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.EvolutionCyclePictureBox.Location = new System.Drawing.Point(21, 469);
+            this.EvolutionCyclePictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.EvolutionCyclePictureBox.Location = new System.Drawing.Point(21, 547);
             this.EvolutionCyclePictureBox.Name = "EvolutionCyclePictureBox";
             this.EvolutionCyclePictureBox.Size = new System.Drawing.Size(240, 240);
             this.EvolutionCyclePictureBox.TabIndex = 12;
@@ -75,10 +81,11 @@
             // evolutionCycleLabel
             // 
             this.evolutionCycleLabel.AutoSize = true;
+            this.evolutionCycleLabel.BackColor = System.Drawing.Color.Transparent;
             this.evolutionCycleLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.evolutionCycleLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.evolutionCycleLabel.ForeColor = System.Drawing.Color.Gainsboro;
-            this.evolutionCycleLabel.Location = new System.Drawing.Point(12, 426);
+            this.evolutionCycleLabel.Location = new System.Drawing.Point(12, 504);
             this.evolutionCycleLabel.Name = "evolutionCycleLabel";
             this.evolutionCycleLabel.Size = new System.Drawing.Size(183, 27);
             this.evolutionCycleLabel.TabIndex = 11;
@@ -89,6 +96,7 @@
             // 
             this.fpsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.fpsLabel.AutoSize = true;
+            this.fpsLabel.BackColor = System.Drawing.Color.Transparent;
             this.fpsLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.fpsLabel.Font = new System.Drawing.Font("Gadugi", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fpsLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
@@ -101,7 +109,7 @@
             // 
             // nextPlanetPictureBox
             // 
-            this.nextPlanetPictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.nextPlanetPictureBox.BackColor = System.Drawing.Color.Transparent;
             this.nextPlanetPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.nextPlanetPictureBox.Location = new System.Drawing.Point(80, 60);
             this.nextPlanetPictureBox.Name = "nextPlanetPictureBox";
@@ -112,10 +120,11 @@
             // scoreLabel
             // 
             this.scoreLabel.AutoSize = true;
+            this.scoreLabel.BackColor = System.Drawing.Color.Transparent;
             this.scoreLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.scoreLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.scoreLabel.Location = new System.Drawing.Point(12, 280);
+            this.scoreLabel.Location = new System.Drawing.Point(12, 221);
             this.scoreLabel.Name = "scoreLabel";
             this.scoreLabel.Size = new System.Drawing.Size(96, 27);
             this.scoreLabel.TabIndex = 8;
@@ -125,6 +134,7 @@
             // nextPlanetLabel
             // 
             this.nextPlanetLabel.AutoSize = true;
+            this.nextPlanetLabel.BackColor = System.Drawing.Color.Transparent;
             this.nextPlanetLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.nextPlanetLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextPlanetLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
@@ -140,9 +150,8 @@
             this.PCT_CANVAS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.PCT_CANVAS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.PCT_CANVAS.BackgroundImage = global::GingaGame.Resource1.Background;
-            this.PCT_CANVAS.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.PCT_CANVAS.BackColor = System.Drawing.Color.Transparent;
+            this.PCT_CANVAS.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.PCT_CANVAS.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PCT_CANVAS.Location = new System.Drawing.Point(280, 13);
             this.PCT_CANVAS.Margin = new System.Windows.Forms.Padding(4);
@@ -157,6 +166,33 @@
             // 
             this.TIMER.Enabled = true;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
+            // 
+            // topScoresLabel
+            // 
+            this.topScoresLabel.AutoSize = true;
+            this.topScoresLabel.BackColor = System.Drawing.Color.Transparent;
+            this.topScoresLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.topScoresLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.topScoresLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.topScoresLabel.Location = new System.Drawing.Point(12, 315);
+            this.topScoresLabel.Name = "topScoresLabel";
+            this.topScoresLabel.Size = new System.Drawing.Size(0, 27);
+            this.topScoresLabel.TabIndex = 13;
+            this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // scoreboardLabel
+            // 
+            this.scoreboardLabel.AutoSize = true;
+            this.scoreboardLabel.BackColor = System.Drawing.Color.Transparent;
+            this.scoreboardLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scoreboardLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreboardLabel.ForeColor = System.Drawing.Color.Gainsboro;
+            this.scoreboardLabel.Location = new System.Drawing.Point(12, 273);
+            this.scoreboardLabel.Name = "scoreboardLabel";
+            this.scoreboardLabel.Size = new System.Drawing.Size(134, 27);
+            this.scoreboardLabel.TabIndex = 14;
+            this.scoreboardLabel.Text = "Top Scores:";
+            this.scoreboardLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MyForm
             // 
@@ -188,6 +224,8 @@
         private System.Windows.Forms.Label fpsLabel;
         private System.Windows.Forms.PictureBox EvolutionCyclePictureBox;
         private System.Windows.Forms.Label evolutionCycleLabel;
+        private System.Windows.Forms.Label scoreboardLabel;
+        private System.Windows.Forms.Label topScoresLabel;
     }
 }
 

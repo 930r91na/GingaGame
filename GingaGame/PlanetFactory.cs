@@ -6,7 +6,7 @@ namespace GingaGame;
 public class PlanetFactory
 {
     private readonly Random _randomGenerator = new();
-    private readonly List<int> _unlockedPlanets = [0]; // Start with Pluto
+    private readonly List<int> _unlockedPlanets = [0]; // Start with Pluto's index
 
     public Planet GenerateNextPlanet(Canvas canvas)
     {
