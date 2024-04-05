@@ -178,7 +178,7 @@
             this.topScoresLabel.Name = "topScoresLabel";
             this.topScoresLabel.Size = new System.Drawing.Size(0, 27);
             this.topScoresLabel.TabIndex = 13;
-            this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // scoreboardLabel
             // 

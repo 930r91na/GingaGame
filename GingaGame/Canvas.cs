@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace GingaGame;
 
@@ -62,55 +61,6 @@ public class Canvas
 
         // Create a Graphics object from the bitmap
         Graphics = Graphics.FromImage(Bitmap);
-    }
-
-    public void FastClear()
-    {
-        // Use unsafe code to allow pointer manipulation
-        unsafe
-        {
-            // Lock the bitmaps bits in system memory so that they can be changed
-            var bitmapData = Bitmap!.LockBits(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), ImageLockMode.ReadWrite,
-                Bitmap.PixelFormat);
-
-            // Calculate the number of bytes per pixel
-            var bytesPerPixel = Image.GetPixelFormatSize(Bitmap.PixelFormat) / 8;
-
-            // Get the height of the bitmap in pixels
-            var heightInPixels = bitmapData.Height;
-
-            // Get the width of the bitmap in bytes
-            var widthInBytes = bitmapData.Width * bytesPerPixel;
-
-            // Get a pointer to the first pixel in the bitmap
-            var ptrFirstPixel = (byte*)bitmapData.Scan0;
-
-            // Use parallel processing to clear each row of pixels
-            Parallel.For(0, heightInPixels, y =>
-            {
-                // Get a pointer to the first pixel in the current row
-                var currentLine = ptrFirstPixel + y * bitmapData.Stride;
-
-                // Clear each pixel in the current row
-                for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
-                {
-                    // Set the blue component to 0
-                    currentLine[x] = 0;
-
-                    // Set the green component to 0
-                    currentLine[x + 1] = 0;
-
-                    // Set the red component to 0
-                    currentLine[x + 2] = 0;
-
-                    // Set the alpha component to 0
-                    currentLine[x + 3] = 0;
-                }
-            });
-
-            // Unlock the bitmaps bits from system memory
-            Bitmap.UnlockBits(bitmapData);
-        }
     }
 
     public void InitializeContainer()

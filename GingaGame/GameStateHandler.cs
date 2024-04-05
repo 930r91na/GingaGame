@@ -70,6 +70,7 @@ public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboar
     {
         myForm.ResetGame();
         _gameOverTriggered = false;
+        _gameWonTriggered = false;
     }
 
     private static Form ShowInputDialog(string text, string caption)
