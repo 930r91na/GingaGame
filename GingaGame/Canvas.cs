@@ -3,26 +3,30 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace GingaGame;
 
 public class Canvas
 {
-    private byte[] _bits = null!;
+    Scene scene;
+    PictureBox pct;
+    private byte[] _bits = null!; 
     private int _stride, _pixelFormatSize;
     public Bitmap? Bitmap;
     public Container? Container;
     public int Height;
     public float Width;
 
-    public Canvas(Size size)
+    public Canvas(Scene scene, PictureBox pct)
     {
-        Init(size.Width, size.Height);
+        this.scene = scene;
+        Init(pct, pct.Width, pct.Height);
     }
 
-    public Graphics? Graphics { get; private set; }
+    public Graphics? g { get; private set; }
 
-    private void Init(int initWidth, int initHeight)
+    private void Init(PictureBox pct, int initWidth, int initHeight)
     {
         // Define the pixel format for the bitmap
         const PixelFormat format = PixelFormat.Format32bppArgb;
@@ -60,7 +64,14 @@ public class Canvas
         Bitmap = new Bitmap(initWidth, initHeight, _stride, format, bitsPtr);
 
         // Create a Graphics object from the bitmap
-        Graphics = Graphics.FromImage(Bitmap);
+        g = Graphics.FromImage(Bitmap);
+
+
+        // TODO: Check this
+        g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+        this.pct = pct;
+        this.pct.Image = Bitmap;
     }
 
     public void InitializeContainer()
@@ -89,6 +100,6 @@ public class Canvas
         var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
 
         // Draw the end line
-        Graphics?.DrawLine(rendered ? currentPen : Pens.Transparent, topLeft, topRight);
+        g?.DrawLine(rendered ? currentPen : Pens.Transparent, topLeft, topRight);
     }
 }

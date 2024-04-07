@@ -24,27 +24,37 @@ public partial class MyForm : Form
     private Planet _currentPlanet;
     private int _frameCounter;
     private Planet _nextPlanet;
-
+    private Camera _camera;
+    private Map _map;
+    private Layer _background;
     public MyForm()
     {
         InitializeComponent();
 
+        // Camaera, Map, Layer, Scene setup
+        Map.K = 5;
+        Map.Unit = 32;
+        int div = 4;
+        _map = new Map();
+        _camera = new Camera();
+        _background = new Layer(_map.BMP, new Size(PCT_CANVAS.Width / div, PCT_CANVAS.Height / div), new Size(PCT_CANVAS.Width, PCT_CANVAS.Height));
+        _scene = new Scene(_camera, _background, _map);
+
         // Canvas setup
-        _canvas = new Canvas(PCT_CANVAS.Size);
+        _canvas = new Canvas(_scene, PCT_CANVAS);
         _canvas.InitializeContainer();
         PCT_CANVAS.Image = _canvas.Bitmap;
 
-        _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
+        _nextPlanetCanvas = new Canvas(null,nextPlanetPictureBox);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
 
-        var evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
+        var evolutionCanvas = new Canvas(null, EvolutionCyclePictureBox);
         EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
 
         // Scoreboard setup
         UpdateScoreboardLabel();
 
         // Scene and game setup
-        _scene = new Scene();
         _score = new Score();
         _currentPlanet =
             new Planet(0, 0, 0, _canvas)
@@ -78,7 +88,7 @@ public partial class MyForm : Form
         _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
 
         // Render the evolution cycle once
-        evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
+        evolutionCanvas.g?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
             evolutionCanvas.Height);
     }
 
@@ -115,7 +125,7 @@ public partial class MyForm : Form
         try
         {
             // Draw the next planet texture below the label
-            _nextPlanetCanvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
+            _nextPlanetCanvas.g?.Clear(Color.Transparent); // Clear the canvas
 
             var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
 
@@ -125,7 +135,7 @@ public partial class MyForm : Form
             var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
             var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
 
-            _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
+            _nextPlanetCanvas.g?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
 
             nextPlanetPictureBox.Invalidate();
         }
@@ -142,8 +152,8 @@ public partial class MyForm : Form
         _canvasMutex.WaitOne(); // Acquire the lock
         try
         {
-            _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
-            _canvas.Container?.Render(_canvas.Graphics); // Container rendering
+            _canvas.g?.Clear(Color.Transparent); // Clear the canvas
+            _canvas.Container?.Render(_canvas.g); // Container rendering
 
             // Update and Constraints Logic in one loop
             foreach (var planet in _scene.Planets)
@@ -165,7 +175,7 @@ public partial class MyForm : Form
                 _score.HasChanged = false;
             }
 
-            _scene.Render(_canvas.Graphics); // Now render everything
+            _scene.Render(_canvas.g); // Now render everything
 
             RenderNextPlanet();
 
