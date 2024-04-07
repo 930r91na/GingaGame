@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
@@ -9,7 +10,7 @@ namespace GingaGame;
 
 public partial class MyForm : Form
 {
-    private readonly Canvas _canvas;
+    private Canvas _canvas;
     private readonly Mutex _canvasMutex = new();
     private readonly CollisionHandler _collisionHandler;
     private readonly Timer _fpsTimer = new();
@@ -18,7 +19,7 @@ public partial class MyForm : Form
     private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly PlanetFactory _planetFactory;
     private readonly Timer _planetSwitchTimer = new();
-    private readonly Scene _scene;
+    private Scene _scene;
     private readonly Score _score;
     private readonly Scoreboard _scoreboard = new();
     private Planet _currentPlanet;
@@ -31,24 +32,16 @@ public partial class MyForm : Form
     {
         InitializeComponent();
 
-        // Camaera, Map, Layer, Scene setup
-        Map.K = 5;
-        Map.Unit = 32;
-        int div = 4;
-        _map = new Map();
-        _camera = new Camera();
-        _background = new Layer(_map.BMP, new Size(PCT_CANVAS.Width / div, PCT_CANVAS.Height / div), new Size(PCT_CANVAS.Width, PCT_CANVAS.Height));
-        _scene = new Scene(_camera, _background, _map);
+        InitView();
 
-        // Canvas setup
-        _canvas = new Canvas(_scene, PCT_CANVAS);
         _canvas.InitializeContainer();
         PCT_CANVAS.Image = _canvas.Bitmap;
 
-        _nextPlanetCanvas = new Canvas(null,nextPlanetPictureBox);
+        // Auxiliar canvas setup
+        _nextPlanetCanvas = new Canvas(null,nextPlanetPictureBox, null);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
 
-        var evolutionCanvas = new Canvas(null, EvolutionCyclePictureBox);
+        var evolutionCanvas = new Canvas(null, EvolutionCyclePictureBox, null);
         EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
 
         // Scoreboard setup
@@ -90,6 +83,23 @@ public partial class MyForm : Form
         // Render the evolution cycle once
         evolutionCanvas.g?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
             evolutionCanvas.Height);
+    }
+
+    private void InitView()
+    {
+        // Camaera, Map, Layer, Scene setup
+        Map.K = 5;
+        Map.Unit = 10;
+        int div = 4;
+        _map = new Map();
+        _camera = new Camera();
+        _background = new Layer(_map.BMP, new Size(PCT_CANVAS.Width / div, PCT_CANVAS.Height / div), new Size(PCT_CANVAS.Width, PCT_CANVAS.Height));
+        _scene = new Scene(_camera, _background, _map);
+
+        // Canvas setup
+        _canvas = new Canvas(_scene, PCT_CANVAS, _map);
+        SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+        this.KeyPreview = true;
     }
 
     public void ResetGame()
@@ -252,5 +262,39 @@ public partial class MyForm : Form
             _currentPlanet.Position.X = e.X;
             _currentPlanet.OldPosition.X = e.X;
         }
+    }
+
+    private void MyForm_KeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.KeyCode)
+        {
+            case Keys.Up:
+                _scene.camera.Vel.Y = -Map.K;
+                break;
+            case Keys.Down:
+                _scene.camera.Vel.Y = Map.K;
+                break;
+        }
+
+        _scene.elapsed += .1f;
+    }
+
+    private void MyForm_KeyUp(object sender, KeyEventArgs e)
+    {
+        switch (e.KeyCode)
+        {
+             case Keys.Up:
+                _scene.camera.Vel.Y = 0;
+                break;
+            case Keys.Down:
+                _scene.camera.Vel.Y = 0;
+                break;
+        }
+        _scene.elapsed = 0;
+    }
+
+    private void MyForm_SizeChanged(object sender, EventArgs e)
+    {
+        InitView();
     }
 }

@@ -51,6 +51,10 @@ public class VPoint
         if (Position.Y > _canvas.Height - _radius) Position.Y = _canvas.Height - _radius;
     }
 
+    private void MapConstraints() 
+    { 
+        
+    }
     private void ContainerConstraints()
     {
         var container = _canvas.Container;

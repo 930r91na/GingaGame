@@ -17,10 +17,12 @@ public class Canvas
     public Container? Container;
     public int Height;
     public float Width;
+    private Map map;
 
-    public Canvas(Scene scene, PictureBox pct)
+    public Canvas(Scene scene, PictureBox pct, Map map)
     {
         this.scene = scene;
+        this.map = map;
         Init(pct, pct.Width, pct.Height);
     }
 
@@ -76,15 +78,35 @@ public class Canvas
 
     public void InitializeContainer()
     {
-        const float verticalTopMargin = 70;
-        const float verticalBottomMargin = 20;
-        var horizontalMargin = (Width - Width / 3) / 2;
-        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
-        var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
-        var bottomLeft = new PointF(horizontalMargin, Height - verticalBottomMargin);
-        var bottomRight = new PointF(Width - horizontalMargin, Height - verticalBottomMargin);
+        // Find the boundaries based on the map
+        // Assuming Map.BMP has the correct dimensions and Map.map contains the layout
+        float left = float.MaxValue, right = 0, top = float.MaxValue, bottom = 0;
+        for (int y = 0; y < map.yTiles; y++)
+        {
+            for (int x = 0; x < map.xTiles; x++)
+            {
+                if (map.map[y * map.xTiles + x] == '#')
+                {
+                    left = Math.Min(left, x * Map.Unit);
+                    right = Math.Max(right, (x + 1) * Map.Unit);
+                    top = Math.Min(top, y * Map.Unit);
+                    bottom = Math.Max(bottom, (y + 1) * Map.Unit);
+                }
+            }
+        }
 
-        Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
+        if (left != float.MaxValue && right != 0 && top != float.MaxValue && bottom != 0)
+        {
+            // Adjusting for the canvas size, assuming the map covers the entire canvas
+            var scaleFactor = Math.Min(Width / (map.xTiles * Map.Unit), Height / (map.yTiles * Map.Unit));
+            left *= scaleFactor;
+            right *= scaleFactor;
+            top *= scaleFactor;
+            bottom *= scaleFactor;
+
+            // Create the container based on calculated boundaries
+            Container = new Container(new PointF(left, top), new PointF(right, top), new PointF(left, bottom), new PointF(right, bottom));
+        }
     }
 
     public void RenderEndLine(bool rendered)

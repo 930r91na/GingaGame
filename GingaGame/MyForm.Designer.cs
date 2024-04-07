@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.PNL_MAIN = new System.Windows.Forms.Panel();
+            this.scoreboardLabel = new System.Windows.Forms.Label();
+            this.topScoresLabel = new System.Windows.Forms.Label();
             this.EvolutionCyclePictureBox = new System.Windows.Forms.PictureBox();
             this.evolutionCycleLabel = new System.Windows.Forms.Label();
             this.fpsLabel = new System.Windows.Forms.Label();
@@ -38,8 +40,6 @@
             this.nextPlanetLabel = new System.Windows.Forms.Label();
             this.PCT_CANVAS = new System.Windows.Forms.PictureBox();
             this.TIMER = new System.Windows.Forms.Timer(this.components);
-            this.topScoresLabel = new System.Windows.Forms.Label();
-            this.scoreboardLabel = new System.Windows.Forms.Label();
             this.PNL_MAIN.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EvolutionCyclePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).BeginInit();
@@ -69,6 +69,33 @@
             this.PNL_MAIN.Size = new System.Drawing.Size(1540, 846);
             this.PNL_MAIN.TabIndex = 0;
             // 
+            // scoreboardLabel
+            // 
+            this.scoreboardLabel.AutoSize = true;
+            this.scoreboardLabel.BackColor = System.Drawing.Color.Transparent;
+            this.scoreboardLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scoreboardLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scoreboardLabel.ForeColor = System.Drawing.Color.Gainsboro;
+            this.scoreboardLabel.Location = new System.Drawing.Point(12, 273);
+            this.scoreboardLabel.Name = "scoreboardLabel";
+            this.scoreboardLabel.Size = new System.Drawing.Size(113, 21);
+            this.scoreboardLabel.TabIndex = 14;
+            this.scoreboardLabel.Text = "Top Scores:";
+            this.scoreboardLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // topScoresLabel
+            // 
+            this.topScoresLabel.AutoSize = true;
+            this.topScoresLabel.BackColor = System.Drawing.Color.Transparent;
+            this.topScoresLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.topScoresLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.topScoresLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.topScoresLabel.Location = new System.Drawing.Point(12, 315);
+            this.topScoresLabel.Name = "topScoresLabel";
+            this.topScoresLabel.Size = new System.Drawing.Size(0, 21);
+            this.topScoresLabel.TabIndex = 13;
+            this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // EvolutionCyclePictureBox
             // 
             this.EvolutionCyclePictureBox.BackColor = System.Drawing.Color.Transparent;
@@ -87,7 +114,7 @@
             this.evolutionCycleLabel.ForeColor = System.Drawing.Color.Gainsboro;
             this.evolutionCycleLabel.Location = new System.Drawing.Point(12, 504);
             this.evolutionCycleLabel.Name = "evolutionCycleLabel";
-            this.evolutionCycleLabel.Size = new System.Drawing.Size(183, 27);
+            this.evolutionCycleLabel.Size = new System.Drawing.Size(151, 21);
             this.evolutionCycleLabel.TabIndex = 11;
             this.evolutionCycleLabel.Text = "Evolution Cycle:";
             this.evolutionCycleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -102,7 +129,7 @@
             this.fpsLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
             this.fpsLabel.Location = new System.Drawing.Point(5, 814);
             this.fpsLabel.Name = "fpsLabel";
-            this.fpsLabel.Size = new System.Drawing.Size(42, 19);
+            this.fpsLabel.Size = new System.Drawing.Size(33, 16);
             this.fpsLabel.TabIndex = 10;
             this.fpsLabel.Text = "FPS: ";
             this.fpsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -126,7 +153,7 @@
             this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
             this.scoreLabel.Location = new System.Drawing.Point(12, 221);
             this.scoreLabel.Name = "scoreLabel";
-            this.scoreLabel.Size = new System.Drawing.Size(96, 27);
+            this.scoreLabel.Size = new System.Drawing.Size(81, 21);
             this.scoreLabel.TabIndex = 8;
             this.scoreLabel.Text = "Score: 0";
             this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -140,7 +167,7 @@
             this.nextPlanetLabel.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.nextPlanetLabel.Location = new System.Drawing.Point(12, 13);
             this.nextPlanetLabel.Name = "nextPlanetLabel";
-            this.nextPlanetLabel.Size = new System.Drawing.Size(144, 27);
+            this.nextPlanetLabel.Size = new System.Drawing.Size(119, 21);
             this.nextPlanetLabel.TabIndex = 7;
             this.nextPlanetLabel.Text = "Next Planet:";
             this.nextPlanetLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -167,33 +194,6 @@
             this.TIMER.Enabled = true;
             this.TIMER.Tick += new System.EventHandler(this.TIMER_Tick);
             // 
-            // topScoresLabel
-            // 
-            this.topScoresLabel.AutoSize = true;
-            this.topScoresLabel.BackColor = System.Drawing.Color.Transparent;
-            this.topScoresLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.topScoresLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.topScoresLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.topScoresLabel.Location = new System.Drawing.Point(12, 315);
-            this.topScoresLabel.Name = "topScoresLabel";
-            this.topScoresLabel.Size = new System.Drawing.Size(0, 27);
-            this.topScoresLabel.TabIndex = 13;
-            this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // scoreboardLabel
-            // 
-            this.scoreboardLabel.AutoSize = true;
-            this.scoreboardLabel.BackColor = System.Drawing.Color.Transparent;
-            this.scoreboardLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scoreboardLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scoreboardLabel.ForeColor = System.Drawing.Color.Gainsboro;
-            this.scoreboardLabel.Location = new System.Drawing.Point(12, 273);
-            this.scoreboardLabel.Name = "scoreboardLabel";
-            this.scoreboardLabel.Size = new System.Drawing.Size(134, 27);
-            this.scoreboardLabel.TabIndex = 14;
-            this.scoreboardLabel.Text = "Top Scores:";
-            this.scoreboardLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // MyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -204,6 +204,9 @@
             this.Name = "MyForm";
             this.Text = "PLAYGROUND || VERLETS";
             this.Load += new System.EventHandler(this.MyForm_Load);
+            this.SizeChanged += new System.EventHandler(this.MyForm_SizeChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MyForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MyForm_KeyUp);
             this.PNL_MAIN.ResumeLayout(false);
             this.PNL_MAIN.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EvolutionCyclePictureBox)).EndInit();
