@@ -11,11 +11,11 @@ namespace GingaGame.UI;
 
 public partial class GameMode1Control : UserControl
 {
+    private const GameMode GameMode = Shared.GameMode.Mode1;
     private readonly Mutex _canvasMutex = new();
     private readonly Timer _fpsTimer = new();
     private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly Timer _planetSwitchTimer = new();
-    private readonly Scoreboard _scoreboard = new();
     private Canvas _canvas;
     private CollisionHandler _collisionHandler;
     private Container _container;
@@ -27,14 +27,15 @@ public partial class GameMode1Control : UserControl
     private PlanetFactory _planetFactory;
     private Scene _scene;
     private Score _score;
-    
+    private Scoreboard _scoreboard;
+
     public GameMode1Control()
     {
         InitializeComponent();
-        
+
         InitializeOriginalGameMode();
     }
-    
+
     private void InitializeOriginalGameMode()
     {
         // Canvas setup
@@ -44,26 +45,27 @@ public partial class GameMode1Control : UserControl
         _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
 
-        var evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
-        EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
+        var evolutionCanvas = new Canvas(evolutionCyclePictureBox.Size);
+        evolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
 
         // Container setup
         _container = new Container();
         _container.Initialize(_canvas.Width, _canvas.Height);
 
-        // Scoreboard setup
+        // Score and Scoreboard setup
+        _score = new Score();
+        _scoreboard = new Scoreboard(GameMode);
         UpdateScoreboardLabel();
 
         // Scene and game setup
         _scene = new Scene();
-        _score = new Score();
         _currentPlanet =
             new Planet(0, 0, 0, _collisionHandler)
             {
                 IsPinned = true
             };
         _scene.AddElement(_currentPlanet);
-        _planetFactory = new PlanetFactory();
+        _planetFactory = new PlanetFactory(GameMode);
 
         // Timer setup
         _planetSwitchTimer.Interval = 1000; // 1 second interval

@@ -95,7 +95,6 @@ partial class MainMenuControl
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
     }
 
     #endregion

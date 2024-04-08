@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-namespace GingaGame.GameMode1;
+namespace GingaGame.Shared;
 
 public class Score
 {
@@ -29,11 +30,17 @@ public class ScoreEntry(string playerName, int score)
 
 public class Scoreboard
 {
-    private const string ScoreFile = "scores.txt";
+    private static string _scoreFile;
     private readonly List<ScoreEntry> _scores = [];
 
-    public Scoreboard()
+    public Scoreboard(GameMode gameMode)
     {
+        _scoreFile = gameMode switch
+        {
+            GameMode.Mode1 => "scores1.txt",
+            GameMode.Mode2 => "scores2.txt",
+            _ => throw new ArgumentException("Invalid game mode")
+        };
         LoadScores();
     }
 
@@ -44,7 +51,7 @@ public class Scoreboard
         _scores.Sort((x, y) => y.Score.CompareTo(x.Score)); // Sort descending
 
         // Append the new score to the file
-        using var writer = File.AppendText(ScoreFile);
+        using var writer = File.AppendText(_scoreFile);
         writer.WriteLine($"{newScore.PlayerName}:{newScore.Score}");
     }
 
@@ -58,8 +65,8 @@ public class Scoreboard
     private void LoadScores()
     {
         OrderScores();
-        if (!File.Exists(ScoreFile)) return;
-        var lines = File.ReadAllLines(ScoreFile);
+        if (!File.Exists(_scoreFile)) return;
+        var lines = File.ReadAllLines(_scoreFile);
 
         // Parse the lines and add the first 6 scores
         var count = 0;
@@ -84,8 +91,8 @@ public class Scoreboard
 
     private static void OrderScores()
     {
-        if (!File.Exists(ScoreFile)) return;
-        var lines = File.ReadAllLines(ScoreFile);
+        if (!File.Exists(_scoreFile)) return;
+        var lines = File.ReadAllLines(_scoreFile);
 
         // Parse the lines into a list of ScoreEntry objects
         var scoreEntries = new List<ScoreEntry>();
@@ -101,7 +108,7 @@ public class Scoreboard
         scoreEntries.Sort((x, y) => y.Score.CompareTo(x.Score));
 
         // Write the sorted scores back to the file
-        using var writer = new StreamWriter(ScoreFile);
+        using var writer = new StreamWriter(_scoreFile);
         foreach (var entry in scoreEntries) writer.WriteLine($"{entry.PlayerName}:{entry.Score}");
     }
 }

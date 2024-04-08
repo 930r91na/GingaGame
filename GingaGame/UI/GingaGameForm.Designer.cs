@@ -47,6 +47,7 @@ partial class GingaGameForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 650);
+            this.MinimumSize = new System.Drawing.Size(1000, 650);
             this.Controls.Add(this.contentPanel);
             this.Name = "GingaGameForm";
             this.Text = "Ginga Game";

@@ -33,7 +33,7 @@ partial class GameMode1Control
     {
         this.components = new System.ComponentModel.Container();
         this.mainPanel = new System.Windows.Forms.Panel();
-        this.EvolutionCyclePictureBox = new System.Windows.Forms.PictureBox();
+        this.evolutionCyclePictureBox = new System.Windows.Forms.PictureBox();
         this.evolutionCycleLabel = new System.Windows.Forms.Label();
         this.fpsLabel = new System.Windows.Forms.Label();
         this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
@@ -44,7 +44,7 @@ partial class GameMode1Control
         this.topScoresLabel = new System.Windows.Forms.Label();
         this.scoreboardLabel = new System.Windows.Forms.Label();
         this.mainPanel.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)(this.EvolutionCyclePictureBox)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)(this.evolutionCyclePictureBox)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.canvasPictureBox)).BeginInit();
         this.SuspendLayout();
@@ -56,7 +56,7 @@ partial class GameMode1Control
         this.mainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         this.mainPanel.Controls.Add(this.scoreboardLabel);
         this.mainPanel.Controls.Add(this.topScoresLabel);
-        this.mainPanel.Controls.Add(this.EvolutionCyclePictureBox);
+        this.mainPanel.Controls.Add(this.evolutionCyclePictureBox);
         this.mainPanel.Controls.Add(this.evolutionCycleLabel);
         this.mainPanel.Controls.Add(this.fpsLabel);
         this.mainPanel.Controls.Add(this.nextPlanetPictureBox);
@@ -74,12 +74,12 @@ partial class GameMode1Control
         // 
         // EvolutionCyclePictureBox
         // 
-        this.EvolutionCyclePictureBox.BackColor = System.Drawing.Color.Transparent;
-        this.EvolutionCyclePictureBox.Location = new System.Drawing.Point(21, 547);
-        this.EvolutionCyclePictureBox.Name = "EvolutionCyclePictureBox";
-        this.EvolutionCyclePictureBox.Size = new System.Drawing.Size(240, 240);
-        this.EvolutionCyclePictureBox.TabIndex = 12;
-        this.EvolutionCyclePictureBox.TabStop = false;
+        this.evolutionCyclePictureBox.BackColor = System.Drawing.Color.Transparent;
+        this.evolutionCyclePictureBox.Location = new System.Drawing.Point(21, 547);
+        this.evolutionCyclePictureBox.Name = "evolutionCyclePictureBox";
+        this.evolutionCyclePictureBox.Size = new System.Drawing.Size(240, 240);
+        this.evolutionCyclePictureBox.TabIndex = 12;
+        this.evolutionCyclePictureBox.TabStop = false;
         // 
         // evolutionCycleLabel
         // 
@@ -196,19 +196,21 @@ partial class GameMode1Control
         this.scoreboardLabel.TabIndex = 14;
         this.scoreboardLabel.Text = "Top Scores:";
         this.scoreboardLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        
+        //
         // GameMode1Control
+        //
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(1540, 846);
         this.Controls.Add(this.mainPanel);
         this.Dock = System.Windows.Forms.DockStyle.Fill;
         this.Margin = new System.Windows.Forms.Padding(4);
+        this.MinimumSize = new System.Drawing.Size(1540, 846);
         this.Name = "GameMode1Control";
         this.Text = "Ginga Game || Mode 1";
         this.mainPanel.ResumeLayout(false);
         this.mainPanel.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)(this.EvolutionCyclePictureBox)).EndInit();
+        ((System.ComponentModel.ISupportInitialize)(this.evolutionCyclePictureBox)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.nextPlanetPictureBox)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.canvasPictureBox)).EndInit();
         this.ResumeLayout(false);
@@ -223,7 +225,7 @@ partial class GameMode1Control
     private System.Windows.Forms.Label scoreLabel;
     private System.Windows.Forms.PictureBox nextPlanetPictureBox;
     private System.Windows.Forms.Label fpsLabel;
-    private System.Windows.Forms.PictureBox EvolutionCyclePictureBox;
+    private System.Windows.Forms.PictureBox evolutionCyclePictureBox;
     private System.Windows.Forms.Label evolutionCycleLabel;
     private System.Windows.Forms.Label scoreboardLabel;
     private System.Windows.Forms.Label topScoresLabel;
