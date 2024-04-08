@@ -54,8 +54,6 @@ partial class MainMenuControl
             // 
             this.playButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.playButton.BackColor = System.Drawing.Color.FromArgb(0, 130, 130); // Teal
-            this.playButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(0, 100, 100); // Darker Teal on hover
-            this.playButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(0, 70, 70); // Even darker Teal on click
             this.playButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.playButton.Font = new System.Drawing.Font("Franklin Gothic Heavy", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playButton.ForeColor = System.Drawing.Color.Transparent;
@@ -65,13 +63,12 @@ partial class MainMenuControl
             this.playButton.TabIndex = 1;
             this.playButton.Text = "Play Game";
             this.playButton.UseVisualStyleBackColor = false;
+            this.playButton.Click += new System.EventHandler(this.playButton_Click);
             // 
             // exitButton
             // 
             this.exitButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.exitButton.BackColor = Color.FromArgb(0xC6, 0x42, 0x3D); // Muted Red
-            this.exitButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(0xAC, 0x27, 0x28); // Darker Red on hover
-            this.exitButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(0x8B, 0x1C, 0x1D); // Even Darker Red on click
             this.exitButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.exitButton.Font = new System.Drawing.Font("Franklin Gothic Heavy", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exitButton.ForeColor = System.Drawing.Color.Transparent;
@@ -81,6 +78,7 @@ partial class MainMenuControl
             this.exitButton.TabIndex = 2;
             this.exitButton.Text = "Exit";
             this.exitButton.UseVisualStyleBackColor = false;
+            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
             // MainMenuControl
             // 
