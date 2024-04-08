@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
 public sealed class Planet(
     int planetType,
     float x,
     float y,
-    Canvas canvas,
+    CollisionHandler collisionHandler,
     bool hasCollided = false)
-    : VPoint(x, y, canvas, PlanetSizes.Sizes[planetType])
+    : VPoint(x, y, PlanetSizes.Sizes[planetType])
 {
     public int PlanetType { get; } = planetType;
-    public float Radius { get; } = PlanetSizes.Sizes[planetType];
+    public new float Radius { get; } = PlanetSizes.Sizes[planetType];
     public int Points { get; private set; } = PlanetPoints.PointsPerPlanet[planetType];
     public bool HasCollided { get; set; } = hasCollided;
 
     public void Render(Graphics g)
     {
         // Apply constraints
-        Constraints();
+        collisionHandler?.CheckConstraints(this);
 
         var imageWidth = Radius * 2;
         var imageHeight = Radius * 2;

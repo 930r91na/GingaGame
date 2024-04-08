@@ -1,17 +1,15 @@
 ﻿#nullable enable
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
 public class Canvas
 {
     private byte[] _bits = null!;
     private int _stride, _pixelFormatSize;
     public Bitmap? Bitmap;
-    public Container? Container;
     public int Height;
     public float Width;
 
@@ -61,34 +59,5 @@ public class Canvas
 
         // Create a Graphics object from the bitmap
         Graphics = Graphics.FromImage(Bitmap);
-    }
-
-    public void InitializeContainer()
-    {
-        const float verticalTopMargin = 70;
-        const float verticalBottomMargin = 20;
-        var horizontalMargin = (Width - Width / 3) / 2;
-        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
-        var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
-        var bottomLeft = new PointF(horizontalMargin, Height - verticalBottomMargin);
-        var bottomRight = new PointF(Width - horizontalMargin, Height - verticalBottomMargin);
-
-        Container = new Container(topLeft, topRight, bottomLeft, bottomRight);
-    }
-
-    public void RenderEndLine(bool rendered)
-    {
-        const float verticalTopMargin = 70;
-        var horizontalMargin = (Width - Width / 3) / 2;
-
-        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
-        var topRight = new PointF(Width - horizontalMargin, verticalTopMargin);
-
-        var blinkOn = DateTime.Now.Second % 2 == 0;
-
-        var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
-
-        // Draw the end line
-        Graphics?.DrawLine(rendered ? currentPen : Pens.Transparent, topLeft, topRight);
     }
 }

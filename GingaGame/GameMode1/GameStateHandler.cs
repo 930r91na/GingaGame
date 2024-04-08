@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using GingaGame.Shared;
+using GingaGame.UI;
 
-namespace GingaGame;
+namespace GingaGame.GameMode1;
 
-public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboard scoreboard, MyForm myForm)
+public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboard scoreboard, GameMode1Control myForm)
 {
     private const float EndLineHeight = 70;
     private const int EndLineThreshold = 70;
@@ -16,13 +20,29 @@ public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboar
 
     public void CheckGameState()
     {
-        canvas.RenderEndLine(_renderEndLine);
+        RenderEndLine(_renderEndLine);
 
         // Check if a planet is near the endLine from the bottom
         IsNearEndLine();
         if (!_gameOverTriggered) CheckLoseCondition();
 
         if (!_gameWonTriggered) CheckWinCondition();
+    }
+
+    private void RenderEndLine(bool shouldRenderEndLine)
+    {
+        const float verticalTopMargin = 70;
+        var horizontalMargin = (canvas.Width - canvas.Width / 3) / 2;
+
+        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
+        var topRight = new PointF(canvas.Width - horizontalMargin, verticalTopMargin);
+
+        var blinkOn = DateTime.Now.Second % 2 == 0;
+
+        var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
+
+        // Draw the end line
+        canvas.Graphics?.DrawLine(shouldRenderEndLine ? currentPen : Pens.Transparent, topLeft, topRight);
     }
 
     private void IsNearEndLine()

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
+using GingaGame.UI;
 
 namespace GingaGame;
 
 internal static class Program
 {
     /// <summary>
-    ///     Punto de entrada principal para la aplicación.
+    ///     Entry point of the application.
     /// </summary>
     [STAThread]
     private static void Main()
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new MyForm());
+        Application.Run(new GingaGameForm());
     }
 }

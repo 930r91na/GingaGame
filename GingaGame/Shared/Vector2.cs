@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
 public struct Vector2(float x, float y)
 {

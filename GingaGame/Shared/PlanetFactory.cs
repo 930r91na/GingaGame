@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
 public class PlanetFactory
 {
     private readonly Random _randomGenerator = new();
     private readonly List<int> _unlockedPlanets = [0]; // Start with Pluto's index
 
-    public Planet GenerateNextPlanet(Canvas canvas)
+    public Planet GenerateNextPlanet(Canvas canvas, CollisionHandler collisionHandler)
     {
         int nextIndex;
         do
@@ -18,7 +18,7 @@ public class PlanetFactory
 
         var middleX = canvas.Width / 2;
 
-        return new Planet(nextIndex, middleX, 0, canvas)
+        return new Planet(nextIndex, middleX, 0, collisionHandler)
         {
             IsPinned = true
         };

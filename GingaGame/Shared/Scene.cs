@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
 public class Scene
 {

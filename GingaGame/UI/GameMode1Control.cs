@@ -3,42 +3,53 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using GingaGame.GameMode1;
+using GingaGame.Shared;
 using Timer = System.Windows.Forms.Timer;
 
-namespace GingaGame;
+namespace GingaGame.UI;
 
-public partial class MyForm : Form
+public partial class GameMode1Control : UserControl
 {
-    private readonly Canvas _canvas;
     private readonly Mutex _canvasMutex = new();
-    private readonly CollisionHandler _collisionHandler;
     private readonly Timer _fpsTimer = new();
-    private readonly GameStateHandler _gameStateHandler;
-    private readonly Canvas _nextPlanetCanvas;
     private readonly Mutex _nextPlanetCanvasMutex = new();
-    private readonly PlanetFactory _planetFactory;
     private readonly Timer _planetSwitchTimer = new();
-    private readonly Scene _scene;
-    private readonly Score _score;
     private readonly Scoreboard _scoreboard = new();
+    private Canvas _canvas;
+    private CollisionHandler _collisionHandler;
+    private Container _container;
     private Planet _currentPlanet;
     private int _frameCounter;
+    private GameStateHandler _gameStateHandler;
     private Planet _nextPlanet;
-
-    public MyForm()
+    private Canvas _nextPlanetCanvas;
+    private PlanetFactory _planetFactory;
+    private Scene _scene;
+    private Score _score;
+    
+    public GameMode1Control()
     {
         InitializeComponent();
-
+        
+        InitializeOriginalGameMode();
+    }
+    
+    private void InitializeOriginalGameMode()
+    {
         // Canvas setup
-        _canvas = new Canvas(PCT_CANVAS.Size);
-        _canvas.InitializeContainer();
-        PCT_CANVAS.Image = _canvas.Bitmap;
+        _canvas = new Canvas(canvasPictureBox.Size);
+        canvasPictureBox.Image = _canvas.Bitmap;
 
         _nextPlanetCanvas = new Canvas(nextPlanetPictureBox.Size);
         nextPlanetPictureBox.Image = _nextPlanetCanvas.Bitmap;
 
         var evolutionCanvas = new Canvas(EvolutionCyclePictureBox.Size);
         EvolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
+
+        // Container setup
+        _container = new Container();
+        _container.Initialize(_canvas.Width, _canvas.Height);
 
         // Scoreboard setup
         UpdateScoreboardLabel();
@@ -47,7 +58,7 @@ public partial class MyForm : Form
         _scene = new Scene();
         _score = new Score();
         _currentPlanet =
-            new Planet(0, 0, 0, _canvas)
+            new Planet(0, 0, 0, _collisionHandler)
             {
                 IsPinned = true
             };
@@ -64,15 +75,16 @@ public partial class MyForm : Form
         _fpsTimer.Start();
 
         // Game timer setup
-        TIMER.Interval = 1000 / 144; // 144 FPS
-        TIMER.Tick += TIMER_Tick;
-        TIMER.Start();
+        gameLoopTimer.Interval = 1000 / 144; // 144 FPS
+        gameLoopTimer.Tick += gameLoopTimer_Tick;
+        gameLoopTimer.Start();
 
         // Initial next planet setup
         GenerateNextPlanet();
 
         // Initialize the collision handler
-        _collisionHandler = new CollisionHandler(_scene, _canvas, _planetFactory, _score);
+        _collisionHandler =
+            new CollisionHandler(_scene, _canvas, _collisionHandler, _planetFactory, _score, _container);
 
         // Initialize the game state handler
         _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
@@ -89,7 +101,7 @@ public partial class MyForm : Form
         _score.ResetScore();
         UpdateScoreboardLabel();
         _planetFactory.ResetUnlockedPlanets();
-        _currentPlanet = new Planet(0, 0, 0, _canvas)
+        _currentPlanet = new Planet(0, 0, 0, _collisionHandler)
         {
             IsPinned = true
         };
@@ -106,7 +118,7 @@ public partial class MyForm : Form
 
     private void GenerateNextPlanet()
     {
-        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas);
+        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas, _collisionHandler);
     }
 
     private void RenderNextPlanet()
@@ -135,7 +147,7 @@ public partial class MyForm : Form
         }
     }
 
-    private void TIMER_Tick(object sender, EventArgs e)
+    private void gameLoopTimer_Tick(object sender, EventArgs e)
     {
         _frameCounter++;
 
@@ -143,13 +155,13 @@ public partial class MyForm : Form
         try
         {
             _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
-            _canvas.Container?.Render(_canvas.Graphics); // Container rendering
+            _container.Render(_canvas.Graphics); // Container rendering
 
             // Update and Constraints Logic in one loop
             foreach (var planet in _scene.Planets)
             {
                 planet.Update(); // Apply forces, Verlet integration
-                planet.Constraints(); // Wall and container constraints
+                _collisionHandler.CheckConstraints(planet); // Container constraints
             }
 
             // Call collision detection after updates and before rendering
@@ -169,7 +181,7 @@ public partial class MyForm : Form
 
             RenderNextPlanet();
 
-            PCT_CANVAS.Invalidate();
+            canvasPictureBox.Invalidate();
         }
         finally
         {
@@ -197,14 +209,10 @@ public partial class MyForm : Form
         _scene.AddElement(_currentPlanet);
 
         // Re-enable input after the switch logic is complete
-        PCT_CANVAS.Enabled = true;
+        canvasPictureBox.Enabled = true;
     }
 
-    private void MyForm_Load(object sender, EventArgs e)
-    {
-    }
-
-    private void PCT_CANVAS_Click(object sender, EventArgs e)
+    private void canvasPictureBox_Click(object sender, EventArgs e)
     {
         if (!_currentPlanet.IsPinned) return;
 
@@ -213,12 +221,12 @@ public partial class MyForm : Form
         _currentPlanet.IsPinned = false;
 
         // Disable input immediately
-        PCT_CANVAS.Enabled = false;
+        canvasPictureBox.Enabled = false;
 
         _planetSwitchTimer.Start(); // Start the timer
     }
 
-    private void PCT_CANVAS_MouseMove(object sender, MouseEventArgs e)
+    private void canvasPictureBox_MouseMove(object sender, MouseEventArgs e)
     {
         if (!_currentPlanet.IsPinned) return;
 
@@ -227,15 +235,15 @@ public partial class MyForm : Form
 
     private void UpdateCurrentPlanetPosition(MouseEventArgs e)
     {
-        if (e.X < _canvas.Container!.TopLeft.X + _currentPlanet.Radius)
+        if (e.X < _container!.TopLeft.X + _currentPlanet.Radius)
         {
-            _currentPlanet.Position.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
-            _currentPlanet.OldPosition.X = _canvas.Container.TopLeft.X + _currentPlanet.Radius;
+            _currentPlanet.Position.X = _container.TopLeft.X + _currentPlanet.Radius;
+            _currentPlanet.OldPosition.X = _container.TopLeft.X + _currentPlanet.Radius;
         }
-        else if (e.X > _canvas.Container.BottomRight.X - _currentPlanet.Radius)
+        else if (e.X > _container.BottomRight.X - _currentPlanet.Radius)
         {
-            _currentPlanet.Position.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
-            _currentPlanet.OldPosition.X = _canvas.Container.BottomRight.X - _currentPlanet.Radius;
+            _currentPlanet.Position.X = _container.BottomRight.X - _currentPlanet.Radius;
+            _currentPlanet.OldPosition.X = _container.BottomRight.X - _currentPlanet.Radius;
         }
         else
         {

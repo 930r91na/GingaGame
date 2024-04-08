@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-namespace GingaGame;
+namespace GingaGame.GameMode1;
 
 public class Score
 {
@@ -60,13 +60,13 @@ public class Scoreboard
         OrderScores();
         if (!File.Exists(ScoreFile)) return;
         var lines = File.ReadAllLines(ScoreFile);
-        
+
         // Parse the lines and add the first 6 scores
         var count = 0;
         foreach (var line in lines)
         {
             if (count >= 6) break; // Only load the top 6 scores
-            
+
             var parts = line.Split(':');
             if (parts.Length != 2 || !int.TryParse(parts[1], out var score)) continue;
             var playerName = parts[0];
@@ -75,9 +75,10 @@ public class Scoreboard
             // Convert to title case
             playerName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(playerName.ToLowerInvariant());
             _scores.Add(new ScoreEntry(playerName, score));
-            
+
             count++; // Increment the count
         }
+
         _scores.Sort((x, y) => y.Score.CompareTo(x.Score)); // Sort descending
     }
 
@@ -101,9 +102,6 @@ public class Scoreboard
 
         // Write the sorted scores back to the file
         using var writer = new StreamWriter(ScoreFile);
-        foreach (var entry in scoreEntries)
-        {
-            writer.WriteLine($"{entry.PlayerName}:{entry.Score}");
-        }
+        foreach (var entry in scoreEntries) writer.WriteLine($"{entry.PlayerName}:{entry.Score}");
     }
 }

@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using GingaGame.GameMode1;
 
-namespace GingaGame;
+namespace GingaGame.Shared;
 
-public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFactory, Score score)
+public class CollisionHandler(
+    Scene scene,
+    Canvas canvas,
+    CollisionHandler collisionHandler,
+    PlanetFactory planetFactory,
+    Score score,
+    Container container)
 {
     private readonly List<Planet> _planets = scene.Planets;
     private readonly List<(Planet, Planet)> _potentialCollisionPairs = [];
@@ -97,7 +104,7 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
                 return;
             }
 
-            var newPlanet = new Planet(planet1.PlanetType + 1, middlePoint.X, middlePoint.Y, canvas);
+            var newPlanet = new Planet(planet1.PlanetType + 1, middlePoint.X, middlePoint.Y, collisionHandler);
 
             // Add the new planet to the scene
             scene.AddElement(newPlanet);
@@ -145,5 +152,34 @@ public class CollisionHandler(Scene scene, Canvas canvas, PlanetFactory planetFa
                 planet2.HasCollided = true;
             }
         }
+    }
+
+    public void CheckConstraints(VPoint point)
+    {
+        WallConstraints(point);
+        ContainerConstraints(point);
+    }
+
+    private void WallConstraints(VPoint point)
+    {
+        if (point.Position.X < point.Radius) point.Position.X = point.Radius;
+        if (point.Position.X > canvas.Width - point.Radius) point.Position.X = canvas.Width - point.Radius;
+        if (point.Position.Y < point.Radius) point.Position.Y = point.Radius;
+        if (point.Position.Y > canvas.Height - point.Radius) point.Position.Y = canvas.Height - point.Radius;
+    }
+
+    private void ContainerConstraints(VPoint point)
+    {
+        // Check if the point is outside the left boundary of the container
+        if (container != null && point.Position.X < container.TopLeft.X + point.Radius)
+            point.Position.X = container.TopLeft.X + point.Radius;
+
+        // Check if the point is outside the right boundary of the container
+        if (container != null && point.Position.X > container.TopRight.X - point.Radius)
+            point.Position.X = container.TopRight.X - point.Radius;
+
+        // Check if the point is outside the bottom boundary of the container
+        if (container != null && point.Position.Y > container.BottomLeft.Y - point.Radius)
+            point.Position.Y = container.BottomLeft.Y - point.Radius;
     }
 }
