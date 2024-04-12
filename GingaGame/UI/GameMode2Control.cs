@@ -53,7 +53,7 @@ public partial class GameMode2Control : UserControl
         // Scene and game setup
         _scene = new Scene();
         _currentPlanet =
-            new Planet(10, 0, 0, _collisionHandler)
+            new Planet(10, new Vector2(0, 0))
             {
                 IsPinned = true
             };
@@ -97,7 +97,7 @@ public partial class GameMode2Control : UserControl
 
     private void GenerateNextPlanet()
     {
-        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas, _collisionHandler);
+        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas);
     }
 
     private void RenderNextPlanet()
@@ -139,13 +139,11 @@ public partial class GameMode2Control : UserControl
 
             // Update and Constraints Logic in one loop
             foreach (var planet in _scene.Planets)
-            {
-                planet.Update(); // Apply forces, Verlet integration
+                //planet.Update(); // Apply forces, Verlet integration
                 _collisionHandler.CheckConstraints(planet); // Container constraints
-            }
 
             // Call collision detection after updates and before rendering
-            _collisionHandler.CheckCollisions();
+            //_collisionHandler.CheckCollisions();
 
             // Check game state
             // TODO: Implement the game state handler
@@ -157,7 +155,7 @@ public partial class GameMode2Control : UserControl
                 _score.HasChanged = false;
             }
 
-            _scene.Render(_canvas.Graphics); // Now render everything
+            // _scene.Render(_canvas.Graphics); // Now render everything
 
             RenderNextPlanet();
 

@@ -118,11 +118,11 @@
         <Compile Include="Resource1.Designer.cs"/>
         <Compile Include="Shared\Canvas.cs"/>
         <Compile Include="Shared\CollisionHandler.cs"/>
-        <Compile Include="Shared\GameMode.cs" />
+        <Compile Include="Shared\GameMode.cs"/>
         <Compile Include="Shared\Planet.cs"/>
         <Compile Include="Shared\PlanetFactory.cs"/>
         <Compile Include="Shared\Scene.cs"/>
-        <Compile Include="Shared\Score.cs" />
+        <Compile Include="Shared\Score.cs"/>
         <Compile Include="Shared\Vector2.cs"/>
         <Compile Include="Shared\VPoint.cs"/>
         <Compile Include="UI\GameMode1Control.cs">
@@ -180,7 +180,7 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="bin\Debug\scores1.txt" />
+        <Content Include="bin\Debug\scores1.txt"/>
         <Content Include="Resources\Background.png"/>
         <Content Include="Resources\Background2.png"/>
         <Content Include="Resources\Earth.png"/>

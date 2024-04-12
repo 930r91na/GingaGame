@@ -10,12 +10,11 @@ public class VPoint
     public Vector2 Position;
     public Vector2 Velocity;
 
-    protected VPoint(float x, float y, float radius)
+    protected VPoint(Vector2 position, float radius)
     {
-        Position = new Vector2(x, y);
+        Position = OldPosition = position;
         Radius = radius;
         Mass = radius / 10;
-        Position = OldPosition = new Vector2(x, y);
     }
 
     public float Mass { get; }
@@ -31,6 +30,6 @@ public class VPoint
         OldPosition = Position;
 
         // Perform Verlet integration
-        Position += Velocity + _gravity; // * Mass;
+        Position += Velocity + _gravity;
     }
 }

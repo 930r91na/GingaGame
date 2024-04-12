@@ -40,7 +40,7 @@ public partial class GingaGameForm : Form
         // Create a new instance of GameMode2Control and add it to the content panel
         _gameMode2Control = new GameMode2Control();
         contentPanel.Controls.Add(_gameMode2Control);
-        
+
         Location = new Point(Location.X - 100, Location.Y - 100);
         Size = new Size(_gameMode2Control.MinimumSize.Width + 100, _gameMode2Control.MinimumSize.Height + 100);
 

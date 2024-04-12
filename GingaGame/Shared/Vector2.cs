@@ -57,11 +57,6 @@ public struct Vector2(float x, float y)
         return (int)Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
     }
 
-    public static int Normalize(Vector2 a)
-    {
-        return (int)Math.Sqrt(a.X * a.X + a.Y * a.Y);
-    }
-
     public Vector2 Normalized()
     {
         return this / Magnitude();
@@ -70,10 +65,5 @@ public struct Vector2(float x, float y)
     public double Dot(Vector2 normal)
     {
         return X * normal.X + Y * normal.Y;
-    }
-
-    public static double Dot(Vector2 a, Vector2 b)
-    {
-        return a.X * b.X + a.Y * b.Y;
     }
 }

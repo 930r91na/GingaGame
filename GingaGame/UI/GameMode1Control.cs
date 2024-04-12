@@ -28,6 +28,7 @@ public partial class GameMode1Control : UserControl
     private Scene _scene;
     private Score _score;
     private Scoreboard _scoreboard;
+    private float _testTextBoxNumber;
 
     public GameMode1Control()
     {
@@ -60,7 +61,7 @@ public partial class GameMode1Control : UserControl
         // Scene and game setup
         _scene = new Scene();
         _currentPlanet =
-            new Planet(0, 0, 0, _collisionHandler)
+            new Planet(0, new Vector2(0, 0))
             {
                 IsPinned = true
             };
@@ -86,7 +87,7 @@ public partial class GameMode1Control : UserControl
 
         // Initialize the collision handler
         _collisionHandler =
-            new CollisionHandler(_scene, _canvas, _collisionHandler, _planetFactory, _score, _container);
+            new CollisionHandler(_scene, _canvas, _planetFactory, _score, _container, GameMode);
 
         // Initialize the game state handler
         _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
@@ -103,7 +104,7 @@ public partial class GameMode1Control : UserControl
         _score.ResetScore();
         UpdateScoreboardLabel();
         _planetFactory.ResetUnlockedPlanets();
-        _currentPlanet = new Planet(0, 0, 0, _collisionHandler)
+        _currentPlanet = new Planet(0, new Vector2(0, 0))
         {
             IsPinned = true
         };
@@ -120,7 +121,7 @@ public partial class GameMode1Control : UserControl
 
     private void GenerateNextPlanet()
     {
-        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas, _collisionHandler);
+        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas);
     }
 
     private void RenderNextPlanet()
@@ -159,15 +160,22 @@ public partial class GameMode1Control : UserControl
             _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
             _container.Render(_canvas.Graphics); // Container rendering
 
-            // Update and Constraints Logic in one loop
-            foreach (var planet in _scene.Planets)
-            {
-                planet.Update(); // Apply forces, Verlet integration
-                _collisionHandler.CheckConstraints(planet); // Container constraints
-            }
+            // Update Logic
+            foreach (var planet in _scene.Planets) planet.Update(); // Apply forces, Verlet integration
 
-            // Call collision detection after updates and before rendering
-            _collisionHandler.CheckCollisions();
+            const int iterations = 5; // Number of iterations for constraint and collision logic
+
+            // Too many iterations -> more stable, slower and less responsive
+            // Too few iterations -> less stable, faster and more responsive
+            // 5 iterations is a good balance for this game
+
+            // Constraint and Collision Logic (with iterations)
+            for (var i = 0; i < iterations; i++)
+            {
+                foreach (var planet in
+                         _scene.Planets) _collisionHandler.CheckConstraints(planet); // Container constraints
+                _collisionHandler.CheckCollisions();
+            }
 
             // Check game state
             _gameStateHandler.CheckGameState();
@@ -252,5 +260,10 @@ public partial class GameMode1Control : UserControl
             _currentPlanet.Position.X = e.X;
             _currentPlanet.OldPosition.X = e.X;
         }
+    }
+
+    private void testTextBox_TextChanged(object sender, EventArgs e)
+    {
+        if (float.TryParse(testTextBox.Text, out var number)) _testTextBoxNumber = number;
     }
 }

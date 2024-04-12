@@ -14,7 +14,7 @@ public class PlanetFactory(GameMode gameMode)
         _ => throw new ArgumentException("Invalid game mode")
     };
 
-    public Planet GenerateNextPlanet(Canvas canvas, CollisionHandler collisionHandler)
+    public Planet GenerateNextPlanet(Canvas canvas)
     {
         int nextIndex;
         do
@@ -30,7 +30,7 @@ public class PlanetFactory(GameMode gameMode)
 
         var middleX = canvas.Width / 2;
 
-        return new Planet(nextIndex, middleX, 0, collisionHandler)
+        return new Planet(nextIndex, new Vector2(middleX, 0))
         {
             IsPinned = true
         };

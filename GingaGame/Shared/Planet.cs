@@ -6,11 +6,9 @@ namespace GingaGame.Shared;
 
 public sealed class Planet(
     int planetType,
-    float x,
-    float y,
-    CollisionHandler collisionHandler,
+    Vector2 position,
     bool hasCollided = false)
-    : VPoint(x, y, PlanetSizes.Sizes[planetType])
+    : VPoint(position, PlanetSizes.Sizes[planetType])
 {
     public int PlanetType { get; } = planetType;
     public new float Radius { get; } = PlanetSizes.Sizes[planetType];
@@ -19,9 +17,6 @@ public sealed class Planet(
 
     public void Render(Graphics g)
     {
-        // Apply constraints
-        collisionHandler?.CheckConstraints(this);
-
         var imageWidth = Radius * 2;
         var imageHeight = Radius * 2;
         var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version
