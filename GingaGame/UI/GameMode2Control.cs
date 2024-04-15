@@ -12,7 +12,6 @@ public partial class GameMode2Control : UserControl
 {
     private const GameMode GameMode = Shared.GameMode.Mode2;
     private const float ParallaxBackgroundFactor = 0.1f;
-    private const float ParallaxForegroundFactor = 2.5f;
     private readonly Mutex _canvasMutex = new();
     private readonly Timer _fpsTimer = new();
     private readonly Mutex _nextPlanetCanvasMutex = new();
@@ -25,8 +24,6 @@ public partial class GameMode2Control : UserControl
     private int _currentFloorIndex;
     private Planet _currentPlanet;
     private Planet _currentPlanetToDrop;
-    private Image _foregroundImage;
-    private int _foregroundYOffset;
     private int _frameCounter;
     private bool _gameWonTriggered;
     private Canvas _nextPlanetCanvas;
@@ -89,9 +86,8 @@ public partial class GameMode2Control : UserControl
         // Planet factory setup
         _planetFactory = new PlanetFactory(GameMode);
 
-        // Background and foreground setup
+        // Background setup
         _backgroundImage = Resource1.ScrollerBackground1;
-        _foregroundImage = Resource1.ScrollerForeground;
 
         // Timer setup
         _planetSwitchTimer.Interval = 1000; // 1 second interval
@@ -227,21 +223,6 @@ public partial class GameMode2Control : UserControl
             
             // Render the scene
             _scene.Render(_canvas.Graphics, canvasPictureBox.Height, _scrollOffset);
-
-            _foregroundYOffset = (int)(_scrollOffset * ParallaxForegroundFactor);
-
-            // Calculate how many foreground image repetitions are needed to cover the viewable area
-            var foregroundRepetitions =
-                (int)Math.Ceiling(
-                    (canvasPictureBox.Height + 2 * Shared.Container.VerticalTopMargin + _foregroundYOffset) /
-                    (float)_foregroundImage.Height);
-
-            // Draw the foreground image multiple times, offsetting it vertically for each repetition
-            for (var i = 0; i < foregroundRepetitions; i++)
-            {
-                var yPosition = -_foregroundYOffset + i * _foregroundImage.Height;
-                _canvas.Graphics?.DrawImage(_foregroundImage, 0, yPosition);
-            }
 
             RenderNextPlanet();
 
