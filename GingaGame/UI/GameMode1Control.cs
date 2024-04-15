@@ -51,7 +51,7 @@ public partial class GameMode1Control : UserControl
 
         // Container setup
         _container = new Container();
-        _container.Initialize(_canvas.Width, _canvas.Height);
+        _container.InitializeGameMode1(_canvas.Width, _canvas.Height);
 
         // Score and Scoreboard setup
         _score = new Score();
@@ -60,12 +60,16 @@ public partial class GameMode1Control : UserControl
 
         // Scene and game setup
         _scene = new Scene();
+
         _currentPlanet =
             new Planet(0, new Vector2(0, 0))
             {
                 IsPinned = true
             };
-        _scene.AddElement(_currentPlanet);
+
+        _scene.AddPlanet(_currentPlanet);
+        _scene.AddContainer(_container);
+
         _planetFactory = new PlanetFactory(GameMode);
 
         // Timer setup
@@ -87,7 +91,7 @@ public partial class GameMode1Control : UserControl
 
         // Initialize the collision handler
         _collisionHandler =
-            new CollisionHandler(_scene, _canvas, _planetFactory, _score, _container, GameMode);
+            new CollisionHandler(_scene, _planetFactory, _score, _container, GameMode);
 
         // Initialize the game state handler
         _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
@@ -95,6 +99,21 @@ public partial class GameMode1Control : UserControl
         // Render the evolution cycle once
         evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
             evolutionCanvas.Height);
+    }
+
+    private void canvasPictureBox_Resize(object sender, EventArgs e)
+    {
+        // Recreate the canvas with the new size
+        _canvas = new Canvas(canvasPictureBox.Size);
+
+        // Assign the new Bitmap to the PictureBox
+        canvasPictureBox.Image = _canvas.Bitmap;
+
+        // Redraw the scene
+        _canvas.Graphics?.Clear(Color.Transparent);
+        _scene?.Render(_canvas.Graphics);
+        _container?.Render(_canvas.Graphics);
+        canvasPictureBox.Invalidate();
     }
 
     public void ResetGame()
@@ -108,7 +127,7 @@ public partial class GameMode1Control : UserControl
         {
             IsPinned = true
         };
-        _scene.AddElement(_currentPlanet);
+        _scene.AddPlanet(_currentPlanet);
         GenerateNextPlanet();
     }
 
@@ -158,7 +177,6 @@ public partial class GameMode1Control : UserControl
         try
         {
             _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
-            _container.Render(_canvas.Graphics); // Container rendering
 
             // Update Logic
             foreach (var planet in _scene.Planets) planet.Update(); // Apply forces, Verlet integration
@@ -216,7 +234,7 @@ public partial class GameMode1Control : UserControl
 
         _planetSwitchTimer.Stop();
 
-        _scene.AddElement(_currentPlanet);
+        _scene.AddPlanet(_currentPlanet);
 
         // Re-enable input after the switch logic is complete
         canvasPictureBox.Enabled = true;

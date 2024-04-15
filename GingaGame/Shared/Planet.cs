@@ -22,6 +22,14 @@ public sealed class Planet(
         var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version
         g?.DrawImage(texture, Position.X - imageWidth / 2, Position.Y - imageHeight / 2, imageWidth, imageHeight);
     }
+
+    public void RenderWithSize(Graphics g, float size)
+    {
+        var imageWidth = size * 2;
+        var imageHeight = size * 2;
+        var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version
+        g?.DrawImage(texture, Position.X - imageWidth / 2, Position.Y - imageHeight / 2, imageWidth, imageHeight);
+    }
 }
 
 public static class PlanetTextures

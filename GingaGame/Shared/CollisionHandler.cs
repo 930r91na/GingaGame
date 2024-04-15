@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GingaGame.GameMode1;
+using System.Linq;
 
 namespace GingaGame.Shared;
 
 public class CollisionHandler(
     Scene scene,
-    Canvas canvas,
     PlanetFactory planetFactory,
     Score score,
     Container container,
@@ -98,8 +97,8 @@ public class CollisionHandler(
 
     private void MergePlanets(Planet planet1, Planet planet2)
     {
-        scene.RemoveElement(planet1);
-        scene.RemoveElement(planet2);
+        scene.RemovePlanet(planet1);
+        scene.RemovePlanet(planet2);
 
         // Unlock new planet (if needed)
         if (!UnlockNextPlanetType(planet1, planet2)) return;
@@ -108,7 +107,7 @@ public class CollisionHandler(
         var newPlanet = CreateMergedPlanet(planet1, planet2);
 
         // Add the new planet to the scene
-        scene.AddElement(newPlanet);
+        scene.AddPlanet(newPlanet);
 
         // Update scores for game mode 1
         if (gameMode != GameMode.Mode1) return;
@@ -211,33 +210,54 @@ public class CollisionHandler(
         planet2.HasCollided = true;
     }
 
-    public void CheckConstraints(VPoint point)
+    public void CheckConstraints(Planet planet)
     {
-        WallConstraints(point);
-        ContainerConstraints(point);
+        WallConstraints(planet);
+        ContainerConstraints(planet);
+        if (gameMode == GameMode.Mode2) FloorConstraints(planet);
     }
 
-    private void WallConstraints(VPoint point)
+    private static void WallConstraints(Planet planet)
     {
-        // Check if the point is outside the boundaries of the canvas
-        if (point.Position.X < point.Radius) point.Position.X = point.Radius;
-        if (point.Position.X > canvas.Width - point.Radius) point.Position.X = canvas.Width - point.Radius;
-        if (point.Position.Y < point.Radius) point.Position.Y = point.Radius;
-        if (point.Position.Y > canvas.Height - point.Radius) point.Position.Y = canvas.Height - point.Radius;
+        // Check if the point is outside the top boundary of the wall
+        if (planet.Position.Y < planet.Radius) planet.Position.Y = planet.Radius;
     }
 
-    private void ContainerConstraints(VPoint point)
+    private void ContainerConstraints(Planet planet)
     {
         // Check if the point is outside the left boundary of the container
-        if (container != null && point.Position.X < container.TopLeft.X + point.Radius)
-            point.Position.X = container.TopLeft.X + point.Radius;
+        if (container != null && planet.Position.X < container.TopLeft.X + planet.Radius)
+            planet.Position.X = container.TopLeft.X + planet.Radius;
 
         // Check if the point is outside the right boundary of the container
-        if (container != null && point.Position.X > container.TopRight.X - point.Radius)
-            point.Position.X = container.TopRight.X - point.Radius;
+        if (container != null && planet.Position.X > container.TopRight.X - planet.Radius)
+            planet.Position.X = container.TopRight.X - planet.Radius;
 
         // Check if the point is outside the bottom boundary of the container
-        if (container != null && point.Position.Y > container.BottomLeft.Y - point.Radius)
-            point.Position.Y = container.BottomLeft.Y - point.Radius;
+        if (container != null && planet.Position.Y > container.BottomLeft.Y - planet.Radius)
+            planet.Position.Y = container.BottomLeft.Y - planet.Radius;
+    }
+
+    private void FloorConstraints(Planet planet)
+    {
+        // TODO: Check if method needs optimization
+        if (gameMode != GameMode.Mode2) return; // Apply only in GameMode2
+
+        // Find the current floor
+        var floor = scene.Floors.FirstOrDefault(f =>
+            f.StartPositionY <= planet.Position.Y && planet.Position.Y <= f.EndPositionY);
+
+        if (floor == null) return; // Planet is outside the floor range
+
+        // Check if the planet can pass through the floor
+        if (planet.PlanetType <= floor.NextPlanetIndex)
+            // Can pass - no collision
+            return;
+
+        const int floorEndPositionHeight = 30;
+
+        // Handle Collision (similar to container boundaries)
+        if (planet.Position.Y > floor.EndPositionY - floorEndPositionHeight - planet.Radius)
+            planet.Position.Y = floor.EndPositionY - floorEndPositionHeight - planet.Radius;
     }
 }

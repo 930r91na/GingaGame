@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace GingaGame.UI;
@@ -29,8 +28,8 @@ public partial class GingaGameForm : Form
         _gameMode1Control = new GameMode1Control();
         contentPanel.Controls.Add(_gameMode1Control);
 
-        Location = new Point(Location.X - 100, Location.Y - 100);
-        Size = new Size(_gameMode1Control.MinimumSize.Width + 100, _gameMode1Control.MinimumSize.Height + 100);
+        // Maximize the window
+        WindowState = FormWindowState.Maximized;
 
         _mainMenuControl.Hide();
     }
@@ -41,8 +40,8 @@ public partial class GingaGameForm : Form
         _gameMode2Control = new GameMode2Control();
         contentPanel.Controls.Add(_gameMode2Control);
 
-        Location = new Point(Location.X - 100, Location.Y - 100);
-        Size = new Size(_gameMode2Control.MinimumSize.Width + 100, _gameMode2Control.MinimumSize.Height + 100);
+        // Maximize the window
+        WindowState = FormWindowState.Maximized;
 
         _mainMenuControl.Hide();
     }

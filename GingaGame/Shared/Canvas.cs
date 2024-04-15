@@ -25,12 +25,6 @@ public class Canvas
         // Define the pixel format for the bitmap
         const PixelFormat format = PixelFormat.Format32bppArgb;
 
-        // Create a new bitmap with the specified width, height, and pixel format
-        Bitmap = new Bitmap(initWidth, initHeight, format);
-
-        // Create a Graphics object from the bitmap
-        Graphics.FromImage(Bitmap);
-
         // Set the width and height of the canvas
         Width = initWidth;
         Height = initHeight;

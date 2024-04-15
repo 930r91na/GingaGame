@@ -170,11 +170,12 @@ partial class GameMode1Control
         this.canvasPictureBox.Location = new System.Drawing.Point(280, 13);
         this.canvasPictureBox.Margin = new System.Windows.Forms.Padding(4);
         this.canvasPictureBox.Name = "canvasPictureBox";
-        this.canvasPictureBox.Size = new System.Drawing.Size(1247, 820);
+        this.canvasPictureBox.Size = new System.Drawing.Size(1247, 780);
         this.canvasPictureBox.TabIndex = 6;
         this.canvasPictureBox.TabStop = false;
         this.canvasPictureBox.Click += new System.EventHandler(this.canvasPictureBox_Click);
         this.canvasPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvasPictureBox_MouseMove);
+        this.canvasPictureBox.Resize += new System.EventHandler(this.canvasPictureBox_Resize);
         // 
         // gameLoopTimer
         // 
