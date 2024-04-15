@@ -182,6 +182,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="bin\Debug\scores1.txt"/>
+        <Content Include="bin\Debug\scores2.txt" />
         <Content Include="Resources\Background.png"/>
         <Content Include="Resources\Background2.png"/>
         <Content Include="Resources\Earth.png"/>
