@@ -164,5 +164,40 @@ namespace GingaGame {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap ScrollerBackground1 {
+            get {
+                object obj = ResourceManager.GetObject("ScrollerBackground1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScrollerBackground2 {
+            get {
+                object obj = ResourceManager.GetObject("ScrollerBackground2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScrollerControlBackground1 {
+            get {
+                object obj = ResourceManager.GetObject("ScrollerControlBackground1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScrollerControlBackground2 {
+            get {
+                object obj = ResourceManager.GetObject("ScrollerControlBackground2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScrollerForeground {
+            get {
+                object obj = ResourceManager.GetObject("ScrollerForeground", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

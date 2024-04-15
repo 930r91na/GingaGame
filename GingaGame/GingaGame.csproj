@@ -194,6 +194,11 @@
         <Content Include="Resources\Neptune.png"/>
         <Content Include="Resources\Pluto.png"/>
         <Content Include="Resources\Saturn.png"/>
+        <Content Include="Resources\ScrollerBackground1.png" />
+        <Content Include="Resources\ScrollerBackground2.png" />
+        <Content Include="Resources\ScrollerControlBackground1.png" />
+        <Content Include="Resources\ScrollerControlBackground2.png" />
+        <Content Include="Resources\ScrollerForeground.png" />
         <Content Include="Resources\Sun.png"/>
         <Content Include="Resources\Uranus.png"/>
         <Content Include="Resources\Venus.png"/>

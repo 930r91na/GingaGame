@@ -11,17 +11,24 @@ namespace GingaGame.UI;
 public partial class GameMode2Control : UserControl
 {
     private const GameMode GameMode = Shared.GameMode.Mode2;
+    private const float ParallaxBackgroundFactor = 0.1f;
+    private const float ParallaxForegroundFactor = 2.5f;
     private readonly Mutex _canvasMutex = new();
     private readonly Timer _fpsTimer = new();
     private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly Timer _planetSwitchTimer = new();
+    private Image _backgroundImage;
+    private int _backgroundYOffset;
     private Canvas _canvas;
     private CollisionHandler _collisionHandler;
     private Container _container;
     private int _currentFloorIndex;
     private Planet _currentPlanet;
     private Planet _currentPlanetToDrop;
+    private Image _foregroundImage;
+    private int _foregroundYOffset;
     private int _frameCounter;
+    private bool _gameWonTriggered;
     private Canvas _nextPlanetCanvas;
     private Planet _nextPlanetToDrop;
     private PlanetFactory _planetFactory;
@@ -29,8 +36,7 @@ public partial class GameMode2Control : UserControl
     private Score _score;
     private Scoreboard _scoreboard;
     private int _scrollOffset;
-    private bool _gameWonTriggered;
-    
+
     public GameMode2Control()
     {
         InitializeComponent();
@@ -61,7 +67,7 @@ public partial class GameMode2Control : UserControl
         _scene = new Scene();
 
         _currentPlanetToDrop =
-            new Planet(10, new Vector2(0, 0))
+            new Planet(0, new Vector2(0, 0))
             {
                 IsPinned = true
             };
@@ -80,7 +86,12 @@ public partial class GameMode2Control : UserControl
 
         _scene.AddContainer(_container);
 
+        // Planet factory setup
         _planetFactory = new PlanetFactory(GameMode);
+
+        // Background and foreground setup
+        _backgroundImage = Resource1.ScrollerBackground1;
+        _foregroundImage = Resource1.ScrollerForeground;
 
         // Timer setup
         _planetSwitchTimer.Interval = 1000; // 1 second interval
@@ -185,6 +196,7 @@ public partial class GameMode2Control : UserControl
                          _scene.Planets) _collisionHandler.CheckConstraints(planet); // Container constraints
                 _collisionHandler.CheckCollisions();
             }
+
             // Check if the score has changed
             if (_score.HasChanged)
             {
@@ -195,7 +207,41 @@ public partial class GameMode2Control : UserControl
             // Scrolling Logic
             CalculateScrollOffset();
 
+            // Render Logic
+
+            // Parallax Background and Foreground Rendering
+            _backgroundYOffset = (int)(_scrollOffset * ParallaxBackgroundFactor);
+
+            // Calculate how many background image repetitions are needed to cover the viewable area
+            var backgroundRepetitions =
+                (int)Math.Ceiling(
+                    (canvasPictureBox.Height + 2 * Shared.Container.VerticalTopMargin + _backgroundYOffset) /
+                    (float)_backgroundImage.Height);
+
+            // Draw the background image multiple times, offsetting it vertically for each repetition
+            for (var i = 0; i < backgroundRepetitions; i++)
+            {
+                var yPosition = -_backgroundYOffset + i * _backgroundImage.Height;
+                _canvas.Graphics?.DrawImage(_backgroundImage, 0, yPosition);
+            }
+            
+            // Render the scene
             _scene.Render(_canvas.Graphics, canvasPictureBox.Height, _scrollOffset);
+
+            _foregroundYOffset = (int)(_scrollOffset * ParallaxForegroundFactor);
+
+            // Calculate how many foreground image repetitions are needed to cover the viewable area
+            var foregroundRepetitions =
+                (int)Math.Ceiling(
+                    (canvasPictureBox.Height + 2 * Shared.Container.VerticalTopMargin + _foregroundYOffset) /
+                    (float)_foregroundImage.Height);
+
+            // Draw the foreground image multiple times, offsetting it vertically for each repetition
+            for (var i = 0; i < foregroundRepetitions; i++)
+            {
+                var yPosition = -_foregroundYOffset + i * _foregroundImage.Height;
+                _canvas.Graphics?.DrawImage(_foregroundImage, 0, yPosition);
+            }
 
             RenderNextPlanet();
 
@@ -226,7 +272,7 @@ public partial class GameMode2Control : UserControl
         // Add adjustments if needed (e.g., smoothing)
 
         // Gradually adjust the offset for a smooth transition
-        //_scrollOffset += (int)(_currentPlanet.Position.Y - currentFloor.StartPositionY);
+        _scrollOffset += (int)(_currentPlanet.Position.Y - currentFloor.StartPositionY);
 
         // Get it at the top of the screen
         //_scrollOffset -= canvasPictureBox.Height / 5;
@@ -269,16 +315,23 @@ public partial class GameMode2Control : UserControl
     {
         if (!_currentPlanetToDrop.IsPinned) return;
 
-        UpdateCurrentPlanetPosition((MouseEventArgs)e);
+        // First go back to the top if not already there
+        if (_scrollOffset > 0)
+        {
+            _scrollOffset = 0;
+            DeselectCurrentPlanet();
+        }
+        else
+        {
+            // Drop the current planet
+            _currentPlanetToDrop.IsPinned = false;
+            _currentPlanet = _currentPlanetToDrop;
 
-        _currentPlanetToDrop.IsPinned = false;
+            // Disable input immediately
+            canvasPictureBox.Enabled = false;
 
-        _currentPlanet = _currentPlanetToDrop;
-
-        // Disable input immediately
-        canvasPictureBox.Enabled = false;
-
-        _planetSwitchTimer.Start(); // Start the timer
+            _planetSwitchTimer.Start(); // Start the timer
+        }
     }
 
     private void canvasPictureBox_MouseMove(object sender, MouseEventArgs e)
@@ -306,11 +359,11 @@ public partial class GameMode2Control : UserControl
             _currentPlanetToDrop.OldPosition.X = e.X;
         }
     }
-    
+
     public void GameWon()
     {
         if (_gameWonTriggered) return;
-        
+
         // Prevent multiple triggers
         _gameWonTriggered = true;
         MessageBox.Show(@"Congratulations! You won!", @"Game won", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -341,6 +394,32 @@ public partial class GameMode2Control : UserControl
                 {
                     _scrollOffset += scrollSpeed;
                     DeselectCurrentPlanet();
+                }
+
+                break;
+            case Keys.Back:
+                // Reset scroll offset
+                _scrollOffset = 0;
+                DeselectCurrentPlanet();
+                break;
+            case Keys.Enter:
+                if (!_currentPlanetToDrop.IsPinned) return false;
+                // First go back to the top if not already there
+                if (_scrollOffset > 0)
+                {
+                    _scrollOffset = 0;
+                    DeselectCurrentPlanet();
+                }
+                else
+                {
+                    // Drop the current planet
+                    _currentPlanetToDrop.IsPinned = false;
+                    _currentPlanet = _currentPlanetToDrop;
+
+                    // Disable input immediately
+                    canvasPictureBox.Enabled = false;
+
+                    _planetSwitchTimer.Start(); // Start the timer
                 }
 
                 break;

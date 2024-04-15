@@ -176,7 +176,7 @@ partial class GameMode2Control
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.BackgroundImage = global::GingaGame.Resource1.Background2;
+        this.BackgroundImage = global::GingaGame.Resource1.ScrollerControlBackground1;
         this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         this.Controls.Add(this.canvasPictureBox);
         this.Controls.Add(this.evolutionCyclePictureBox);
