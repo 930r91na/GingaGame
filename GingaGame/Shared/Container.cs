@@ -32,10 +32,17 @@ public class Container
         BottomRight = new PointF(width - horizontalMargin, height);
     }
 
-    public void Render(Graphics g)
+    public void Render(Graphics g, float yOffset = 0)
     {
-        g.DrawLine(Pens.White, TopRight, BottomRight);
-        g.DrawLine(Pens.White, BottomRight, BottomLeft);
-        g.DrawLine(Pens.White, BottomLeft, TopLeft);
+        // Adjust the Y position with the offset
+        var adjustedTopLeft = TopLeft with { Y = TopLeft.Y - yOffset };
+        var adjustedBottomLeft = BottomLeft with { Y = BottomLeft.Y - yOffset };
+        var adjustedTopRight = TopRight with { Y = TopRight.Y - yOffset };
+        var adjustedBottomRight = BottomRight with { Y = BottomRight.Y - yOffset };
+
+        // Draw the lines with the adjusted Y positions
+        g.DrawLine(Pens.White, adjustedTopLeft, adjustedBottomLeft);
+        g.DrawLine(Pens.White, adjustedBottomLeft, adjustedBottomRight);
+        g.DrawLine(Pens.White, adjustedBottomRight, adjustedTopRight);
     }
 }

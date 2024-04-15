@@ -15,12 +15,16 @@ public sealed class Planet(
     public int Points { get; private set; } = PlanetPoints.PointsPerPlanet[planetType];
     public bool HasCollided { get; set; } = hasCollided;
 
-    public void Render(Graphics g)
+    public void Render(Graphics g, float yOffset = 0)
     {
+        // Adjust the Y position with the offset
+        var adjustedPosition = new Vector2(Position.X, Position.Y - yOffset);
+
         var imageWidth = Radius * 2;
         var imageHeight = Radius * 2;
         var texture = PlanetTextures.GetCachedTexture(PlanetType); // Use the cached version
-        g?.DrawImage(texture, Position.X - imageWidth / 2, Position.Y - imageHeight / 2, imageWidth, imageHeight);
+        g?.DrawImage(texture, adjustedPosition.X - imageWidth / 2, adjustedPosition.Y - imageHeight / 2, imageWidth,
+            imageHeight);
     }
 
     public void RenderWithSize(Graphics g, float size)

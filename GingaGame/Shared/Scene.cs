@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using GingaGame.GameMode2;
 
 namespace GingaGame.Shared;
@@ -39,17 +40,33 @@ public class Scene
             {
                 StartPositionY = i * floorHeight + verticalTopMargin,
                 EndPositionY = (i + 1) * floorHeight + verticalTopMargin,
+                Index = i,
                 NextPlanetIndex = nextPlanetIndex--
             };
             AddFloor(floor);
         }
     }
 
-    public void Render(Graphics g)
+    public void Render(Graphics g, float canvasHeight, float yOffset = 0)
     {
-        foreach (var planet in Planets) planet.Render(g);
-        foreach (var floor in Floors) floor.Render(g, _container);
-        _container.Render(g);
+        // Calculate the visible range
+        var visibleStartY = yOffset;
+        var visibleEndY = yOffset + canvasHeight;
+
+        // Check if the planets are within the visible range
+        foreach (var planet in Planets.Where(planet =>
+                     planet.Position.Y + planet.Radius >= visibleStartY &&
+                     planet.Position.Y - planet.Radius <= visibleEndY))
+            planet.Render(g, yOffset);
+
+        // Check if the floor is within the visible range
+        foreach (var floor in Floors.Where(floor =>
+                     floor.EndPositionY >= visibleStartY && floor.StartPositionY <= visibleEndY))
+            floor.Render(g, _container, yOffset);
+
+        // Render the container if it's within the visible range
+        if (_container.BottomLeft.Y >= visibleStartY && _container.TopLeft.Y <= visibleEndY)
+            _container.Render(g, yOffset);
     }
 
     public void Clear()

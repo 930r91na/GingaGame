@@ -7,10 +7,14 @@ public class Floor
 {
     public int StartPositionY { get; set; }
     public int EndPositionY { get; set; }
+    public int Index { get; set; }
     public int NextPlanetIndex { get; set; } // The index of the planet that the next level will allow
 
-    public void Render(Graphics g, Container container)
+    public void Render(Graphics g, Container container, float yOffset = 0)
     {
+        // Adjust the Y position with the offset
+        var adjustedEndPositionY = EndPositionY - yOffset;
+
         var isLastFloor = NextPlanetIndex == -1; // Check if the current floor is the last one
 
         // Set the color to red if it's the last floor, otherwise set it to white
@@ -18,8 +22,18 @@ public class Floor
 
         const int rectangleHeight = 30; // The height of the rectangle
         const int planetRadius = 15; // The radius of the planet
-        var rectangleY = EndPositionY - rectangleHeight; // The Y position of the rectangle
+        var rectangleY = adjustedEndPositionY - rectangleHeight; // The Y position of the rectangle
 
+        DrawFloorRectangle(g, container, rectangleColor, rectangleY, rectangleHeight);
+
+        // If it's not the last floor, draw the planet with a fixed radius to the left of the rectangle
+        if (isLastFloor) return;
+        DrawNextFloorPlanet(g, container, planetRadius, rectangleY);
+    }
+
+    private static void DrawFloorRectangle(Graphics g, Container container, Color rectangleColor, float rectangleY,
+        int rectangleHeight)
+    {
         // Draw the rectangle
         var brush = new SolidBrush(rectangleColor);
         var pen = new Pen(Color.White);
@@ -29,12 +43,12 @@ public class Floor
         // Draw an outline around the rectangle
         g.DrawRectangle(pen, container.TopLeft.X, rectangleY, container.BottomRight.X - container.TopLeft.X,
             rectangleHeight);
+    }
 
-        // If it's not the last floor, draw the planet with a fixed radius to fit the center of the rectangle
-        if (isLastFloor) return;
-        // var planetX = container.TopLeft.X + (container.BottomRight.X - container.TopLeft.X) / 2;
+    private void DrawNextFloorPlanet(Graphics g, Container container, int planetRadius, float rectangleY)
+    {
         var planetX = container.TopLeft.X - planetRadius * 2;
-        var planetY = rectangleY + rectangleHeight / 2;
+        var planetY = rectangleY + planetRadius;
 
         // Draw the planet
         var planet = new Planet(NextPlanetIndex, new Vector2(planetX, planetY));

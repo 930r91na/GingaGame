@@ -28,7 +28,6 @@ public partial class GameMode1Control : UserControl
     private Scene _scene;
     private Score _score;
     private Scoreboard _scoreboard;
-    private float _testTextBoxNumber;
 
     public GameMode1Control()
     {
@@ -111,7 +110,7 @@ public partial class GameMode1Control : UserControl
 
         // Redraw the scene
         _canvas.Graphics?.Clear(Color.Transparent);
-        _scene?.Render(_canvas.Graphics);
+        _scene?.Render(_canvas.Graphics, canvasPictureBox.Height);
         _container?.Render(_canvas.Graphics);
         canvasPictureBox.Invalidate();
     }
@@ -205,7 +204,7 @@ public partial class GameMode1Control : UserControl
                 _score.HasChanged = false;
             }
 
-            _scene.Render(_canvas.Graphics); // Now render everything
+            _scene.Render(_canvas.Graphics, canvasPictureBox.Height); // Now render everything
 
             RenderNextPlanet();
 
@@ -278,10 +277,5 @@ public partial class GameMode1Control : UserControl
             _currentPlanet.Position.X = e.X;
             _currentPlanet.OldPosition.X = e.X;
         }
-    }
-
-    private void testTextBox_TextChanged(object sender, EventArgs e)
-    {
-        if (float.TryParse(testTextBox.Text, out var number)) _testTextBoxNumber = number;
     }
 }

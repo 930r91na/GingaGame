@@ -145,6 +145,7 @@ partial class GameMode2Control
         this.canvasPictureBox.TabStop = false;
         this.canvasPictureBox.Click += new System.EventHandler(this.canvasPictureBox_Click);
         this.canvasPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvasPictureBox_MouseMove);
+        this.canvasPictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasPictureBox_MouseWheel);
         this.canvasPictureBox.Resize += new System.EventHandler(this.canvasPictureBox_Resize);
         // 
         // EvolutionCyclePictureBox

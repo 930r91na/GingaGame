@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GingaGame.UI;
 
 namespace GingaGame.Shared;
 
@@ -10,7 +11,8 @@ public class CollisionHandler(
     PlanetFactory planetFactory,
     Score score,
     Container container,
-    GameMode gameMode)
+    GameMode gameMode,
+    GameMode2Control gameMode2Control = null)
 {
     private readonly List<Planet> _planets = scene.Planets;
     private readonly List<(Planet, Planet)> _potentialCollisionPairs = [];
@@ -106,26 +108,20 @@ public class CollisionHandler(
         // Create a new planet
         var newPlanet = CreateMergedPlanet(planet1, planet2);
 
+        // Update the current planet in GameMode2 if needed
+        if (gameMode == GameMode.Mode2)
+        {
+            var currentPlanet = gameMode2Control.GetCurrentPlanet();
+            if (currentPlanet == planet1 || currentPlanet == planet2)
+                gameMode2Control.SetCurrentPlanet(newPlanet);
+        }
+
         // Add the new planet to the scene
         scene.AddPlanet(newPlanet);
 
         // Update scores for game mode 1
         if (gameMode != GameMode.Mode1) return;
         UpdateScoreWithPlanetPoints(newPlanet.Points);
-    }
-
-    private Planet CreateMergedPlanet(Planet planet1, Planet planet2)
-    {
-        // The position of the new planet will be the middle point between the two planets
-        var middlePoint = (planet1.Position + planet2.Position) / 2;
-
-        var newPlanet = gameMode switch
-        {
-            GameMode.Mode1 => new Planet(planet1.PlanetType + 1, middlePoint),
-            GameMode.Mode2 => new Planet(planet2.PlanetType - 1, middlePoint),
-            _ => throw new ArgumentException("Invalid game mode")
-        };
-        return newPlanet;
     }
 
     private bool UnlockNextPlanetType(Planet planet1, Planet planet2)
@@ -156,6 +152,20 @@ public class CollisionHandler(
         }
 
         return true;
+    }
+
+    private Planet CreateMergedPlanet(Planet planet1, Planet planet2)
+    {
+        // The position of the new planet will be the middle point between the two planets
+        var middlePoint = (planet1.Position + planet2.Position) / 2;
+
+        var newPlanet = gameMode switch
+        {
+            GameMode.Mode1 => new Planet(planet1.PlanetType + 1, middlePoint),
+            GameMode.Mode2 => new Planet(planet2.PlanetType - 1, middlePoint),
+            _ => throw new ArgumentException("Invalid game mode")
+        };
+        return newPlanet;
     }
 
     private void UpdateScoreWithPlanetPoints(int largestPlanetScore)
@@ -240,7 +250,6 @@ public class CollisionHandler(
 
     private void FloorConstraints(Planet planet)
     {
-        // TODO: Check if method needs optimization
         if (gameMode != GameMode.Mode2) return; // Apply only in GameMode2
 
         // Find the current floor
@@ -257,7 +266,13 @@ public class CollisionHandler(
         const int floorEndPositionHeight = 30;
 
         // Handle Collision (similar to container boundaries)
-        if (planet.Position.Y > floor.EndPositionY - floorEndPositionHeight - planet.Radius)
-            planet.Position.Y = floor.EndPositionY - floorEndPositionHeight - planet.Radius;
+        if (!(planet.Position.Y > floor.EndPositionY - floorEndPositionHeight - planet.Radius)) return;
+        
+        if (floor.NextPlanetIndex == -1) // Last floor
+        {
+            // Game Won
+            gameMode2Control.GameWon();
+        }
+        planet.Position.Y = floor.EndPositionY - floorEndPositionHeight - planet.Radius;
     }
 }

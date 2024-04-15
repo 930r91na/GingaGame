@@ -20,15 +20,17 @@ public partial class GameMode2Control : UserControl
     private Container _container;
     private int _currentFloorIndex;
     private Planet _currentPlanet;
+    private Planet _currentPlanetToDrop;
     private int _frameCounter;
-    private Planet _nextPlanet;
     private Canvas _nextPlanetCanvas;
+    private Planet _nextPlanetToDrop;
     private PlanetFactory _planetFactory;
     private Scene _scene;
     private Score _score;
     private Scoreboard _scoreboard;
     private int _scrollOffset;
-
+    private bool _gameWonTriggered;
+    
     public GameMode2Control()
     {
         InitializeComponent();
@@ -58,19 +60,19 @@ public partial class GameMode2Control : UserControl
         // Scene and game setup
         _scene = new Scene();
 
-        _currentPlanet =
+        _currentPlanetToDrop =
             new Planet(10, new Vector2(0, 0))
             {
                 IsPinned = true
             };
 
-        _scene.AddPlanet(_currentPlanet);
+        _scene.AddPlanet(_currentPlanetToDrop);
 
         _scene.InitializeFloors(FloorHeight, Shared.Container.VerticalTopMargin);
 
         // Calculate container size
         var containerWidth = canvasPictureBox.Width;
-        var containerHeight = _scene.Floors.Count * FloorHeight;
+        var containerHeight = _scene.Floors.Count * FloorHeight + Shared.Container.VerticalTopMargin;
 
         // Initialize the container
         _container = new Container();
@@ -98,10 +100,7 @@ public partial class GameMode2Control : UserControl
         GenerateNextPlanet();
 
         // Initialize the collision handler
-        _collisionHandler = new CollisionHandler(_scene, _planetFactory, _score, _container, GameMode);
-
-        // Initialize the game state handler
-        // TODO: Implement the game state handler
+        _collisionHandler = new CollisionHandler(_scene, _planetFactory, _score, _container, GameMode, this);
 
         // Render the evolution cycle once
         evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
@@ -118,7 +117,7 @@ public partial class GameMode2Control : UserControl
 
         // Redraw the scene
         _canvas.Graphics?.Clear(Color.Transparent);
-        _scene?.Render(_canvas.Graphics);
+        _scene?.Render(_canvas.Graphics, canvasPictureBox.Height);
         _container?.Render(_canvas.Graphics);
         canvasPictureBox.Invalidate();
     }
@@ -132,7 +131,7 @@ public partial class GameMode2Control : UserControl
 
     private void GenerateNextPlanet()
     {
-        _nextPlanet = _planetFactory.GenerateNextPlanet(_canvas);
+        _nextPlanetToDrop = _planetFactory.GenerateNextPlanet(_canvas);
     }
 
     private void RenderNextPlanet()
@@ -143,11 +142,11 @@ public partial class GameMode2Control : UserControl
             // Draw the next planet texture below the label
             _nextPlanetCanvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
 
-            var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
+            var texture = PlanetTextures.GetCachedTexture(_nextPlanetToDrop.PlanetType);
 
             // Draw the next planet texture in the center of the canvas with the correct size
-            var imageWidth = _nextPlanet.Radius * 2;
-            var imageHeight = _nextPlanet.Radius * 2;
+            var imageWidth = _nextPlanetToDrop.Radius * 2;
+            var imageHeight = _nextPlanetToDrop.Radius * 2;
             var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
             var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
 
@@ -186,9 +185,6 @@ public partial class GameMode2Control : UserControl
                          _scene.Planets) _collisionHandler.CheckConstraints(planet); // Container constraints
                 _collisionHandler.CheckCollisions();
             }
-
-            // TODO: Implement the game state handler
-
             // Check if the score has changed
             if (_score.HasChanged)
             {
@@ -199,16 +195,7 @@ public partial class GameMode2Control : UserControl
             // Scrolling Logic
             CalculateScrollOffset();
 
-            _scene.Render(_canvas.Graphics);
-
-            // Render scene with the offset
-            for (var i = _currentFloorIndex; i < _scene.Floors.Count; i++)
-            {
-                // Adjust Y positions for rendering based on the offset
-                var floor = _scene.Floors[i];
-                var adjustedY = floor.StartPositionY - _scrollOffset;
-                // .. render floors, container, planets (offsetting their Y coordinates as needed)
-            }
+            _scene.Render(_canvas.Graphics, canvasPictureBox.Height, _scrollOffset);
 
             RenderNextPlanet();
 
@@ -222,27 +209,37 @@ public partial class GameMode2Control : UserControl
 
     private void CalculateScrollOffset()
     {
-        var targetFloor =
-            (int)Math.Floor((_currentPlanet.Position.Y - Shared.Container.VerticalTopMargin) /
-                            FloorHeight); // Calculate which floor the planet is on
+        if (_currentPlanet == null) return;
 
-        // Adjust floor index if needed
-        if (targetFloor != _currentFloorIndex)
-        {
-            // The planet is above the first floor or on a different floor
-            _currentFloorIndex = targetFloor == -1 ? 0 : targetFloor;
+        // Find the current floor
+        var currentFloor = _scene.Floors.FirstOrDefault(f =>
+            f.StartPositionY <= _currentPlanet.Position.Y && _currentPlanet.Position.Y <= f.EndPositionY);
 
-            // Calculate the new scroll offset
-            _scrollOffset = _currentFloorIndex * FloorHeight + Shared.Container.VerticalTopMargin * 2;
-        }
+        if (currentFloor == null) return; // Planet is outside the floor range
 
-        // Additional Smoothing (optional)
-        // Calculate how far below the floor boundary the planet is
-        var distanceBelowFloor = _currentPlanet.Position.Y - _currentFloorIndex * FloorHeight -
-                                 Shared.Container.VerticalTopMargin * 2;
+        // Update the current floor index
+        _currentFloorIndex = currentFloor.Index;
+
+        // Calculate the scroll offset based on the current floor
+        _scrollOffset = FloorHeight * _currentFloorIndex;
+
+        // Add adjustments if needed (e.g., smoothing)
 
         // Gradually adjust the offset for a smooth transition
-        _scrollOffset += (int)(distanceBelowFloor * 0.2f); // 0.2f controls smoothing speed
+        //_scrollOffset += (int)(_currentPlanet.Position.Y - currentFloor.StartPositionY);
+
+        // Get it at the top of the screen
+        //_scrollOffset -= canvasPictureBox.Height / 5;
+    }
+
+    public Planet GetCurrentPlanet()
+    {
+        return _currentPlanet;
+    }
+
+    public void SetCurrentPlanet(Planet planet)
+    {
+        _currentPlanet = planet;
     }
 
     private void FpsTimer_Tick(object sender, EventArgs e)
@@ -254,15 +251,15 @@ public partial class GameMode2Control : UserControl
     private void PlanetSwitchTimer_Tick(object sender, EventArgs e)
     {
         // Switch the current planet with the next planet
-        _currentPlanet = _nextPlanet;
-        _currentPlanet.IsPinned = true;
+        _currentPlanetToDrop = _nextPlanetToDrop;
+        _currentPlanetToDrop.IsPinned = true;
 
         // Generate a new next planet
         GenerateNextPlanet();
 
         _planetSwitchTimer.Stop();
 
-        _scene.AddPlanet(_currentPlanet);
+        _scene.AddPlanet(_currentPlanetToDrop);
 
         // Re-enable input after the switch logic is complete
         canvasPictureBox.Enabled = true;
@@ -270,11 +267,13 @@ public partial class GameMode2Control : UserControl
 
     private void canvasPictureBox_Click(object sender, EventArgs e)
     {
-        if (!_currentPlanet.IsPinned) return;
+        if (!_currentPlanetToDrop.IsPinned) return;
 
         UpdateCurrentPlanetPosition((MouseEventArgs)e);
 
-        _currentPlanet.IsPinned = false;
+        _currentPlanetToDrop.IsPinned = false;
+
+        _currentPlanet = _currentPlanetToDrop;
 
         // Disable input immediately
         canvasPictureBox.Enabled = false;
@@ -284,27 +283,94 @@ public partial class GameMode2Control : UserControl
 
     private void canvasPictureBox_MouseMove(object sender, MouseEventArgs e)
     {
-        if (!_currentPlanet.IsPinned) return;
+        if (!_currentPlanetToDrop.IsPinned) return;
 
         UpdateCurrentPlanetPosition(e);
     }
 
     private void UpdateCurrentPlanetPosition(MouseEventArgs e)
     {
-        if (e.X < _container!.TopLeft.X + _currentPlanet.Radius)
+        if (e.X < _container!.TopLeft.X + _currentPlanetToDrop.Radius)
         {
-            _currentPlanet.Position.X = _container.TopLeft.X + _currentPlanet.Radius;
-            _currentPlanet.OldPosition.X = _container.TopLeft.X + _currentPlanet.Radius;
+            _currentPlanetToDrop.Position.X = _container.TopLeft.X + _currentPlanetToDrop.Radius;
+            _currentPlanetToDrop.OldPosition.X = _container.TopLeft.X + _currentPlanetToDrop.Radius;
         }
-        else if (e.X > _container.BottomRight.X - _currentPlanet.Radius)
+        else if (e.X > _container.BottomRight.X - _currentPlanetToDrop.Radius)
         {
-            _currentPlanet.Position.X = _container.BottomRight.X - _currentPlanet.Radius;
-            _currentPlanet.OldPosition.X = _container.BottomRight.X - _currentPlanet.Radius;
+            _currentPlanetToDrop.Position.X = _container.BottomRight.X - _currentPlanetToDrop.Radius;
+            _currentPlanetToDrop.OldPosition.X = _container.BottomRight.X - _currentPlanetToDrop.Radius;
         }
         else
         {
-            _currentPlanet.Position.X = e.X;
-            _currentPlanet.OldPosition.X = e.X;
+            _currentPlanetToDrop.Position.X = e.X;
+            _currentPlanetToDrop.OldPosition.X = e.X;
         }
+    }
+    
+    public void GameWon()
+    {
+        if (_gameWonTriggered) return;
+        
+        // Prevent multiple triggers
+        _gameWonTriggered = true;
+        MessageBox.Show(@"Congratulations! You won!", @"Game won", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        const int scrollSpeed = 35;
+        switch (keyData)
+        {
+            case Keys.Left:
+                _currentPlanetToDrop.Position.X -= 15;
+                break;
+            case Keys.Right:
+                _currentPlanetToDrop.Position.X += 15;
+                break;
+            case Keys.Up:
+                if (_scrollOffset >= scrollSpeed)
+                {
+                    _scrollOffset -= scrollSpeed;
+                    DeselectCurrentPlanet();
+                }
+
+                break;
+            case Keys.Down:
+                if (_scrollOffset < (_scene.Floors.Count - 1) * FloorHeight - Shared.Container.VerticalTopMargin +
+                    scrollSpeed)
+                {
+                    _scrollOffset += scrollSpeed;
+                    DeselectCurrentPlanet();
+                }
+
+                break;
+        }
+
+        return base.ProcessCmdKey(ref msg, keyData);
+    }
+
+    private void canvasPictureBox_MouseWheel(object sender, MouseEventArgs e)
+    {
+        const int scrollSpeed = 35;
+        if (e.Delta > 0)
+        {
+            // Scroll up
+            if (_scrollOffset < scrollSpeed) return;
+            _scrollOffset -= scrollSpeed;
+            DeselectCurrentPlanet();
+        }
+        else
+        {
+            // Scroll down
+            if (_scrollOffset > (_scene.Floors.Count - 1) * FloorHeight - Shared.Container.VerticalTopMargin +
+                scrollSpeed) return;
+            _scrollOffset += scrollSpeed;
+            DeselectCurrentPlanet();
+        }
+    }
+
+    private void DeselectCurrentPlanet()
+    {
+        _currentPlanet = null;
     }
 }

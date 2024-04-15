@@ -38,7 +38,6 @@ partial class GameMode1Control
         this.fpsLabel = new System.Windows.Forms.Label();
         this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
         this.scoreLabel = new System.Windows.Forms.Label();
-        this.testTextBox = new System.Windows.Forms.TextBox();
         this.nextPlanetLabel = new System.Windows.Forms.Label();
         this.canvasPictureBox = new System.Windows.Forms.PictureBox();
         this.gameLoopTimer = new System.Windows.Forms.Timer(this.components);
@@ -62,7 +61,6 @@ partial class GameMode1Control
         this.mainPanel.Controls.Add(this.fpsLabel);
         this.mainPanel.Controls.Add(this.nextPlanetPictureBox);
         this.mainPanel.Controls.Add(this.scoreLabel);
-        this.mainPanel.Controls.Add(this.testTextBox);
         this.mainPanel.Controls.Add(this.nextPlanetLabel);
         this.mainPanel.Controls.Add(this.canvasPictureBox);
         this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -135,15 +133,6 @@ partial class GameMode1Control
         this.scoreLabel.TabIndex = 8;
         this.scoreLabel.Text = "Score: 0";
         this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        //
-        // testTextBox
-        //
-        this.testTextBox.Location = new System.Drawing.Point(12, 60);
-        this.testTextBox.Name = "testTextBox";
-        this.testTextBox.Size = new System.Drawing.Size(62, 29);
-        this.testTextBox.TabIndex = 7;
-        this.testTextBox.TextChanged += new System.EventHandler(this.testTextBox_TextChanged);
-        this.testTextBox.Visible = false;
         // 
         // nextPlanetLabel
         // 
@@ -237,7 +226,6 @@ partial class GameMode1Control
     private System.Windows.Forms.Label scoreLabel;
     private System.Windows.Forms.PictureBox nextPlanetPictureBox;
     private System.Windows.Forms.Label fpsLabel;
-    private System.Windows.Forms.TextBox testTextBox;
     private System.Windows.Forms.PictureBox evolutionCyclePictureBox;
     private System.Windows.Forms.Label evolutionCycleLabel;
     private System.Windows.Forms.Label scoreboardLabel;
