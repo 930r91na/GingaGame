@@ -33,11 +33,9 @@ partial class GameMode2Control
     { 
         this.components = new System.ComponentModel.Container();
         this.evolutionCycleLabel = new System.Windows.Forms.Label();
+        this.followPlanetCheckBox = new System.Windows.Forms.CheckBox();
         this.fpsLabel = new System.Windows.Forms.Label();
         this.nextPlanetLabel = new System.Windows.Forms.Label();
-        this.scoreLabel = new System.Windows.Forms.Label();
-        this.scoreboardLabel = new System.Windows.Forms.Label();
-        this.topScoresLabel = new System.Windows.Forms.Label();
         this.canvasPictureBox = new System.Windows.Forms.PictureBox();
         this.evolutionCyclePictureBox = new System.Windows.Forms.PictureBox();
         this.nextPlanetPictureBox = new System.Windows.Forms.PictureBox();
@@ -60,6 +58,22 @@ partial class GameMode2Control
         this.evolutionCycleLabel.TabIndex = 11;
         this.evolutionCycleLabel.Text = "Evolution Cycle:";
         this.evolutionCycleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+        // 
+        // followPlanetCheckBox
+        //
+        this.followPlanetCheckBox.AutoSize = true;
+        this.followPlanetCheckBox.BackColor = System.Drawing.Color.Transparent;
+        this.followPlanetCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        this.followPlanetCheckBox.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        this.followPlanetCheckBox.ForeColor = System.Drawing.Color.CornflowerBlue;
+        this.followPlanetCheckBox.Location = new System.Drawing.Point(20, 220);
+        this.followPlanetCheckBox.Name = "followPlanetCheckBox";
+        this.followPlanetCheckBox.Size = new System.Drawing.Size(200, 40);
+        this.followPlanetCheckBox.TabIndex = 15;
+        this.followPlanetCheckBox.Text = "Follow Planet";
+        this.followPlanetCheckBox.UseVisualStyleBackColor = true;
+        this.followPlanetCheckBox.CheckedChanged += new System.EventHandler(this.followPlanetCheckBox_CheckedChanged);
+        // 
         // 
         // fpsLabel
         // 
@@ -90,47 +104,6 @@ partial class GameMode2Control
         this.nextPlanetLabel.Text = "Next Planet:";
         this.nextPlanetLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         // 
-        // scoreboardLabel
-        // 
-        this.scoreboardLabel.AutoSize = true;
-        this.scoreboardLabel.BackColor = System.Drawing.Color.Transparent;
-        this.scoreboardLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        this.scoreboardLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        this.scoreboardLabel.ForeColor = System.Drawing.Color.Gainsboro;
-        this.scoreboardLabel.Location = new System.Drawing.Point(12, 273);
-        this.scoreboardLabel.Name = "scoreboardLabel";
-        this.scoreboardLabel.Size = new System.Drawing.Size(134, 27);
-        this.scoreboardLabel.TabIndex = 14;
-        this.scoreboardLabel.Text = "Top Scores:";
-        this.scoreboardLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // scoreLabel
-        // 
-        this.scoreLabel.AutoSize = true;
-        this.scoreLabel.BackColor = System.Drawing.Color.Transparent;
-        this.scoreLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        this.scoreLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        this.scoreLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
-        this.scoreLabel.Location = new System.Drawing.Point(12, 221);
-        this.scoreLabel.Name = "scoreLabel";
-        this.scoreLabel.Size = new System.Drawing.Size(96, 27);
-        this.scoreLabel.TabIndex = 8;
-        this.scoreLabel.Text = "Score: 0";
-        this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // topScoresLabel
-        // 
-        this.topScoresLabel.AutoSize = true;
-        this.topScoresLabel.BackColor = System.Drawing.Color.Transparent;
-        this.topScoresLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        this.topScoresLabel.Font = new System.Drawing.Font("Gadugi", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        this.topScoresLabel.ForeColor = System.Drawing.Color.CornflowerBlue;
-        this.topScoresLabel.Location = new System.Drawing.Point(12, 315);
-        this.topScoresLabel.Name = "topScoresLabel";
-        this.topScoresLabel.Size = new System.Drawing.Size(0, 27);
-        this.topScoresLabel.TabIndex = 13;
-        this.topScoresLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-        // 
         // canvasPictureBox
         // 
         this.canvasPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -148,7 +121,7 @@ partial class GameMode2Control
         this.canvasPictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.canvasPictureBox_MouseWheel);
         this.canvasPictureBox.Resize += new System.EventHandler(this.canvasPictureBox_Resize);
         // 
-        // EvolutionCyclePictureBox
+        // evolutionCyclePictureBox
         // 
         this.evolutionCyclePictureBox.BackColor = System.Drawing.Color.Transparent;
         this.evolutionCyclePictureBox.Location = new System.Drawing.Point(21, 547);
@@ -156,7 +129,6 @@ partial class GameMode2Control
         this.evolutionCyclePictureBox.Size = new System.Drawing.Size(240, 240);
         this.evolutionCyclePictureBox.TabIndex = 12;
         this.evolutionCyclePictureBox.TabStop = false;
-        // 
         // nextPlanetPictureBox
         // 
         this.nextPlanetPictureBox.BackColor = System.Drawing.Color.Transparent;
@@ -181,12 +153,10 @@ partial class GameMode2Control
         this.Controls.Add(this.canvasPictureBox);
         this.Controls.Add(this.evolutionCyclePictureBox);
         this.Controls.Add(this.evolutionCycleLabel);
+        this.Controls.Add(this.followPlanetCheckBox);
         this.Controls.Add(this.fpsLabel);
         this.Controls.Add(this.nextPlanetLabel);
         this.Controls.Add(this.nextPlanetPictureBox);
-        this.Controls.Add(this.scoreLabel);
-        this.Controls.Add(this.scoreboardLabel);
-        this.Controls.Add(this.topScoresLabel);
         this.Dock = System.Windows.Forms.DockStyle.Fill;
         this.MinimumSize = new System.Drawing.Size(1540, 846);
         this.Name = "GameMode2Control";
@@ -201,11 +171,9 @@ partial class GameMode2Control
     #endregion
 
     private System.Windows.Forms.Label evolutionCycleLabel;
+    private System.Windows.Forms.CheckBox followPlanetCheckBox;
     private System.Windows.Forms.Label fpsLabel;
     private System.Windows.Forms.Label nextPlanetLabel;
-    private System.Windows.Forms.Label scoreboardLabel;
-    private System.Windows.Forms.Label scoreLabel;
-    private System.Windows.Forms.Label topScoresLabel;
     private System.Windows.Forms.PictureBox canvasPictureBox;
     private System.Windows.Forms.PictureBox evolutionCyclePictureBox;
     private System.Windows.Forms.PictureBox nextPlanetPictureBox;

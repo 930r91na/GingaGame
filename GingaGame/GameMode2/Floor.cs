@@ -15,7 +15,7 @@ public class Floor
         // Adjust the Y position with the offset
         var adjustedEndPositionY = EndPositionY - yOffset;
 
-        var isLastFloor = NextPlanetIndex == -1; // Check if the current floor is the last one
+        var isLastFloor = NextPlanetIndex < 0; // Check if the current floor is the last one
 
         // Set the color to red if it's the last floor, otherwise set it to white
         var rectangleColor = isLastFloor ? Color.FromArgb(50, 255, 0, 0) : Color.FromArgb(75, 255, 255, 255);

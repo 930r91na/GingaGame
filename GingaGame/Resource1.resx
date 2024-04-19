@@ -201,22 +201,26 @@
         </value>
     </data>
     <data name="ScrollerBackground1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\ScrollerBackground1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+        <value>Resources\ScrollerBackground1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0,
+            Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
     <data name="ScrollerBackground2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\ScrollerBackground2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+        <value>Resources\ScrollerBackground2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0,
+            Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>
     <data name="ScrollerControlBackground1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ScrollerControlBackground1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
-        PublicKeyToken=b03f5f7f11d50a3a
-    </value>
+        <value>Resources\ScrollerControlBackground1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0,
+            Culture=neutral,
+            PublicKeyToken=b03f5f7f11d50a3a
+        </value>
     </data>
     <data name="ScrollerControlBackground2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-        <value>Resources\ScrollerControlBackground2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral,
+        <value>Resources\ScrollerControlBackground2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0,
+            Culture=neutral,
             PublicKeyToken=b03f5f7f11d50a3a
         </value>
     </data>

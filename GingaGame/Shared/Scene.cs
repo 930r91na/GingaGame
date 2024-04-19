@@ -31,19 +31,35 @@ public class Scene
         _container = container;
     }
 
-    public void InitializeFloors(int floorHeight, int verticalTopMargin)
+    public void InitializeFloors(int floorHeight, int verticalTopMargin, int totalFloors = 4,
+        List<int> planetsPerFloor = null)
     {
-        var nextPlanetIndex = PlanetSizes.Sizes.Count - 2; // We start from the second last planet
-        for (var i = 0; i < PlanetSizes.Sizes.Count; i++)
+        // If the planets per floor list is not provided, set it to the default values
+        planetsPerFloor ??= [3, 3, 4, 1];
+
+        var nextPlanetIndex = PlanetSizes.Sizes.Count - planetsPerFloor[0] - 1;
+        for (var i = 0; i < totalFloors; i++)
         {
             var floor = new Floor
             {
                 StartPositionY = i * floorHeight + verticalTopMargin,
                 EndPositionY = (i + 1) * floorHeight + verticalTopMargin,
                 Index = i,
-                NextPlanetIndex = nextPlanetIndex--
+                NextPlanetIndex = nextPlanetIndex
             };
             AddFloor(floor);
+
+            switch (nextPlanetIndex)
+            {
+                // Set the next planet index for the next floor
+                case > 0:
+                    nextPlanetIndex -= planetsPerFloor[i + 1];
+                    continue;
+                // Set the next planet index to -1 for the last floor
+                case <= 0:
+                    nextPlanetIndex = -1;
+                    break;
+            }
         }
     }
 

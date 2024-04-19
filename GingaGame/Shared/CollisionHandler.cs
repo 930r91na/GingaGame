@@ -267,12 +267,17 @@ public class CollisionHandler(
 
         // Handle Collision (similar to container boundaries)
         if (!(planet.Position.Y > floor.EndPositionY - floorEndPositionHeight - planet.Radius)) return;
-        
+
         if (floor.NextPlanetIndex == -1) // Last floor
-        {
             // Game Won
             gameMode2Control.GameWon();
-        }
         planet.Position.Y = floor.EndPositionY - floorEndPositionHeight - planet.Radius;
+    }
+
+    public bool IsGameOver()
+    {
+        // Check if a planet has passed the end line
+        return _planets.Any(planet =>
+            planet.Position.Y < container.TopLeft.Y + planet.Radius && planet.HasCollided);
     }
 }

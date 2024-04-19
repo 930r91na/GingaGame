@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -24,15 +26,20 @@ public partial class GameMode2Control : UserControl
     private int _currentFloorIndex;
     private Planet _currentPlanet;
     private Planet _currentPlanetToDrop;
+    private bool _followPlanet;
     private int _frameCounter;
+    private bool _gameOverTriggered;
     private bool _gameWonTriggered;
+    private int _horizontalMargin;
     private Canvas _nextPlanetCanvas;
     private Planet _nextPlanetToDrop;
+    private int _numberOfFloors = 4;
     private PlanetFactory _planetFactory;
+    private List<int> _planetsPerFloor = [];
     private Scene _scene;
     private Score _score;
-    private Scoreboard _scoreboard;
     private int _scrollOffset;
+    private int _verticalMargin = 70;
 
     public GameMode2Control()
     {
@@ -41,7 +48,7 @@ public partial class GameMode2Control : UserControl
         InitializeGameMode2();
     }
 
-    private int FloorHeight => canvasPictureBox.Height - 2 * Shared.Container.VerticalTopMargin;
+    private int FloorHeight => canvasPictureBox.Height - 2 * _verticalMargin;
 
     private void InitializeGameMode2()
     {
@@ -55,31 +62,32 @@ public partial class GameMode2Control : UserControl
         var evolutionCanvas = new Canvas(evolutionCyclePictureBox.Size);
         evolutionCyclePictureBox.Image = evolutionCanvas.Bitmap;
 
-        // Score and Scoreboard setup
+        // Score setup
         _score = new Score();
-        _scoreboard = new Scoreboard(GameMode);
-        UpdateScoreboardLabel();
 
         // Scene and game setup
         _scene = new Scene();
 
         _currentPlanetToDrop =
-            new Planet(0, new Vector2(0, 0))
+            new Planet(10, new Vector2(0, 0))
             {
                 IsPinned = true
             };
 
         _scene.AddPlanet(_currentPlanetToDrop);
 
-        _scene.InitializeFloors(FloorHeight, Shared.Container.VerticalTopMargin);
+        // Load game mode 2 map
+        LoadGameMode2Map();
+
+        _scene.InitializeFloors(FloorHeight, _verticalMargin, _numberOfFloors, _planetsPerFloor);
 
         // Calculate container size
-        var containerWidth = canvasPictureBox.Width;
-        var containerHeight = _scene.Floors.Count * FloorHeight + Shared.Container.VerticalTopMargin;
+        var canvasWidth = canvasPictureBox.Width;
+        var containerHeight = _scene.Floors.Count * FloorHeight + _verticalMargin;
 
         // Initialize the container
         _container = new Container();
-        _container.InitializeGameMode2(containerWidth, containerHeight);
+        _container.InitializeGameMode2(canvasWidth, containerHeight, _verticalMargin, _horizontalMargin);
 
         _scene.AddContainer(_container);
 
@@ -89,8 +97,9 @@ public partial class GameMode2Control : UserControl
         // Background setup
         _backgroundImage = Resource1.ScrollerBackground1;
 
-        // Timer setup
-        _planetSwitchTimer.Interval = 1000; // 1 second interval
+        // Timers setup
+        // Planet switch timer setup
+        _planetSwitchTimer.Interval = 500; // 0.5 second interval
         _planetSwitchTimer.Tick += PlanetSwitchTimer_Tick;
 
         // FPS timer setup
@@ -114,6 +123,52 @@ public partial class GameMode2Control : UserControl
             evolutionCanvas.Height);
     }
 
+    private void LoadGameMode2Map()
+    {
+        var projectDirectory =
+            Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
+
+        var mapContent = File.ReadAllText(Path.Combine(projectDirectory, "GingaGame/Resources/GameMode2Map.txt"));
+        var lines = mapContent.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var line in lines)
+        {
+            var keyValue = line.Split('=');
+            var key = keyValue[0];
+            var value = keyValue[1];
+
+            switch (key)
+            {
+                case "VerticalMargin":
+                    _verticalMargin = int.Parse(value);
+                    break;
+                case "HorizontalMargin":
+                    _horizontalMargin = int.Parse(value);
+                    break;
+                case "NumberOfFloors":
+                    var floorData = value.Split(["->"], StringSplitOptions.None);
+                    _numberOfFloors = int.Parse(floorData[0]);
+                    _planetsPerFloor = floorData[1].Split(',').Select(int.Parse).ToList();
+                    break;
+            }
+        }
+
+        // Validation
+        if (_numberOfFloors is < 2 or > 10)
+            throw new Exception("Invalid number of floors. It should be between 2 and 10.");
+
+        if (_planetsPerFloor.Count != _numberOfFloors)
+            throw new Exception("The number of floors should match the number of planets per floor.");
+
+        if (_planetsPerFloor.Sum() != 11)
+            throw new Exception("The sum of the number of planets for each floor should be 11.");
+
+        if (_planetsPerFloor.Last() != 1) throw new Exception("The last number should always be 1.");
+
+        if (_planetsPerFloor.Any(p => p is 0))
+            throw new Exception("The number of planets per floor should be greater than 0.");
+    }
+
     private void canvasPictureBox_Resize(object sender, EventArgs e)
     {
         // Recreate the canvas with the new size
@@ -129,16 +184,23 @@ public partial class GameMode2Control : UserControl
         canvasPictureBox.Invalidate();
     }
 
-    private void UpdateScoreboardLabel()
-    {
-        var topScores = _scoreboard.GetTopScores();
-        var scoreText = string.Join("\n", topScores.Select(entry => $"{entry.PlayerName}: {entry.Score}"));
-        topScoresLabel.Text = scoreText;
-    }
-
     private void GenerateNextPlanet()
     {
         _nextPlanetToDrop = _planetFactory.GenerateNextPlanet(_canvas);
+    }
+
+    private void ResetGame()
+    {
+        // Reset the form and initialize the game again
+        _scene.Clear();
+        _score.ResetScore();
+        _planetFactory.ResetUnlockedPlanets();
+        _currentPlanetToDrop = new Planet(10, new Vector2(0, 0))
+        {
+            IsPinned = true
+        };
+        _scene.AddPlanet(_currentPlanetToDrop);
+        GenerateNextPlanet();
     }
 
     private void RenderNextPlanet()
@@ -193,11 +255,12 @@ public partial class GameMode2Control : UserControl
                 _collisionHandler.CheckCollisions();
             }
 
-            // Check if the score has changed
-            if (_score.HasChanged)
+            // Check game state
+            if (_collisionHandler.IsGameOver() && !_gameOverTriggered)
             {
-                scoreLabel.Text = $@"Score: {_score.CurrentScore}";
-                _score.HasChanged = false;
+                _gameOverTriggered = true;
+                MessageBox.Show(@"Game Over! You lost!", @"Game Over", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ResetGame();
             }
 
             // Scrolling Logic
@@ -211,7 +274,7 @@ public partial class GameMode2Control : UserControl
             // Calculate how many background image repetitions are needed to cover the viewable area
             var backgroundRepetitions =
                 (int)Math.Ceiling(
-                    (canvasPictureBox.Height + 2 * Shared.Container.VerticalTopMargin + _backgroundYOffset) /
+                    (canvasPictureBox.Height + 2 * _verticalMargin + _backgroundYOffset) /
                     (float)_backgroundImage.Height);
 
             // Draw the background image multiple times, offsetting it vertically for each repetition
@@ -220,7 +283,7 @@ public partial class GameMode2Control : UserControl
                 var yPosition = -_backgroundYOffset + i * _backgroundImage.Height;
                 _canvas.Graphics?.DrawImage(_backgroundImage, 0, yPosition);
             }
-            
+
             // Render the scene
             _scene.Render(_canvas.Graphics, canvasPictureBox.Height, _scrollOffset);
 
@@ -250,13 +313,8 @@ public partial class GameMode2Control : UserControl
         // Calculate the scroll offset based on the current floor
         _scrollOffset = FloorHeight * _currentFloorIndex;
 
-        // Add adjustments if needed (e.g., smoothing)
-
-        // Gradually adjust the offset for a smooth transition
-        _scrollOffset += (int)(_currentPlanet.Position.Y - currentFloor.StartPositionY);
-
-        // Get it at the top of the screen
-        //_scrollOffset -= canvasPictureBox.Height / 5;
+        // Gradually adjust the offset for a smooth transition when following the planet
+        if (_followPlanet) _scrollOffset += (int)(_currentPlanet.Position.Y - currentFloor.StartPositionY);
     }
 
     public Planet GetCurrentPlanet()
@@ -350,6 +408,11 @@ public partial class GameMode2Control : UserControl
         MessageBox.Show(@"Congratulations! You won!", @"Game won", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
+    private void followPlanetCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        _followPlanet = followPlanetCheckBox.Checked;
+    }
+
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
         const int scrollSpeed = 35;
@@ -370,7 +433,7 @@ public partial class GameMode2Control : UserControl
 
                 break;
             case Keys.Down:
-                if (_scrollOffset < (_scene.Floors.Count - 1) * FloorHeight - Shared.Container.VerticalTopMargin +
+                if (_scrollOffset < (_scene.Floors.Count - 1) * FloorHeight - _verticalMargin +
                     scrollSpeed)
                 {
                     _scrollOffset += scrollSpeed;
@@ -422,7 +485,7 @@ public partial class GameMode2Control : UserControl
         else
         {
             // Scroll down
-            if (_scrollOffset > (_scene.Floors.Count - 1) * FloorHeight - Shared.Container.VerticalTopMargin +
+            if (_scrollOffset > (_scene.Floors.Count - 1) * FloorHeight - _verticalMargin +
                 scrollSpeed) return;
             _scrollOffset += scrollSpeed;
             DeselectCurrentPlanet();

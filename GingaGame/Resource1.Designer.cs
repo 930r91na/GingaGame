@@ -192,9 +192,11 @@ namespace GingaGame {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        internal static System.Drawing.Bitmap ScrollerForeground {
-            get {
+
+        internal static System.Drawing.Bitmap ScrollerForeground
+        {
+            get
+            {
                 object obj = ResourceManager.GetObject("ScrollerForeground", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }

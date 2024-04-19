@@ -182,7 +182,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="bin\Debug\scores1.txt"/>
-        <Content Include="bin\Debug\scores2.txt" />
+        <Content Include="bin\Debug\scores2.txt"/>
         <Content Include="Resources\Background.png"/>
         <Content Include="Resources\Background2.png"/>
         <Content Include="Resources\Earth.png"/>
@@ -195,11 +195,12 @@
         <Content Include="Resources\Neptune.png"/>
         <Content Include="Resources\Pluto.png"/>
         <Content Include="Resources\Saturn.png"/>
-        <Content Include="Resources\ScrollerBackground1.png" />
-        <Content Include="Resources\ScrollerBackground2.png" />
-        <Content Include="Resources\ScrollerControlBackground1.png" />
-        <Content Include="Resources\ScrollerControlBackground2.png" />
-        <Content Include="Resources\ScrollerForeground.png" />
+        <Content Include="Resources\ScrollerBackground1.png"/>
+        <Content Include="Resources\ScrollerBackground2.png"/>
+        <Content Include="Resources\ScrollerControlBackground1.png"/>
+        <Content Include="Resources\ScrollerControlBackground2.png"/>
+        <Content Include="Resources\ScrollerForeground.png"/>
+        <Content Include="Resources\GameMode2Map.txt"/>
         <Content Include="Resources\Sun.png"/>
         <Content Include="Resources\Uranus.png"/>
         <Content Include="Resources\Venus.png"/>

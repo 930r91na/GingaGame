@@ -1,0 +1,3 @@
+﻿VerticalMargin=70
+HorizontalMargin=0
+NumberOfFloors=4->4,3,3,1
