@@ -40,7 +40,13 @@ public partial class GameMode2Control : UserControl
     private Score _score;
     private int _scrollOffset;
     private int _verticalMargin = 70;
-
+    private readonly Dictionary<string, string> _mapData = new()
+    {
+        { "VerticalMargin", "70" },
+        { "HorizontalMargin", "0" },
+        { "NumberOfFloors", "4->4,3,3,1" }
+    };
+    
     public GameMode2Control()
     {
         InitializeComponent();
@@ -77,7 +83,8 @@ public partial class GameMode2Control : UserControl
         _scene.AddPlanet(_currentPlanetToDrop);
 
         // Load game mode 2 map
-        LoadGameMode2Map();
+        // LoadGameMode2MapFromFile();
+        LoadGameMode2Map(_mapData);
 
         _scene.InitializeFloors(FloorHeight, _verticalMargin, _numberOfFloors, _planetsPerFloor);
 
@@ -123,7 +130,46 @@ public partial class GameMode2Control : UserControl
             evolutionCanvas.Height);
     }
 
-    private void LoadGameMode2Map()
+    private void LoadGameMode2Map(Dictionary<string, string> mapData)
+    {
+        foreach (var data in mapData)
+        {
+            var key = data.Key;
+            var value = data.Value;
+
+            switch (key)
+            {
+                case "VerticalMargin":
+                    _verticalMargin = int.Parse(value);
+                    break;
+                case "HorizontalMargin":
+                    _horizontalMargin = int.Parse(value);
+                    break;
+                case "NumberOfFloors":
+                    var floorData = value.Split(["->"], StringSplitOptions.None);
+                    _numberOfFloors = int.Parse(floorData[0]);
+                    _planetsPerFloor = floorData[1].Split(',').Select(int.Parse).ToList();
+                    break;
+            }
+        }
+
+        // Validation
+        if (_numberOfFloors is < 2 or > 10)
+            throw new Exception("Invalid number of floors. It should be between 2 and 10.");
+
+        if (_planetsPerFloor.Count != _numberOfFloors)
+            throw new Exception("The number of floors should match the number of planets per floor.");
+
+        if (_planetsPerFloor.Sum() != 11)
+            throw new Exception("The sum of the number of planets for each floor should be 11.");
+
+        if (_planetsPerFloor.Last() != 1) throw new Exception("The last number should always be 1.");
+
+        if (_planetsPerFloor.Any(p => p is 0))
+            throw new Exception("The number of planets per floor should be greater than 0.");
+    }
+
+    private void LoadGameMode2MapFromFile()
     {
         var projectDirectory =
             Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\"));
