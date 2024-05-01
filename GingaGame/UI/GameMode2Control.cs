@@ -16,6 +16,14 @@ public partial class GameMode2Control : UserControl
     private const float ParallaxBackgroundFactor = 0.1f;
     private readonly Mutex _canvasMutex = new();
     private readonly Timer _fpsTimer = new();
+
+    private readonly Dictionary<string, string> _mapData = new()
+    {
+        { "VerticalMargin", "70" },
+        { "HorizontalMargin", "0" },
+        { "NumberOfFloors", "4->4,3,3,1" }
+    };
+
     private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly Timer _planetSwitchTimer = new();
     private Image _backgroundImage;
@@ -40,13 +48,7 @@ public partial class GameMode2Control : UserControl
     private Score _score;
     private int _scrollOffset;
     private int _verticalMargin = 70;
-    private readonly Dictionary<string, string> _mapData = new()
-    {
-        { "VerticalMargin", "70" },
-        { "HorizontalMargin", "0" },
-        { "NumberOfFloors", "4->4,3,3,1" }
-    };
-    
+
     public GameMode2Control()
     {
         InitializeComponent();

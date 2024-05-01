@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using GingaGame.GameMode1;
 using GingaGame.Shared;
@@ -12,9 +11,7 @@ namespace GingaGame.UI;
 public partial class GameMode1Control : UserControl
 {
     private const GameMode GameMode = Shared.GameMode.Mode1;
-    private readonly Mutex _canvasMutex = new();
     private readonly Timer _fpsTimer = new();
-    private readonly Mutex _nextPlanetCanvasMutex = new();
     private readonly Timer _planetSwitchTimer = new();
     private Canvas _canvas;
     private CollisionHandler _collisionHandler;
@@ -144,76 +141,60 @@ public partial class GameMode1Control : UserControl
 
     private void RenderNextPlanet()
     {
-        _nextPlanetCanvasMutex.WaitOne(); // Acquire the lock
-        try
-        {
-            // Draw the next planet texture below the label
-            _nextPlanetCanvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
+        // Draw the next planet texture below the label
+        _nextPlanetCanvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
 
-            var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
+        var texture = PlanetTextures.GetCachedTexture(_nextPlanet.PlanetType);
 
-            // Draw the next planet texture in the center of the canvas with the correct size
-            var imageWidth = _nextPlanet.Radius * 2;
-            var imageHeight = _nextPlanet.Radius * 2;
-            var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
-            var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
+        // Draw the next planet texture in the center of the canvas with the correct size
+        var imageWidth = _nextPlanet.Radius * 2;
+        var imageHeight = _nextPlanet.Radius * 2;
+        var middleX = _nextPlanetCanvas.Width / 2 - imageWidth / 2;
+        var middleY = (float)_nextPlanetCanvas.Height / 2 - imageHeight / 2;
 
-            _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
+        _nextPlanetCanvas.Graphics?.DrawImage(texture, middleX, middleY, imageWidth, imageHeight);
 
-            nextPlanetPictureBox.Invalidate();
-        }
-        finally
-        {
-            _nextPlanetCanvasMutex.ReleaseMutex(); // Release the lock
-        }
+        nextPlanetPictureBox.Invalidate();
     }
 
     private void gameLoopTimer_Tick(object sender, EventArgs e)
     {
         _frameCounter++;
 
-        _canvasMutex.WaitOne(); // Acquire the lock
-        try
+        _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
+
+        // Update Logic
+        foreach (var planet in _scene.Planets) planet.Update(); // Apply forces, Verlet integration
+
+        const int iterations = 5; // Number of iterations for constraint and collision logic
+
+        // Too many iterations -> more stable, slower and less responsive
+        // Too few iterations -> less stable, faster and more responsive
+        // 5 iterations is a good balance for this game
+
+        // Constraint and Collision Logic (with iterations)
+        for (var i = 0; i < iterations; i++)
         {
-            _canvas.Graphics?.Clear(Color.Transparent); // Clear the canvas
-
-            // Update Logic
-            foreach (var planet in _scene.Planets) planet.Update(); // Apply forces, Verlet integration
-
-            const int iterations = 5; // Number of iterations for constraint and collision logic
-
-            // Too many iterations -> more stable, slower and less responsive
-            // Too few iterations -> less stable, faster and more responsive
-            // 5 iterations is a good balance for this game
-
-            // Constraint and Collision Logic (with iterations)
-            for (var i = 0; i < iterations; i++)
-            {
-                foreach (var planet in
-                         _scene.Planets) _collisionHandler.CheckConstraints(planet); // Container constraints
-                _collisionHandler.CheckCollisions();
-            }
-
-            // Check game state
-            _gameStateHandler.CheckGameState();
-
-            // Check if the score has changed
-            if (_score.HasChanged)
-            {
-                scoreLabel.Text = $@"Score: {_score.CurrentScore}";
-                _score.HasChanged = false;
-            }
-
-            _scene.Render(_canvas.Graphics, canvasPictureBox.Height); // Now render everything
-
-            RenderNextPlanet();
-
-            canvasPictureBox.Invalidate();
+            foreach (var planet in
+                     _scene.Planets) _collisionHandler.CheckConstraints(planet); // Container constraints
+            _collisionHandler.CheckCollisions();
         }
-        finally
+
+        // Check game state
+        _gameStateHandler.CheckGameState();
+
+        // Check if the score has changed
+        if (_score.HasChanged)
         {
-            _canvasMutex.ReleaseMutex(); // Release the lock
+            scoreLabel.Text = $@"Score: {_score.CurrentScore}";
+            _score.HasChanged = false;
         }
+
+        _scene.Render(_canvas.Graphics, canvasPictureBox.Height); // Now render everything
+
+        RenderNextPlanet();
+
+        canvasPictureBox.Invalidate();
     }
 
     private void FpsTimer_Tick(object sender, EventArgs e)
