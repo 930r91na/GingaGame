@@ -1,66 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using GingaGame.Shared;
 using GingaGame.UI;
 
 namespace GingaGame.GameMode1;
 
-public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboard scoreboard, GameMode1Control myForm)
+public class GameStateHandler(Container container, Score score, Scoreboard scoreboard, GameMode1Control gameModeControl)
 {
-    private const float EndLineHeight = 70;
     private const int EndLineThreshold = 70;
     private const int Tolerance = 5;
-    private readonly List<Planet> _planets = scene.Planets;
     private bool _gameOverTriggered;
     private bool _gameWonTriggered;
     private bool _renderEndLine;
+    private float EndLineHeight => container.TopLeft.Y;
 
-    public void CheckGameState()
+    public void Draw()
     {
-        RenderEndLine(_renderEndLine);
+        if (!_renderEndLine)
+            container.HideEndLine();
+        else
+            container.ShowEndLine();
 
-        // Check if a planet is near the endLine from the bottom
-        IsNearEndLine();
-        if (!_gameOverTriggered) CheckLoseCondition();
-
-        if (!_gameWonTriggered) CheckWinCondition();
-    }
-
-    private void RenderEndLine(bool shouldRenderEndLine)
-    {
-        const float verticalTopMargin = 70;
-        var horizontalMargin = (canvas.Width - canvas.Width / 3) / 2;
-
-        var topLeft = new PointF(horizontalMargin, verticalTopMargin);
-        var topRight = new PointF(canvas.Width - horizontalMargin, verticalTopMargin);
-
-        var blinkOn = DateTime.Now.Second % 2 == 0;
-
-        var currentPen = blinkOn ? Pens.Red : Pens.Transparent;
-
-        // Draw the end line
-        canvas.Graphics?.DrawLine(shouldRenderEndLine ? currentPen : Pens.Transparent, topLeft, topRight);
-    }
-
-    private void IsNearEndLine()
-    {
         _renderEndLine = false;
-        foreach (var unused in _planets.Where(planet =>
-                     planet.Position.Y < EndLineHeight + EndLineThreshold + planet.Radius && planet.HasCollided &&
-                     !planet.IsPinned))
-        {
-            _renderEndLine = true;
-            break;
-        }
     }
 
-    private void CheckLoseCondition()
+    public void CheckGameEndConditions(Planet planet)
     {
-        if (!_planets.Any(planet =>
-                planet.Position.Y < EndLineHeight + planet.Radius - Tolerance && planet.HasCollided)) return;
+        if (!_gameOverTriggered) CheckLoseCondition(planet);
+
+        if (IsNearEndLine(planet) && _renderEndLine == false) _renderEndLine = true;
+    }
+
+    private bool IsNearEndLine(Planet planet)
+    {
+        return planet.Position.Y < EndLineHeight + EndLineThreshold + planet.Radius;
+    }
+
+    private void CheckLoseCondition(Planet planet)
+    {
+        if (!(planet.Position.Y < EndLineHeight + planet.Radius - Tolerance)) return;
         _gameOverTriggered = true;
         MessageBox.Show(@"Game Over! You lost!", @"Game Over", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -79,16 +56,16 @@ public class GameStateHandler(Scene scene, Canvas canvas, Score score, Scoreboar
         ResetGame();
     }
 
-    private void CheckWinCondition()
+    public void CheckWinCondition(Planet planet)
     {
-        if (_planets.All(planet => planet.PlanetType != 10)) return;
+        if (planet.PlanetType != 10 || _gameWonTriggered) return;
         _gameWonTriggered = true;
         MessageBox.Show(@"Congratulations! You won!", @"Game won", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void ResetGame()
     {
-        myForm.ResetGame();
+        gameModeControl.ResetGame();
         _gameOverTriggered = false;
         _gameWonTriggered = false;
     }

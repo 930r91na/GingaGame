@@ -8,10 +8,10 @@ public sealed class Planet(
     int planetType,
     Vector2 position,
     bool hasCollided = false)
-    : VPoint(position, PlanetSizes.Sizes[planetType])
+    : VerletPoint(position, PlanetSizes.Sizes[planetType])
 {
     public int PlanetType { get; } = planetType;
-    public new float Radius { get; } = PlanetSizes.Sizes[planetType];
+    public float Radius { get; } = PlanetSizes.Sizes[planetType];
     public int Points { get; private set; } = PlanetPoints.PointsPerPlanet[planetType];
     public bool HasCollided { get; set; } = hasCollided;
 

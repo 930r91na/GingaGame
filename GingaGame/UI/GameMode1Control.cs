@@ -69,7 +69,7 @@ public partial class GameMode1Control : UserControl
         _planetFactory = new PlanetFactory(GameMode);
 
         // Timer setup
-        _planetSwitchTimer.Interval = 1000; // 1 second interval
+        _planetSwitchTimer.Interval = 500; // 0.5 second interval
         _planetSwitchTimer.Tick += PlanetSwitchTimer_Tick;
 
         // FPS timer setup
@@ -84,13 +84,13 @@ public partial class GameMode1Control : UserControl
 
         // Initial next planet setup
         GenerateNextPlanet();
+        
+        // Initialize the game state handler
+        _gameStateHandler = new GameStateHandler(_container, _score, _scoreboard, this);
 
         // Initialize the collision handler
         _collisionHandler =
-            new CollisionHandler(_scene, _planetFactory, _score, _container, GameMode);
-
-        // Initialize the game state handler
-        _gameStateHandler = new GameStateHandler(_scene, _canvas, _score, _scoreboard, this);
+            new CollisionHandler(_scene, _planetFactory, _score, _container, GameMode, null, _gameStateHandler);
 
         // Render the evolution cycle once
         evolutionCanvas.Graphics?.DrawImage(Resource1.EvolutionCycle, 0, 0, evolutionCanvas.Width,
@@ -180,8 +180,8 @@ public partial class GameMode1Control : UserControl
             _collisionHandler.CheckCollisions();
         }
 
-        // Check game state
-        _gameStateHandler.CheckGameState();
+        // Update the game state
+        _gameStateHandler.Draw();
 
         // Check if the score has changed
         if (_score.HasChanged)

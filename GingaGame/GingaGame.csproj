@@ -125,7 +125,7 @@
         <Compile Include="Shared\Scene.cs"/>
         <Compile Include="Shared\Score.cs"/>
         <Compile Include="Shared\Vector2.cs"/>
-        <Compile Include="Shared\VPoint.cs"/>
+        <Compile Include="Shared\VerletPoint.cs"/>
         <Compile Include="UI\GameMode1Control.cs">
             <SubType>UserControl</SubType>
         </Compile>

@@ -5,6 +5,7 @@ namespace GingaGame.Shared;
 public class Container
 {
     private const int VerticalTopMargin = 70;
+    private bool _renderEndLine;
     public PointF TopLeft { get; private set; }
     public PointF TopRight { get; private set; }
     public PointF BottomLeft { get; private set; }
@@ -33,6 +34,16 @@ public class Container
         BottomRight = new PointF(canvasWidth - horizontalMargin, height);
     }
 
+    public void ShowEndLine()
+    {
+        _renderEndLine = true;
+    }
+
+    public void HideEndLine()
+    {
+        _renderEndLine = false;
+    }
+
     public void Render(Graphics g, float yOffset = 0)
     {
         // Adjust the Y position with the offset
@@ -45,5 +56,7 @@ public class Container
         g.DrawLine(Pens.White, adjustedTopLeft, adjustedBottomLeft);
         g.DrawLine(Pens.White, adjustedBottomLeft, adjustedBottomRight);
         g.DrawLine(Pens.White, adjustedBottomRight, adjustedTopRight);
+
+        if (_renderEndLine) g.DrawLine(Pens.Red, adjustedTopLeft, adjustedTopRight);
     }
 }

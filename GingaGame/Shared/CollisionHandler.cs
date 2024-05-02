@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GingaGame.GameMode1;
 using GingaGame.UI;
 
 namespace GingaGame.Shared;
@@ -12,7 +13,8 @@ public class CollisionHandler(
     Score score,
     Container container,
     GameMode gameMode,
-    GameMode2Control gameMode2Control = null)
+    GameMode2Control gameMode2Control = null,
+    GameStateHandler gameStateHandler = null)
 {
     private readonly List<Planet> _planets = scene.Planets;
     private readonly List<(Planet, Planet)> _potentialCollisionPairs = [];
@@ -85,7 +87,11 @@ public class CollisionHandler(
         if (planet1.PlanetType == planet2.PlanetType)
         {
             // Handle same planet collision
-            MergePlanets(planet1, planet2);
+            var mergedPlanet = MergePlanets(planet1, planet2);
+
+            if (mergedPlanet == null) return; // No new planet to process
+
+            gameStateHandler.CheckWinCondition(mergedPlanet);
 
             // Handle collisions again, as the new planet might collide with others
             CheckCollisions();
@@ -94,34 +100,40 @@ public class CollisionHandler(
         {
             // Handle different planet collision
             HandleDifferentPlanetCollision(planet1, planet2);
+
+            // Check if the game is over
+            gameStateHandler.CheckGameEndConditions(planet1);
+            gameStateHandler.CheckGameEndConditions(planet2);
         }
     }
 
-    private void MergePlanets(Planet planet1, Planet planet2)
+    private Planet MergePlanets(Planet planet1, Planet planet2)
     {
         scene.RemovePlanet(planet1);
         scene.RemovePlanet(planet2);
 
         // Unlock new planet (if needed)
-        if (!UnlockNextPlanetType(planet1, planet2)) return;
+        if (!UnlockNextPlanetType(planet1, planet2)) return null;
 
         // Create a new planet
-        var newPlanet = CreateMergedPlanet(planet1, planet2);
+        var mergedPlanet = CreateMergedPlanet(planet1, planet2);
 
         // Update the current planet in GameMode2 if needed
         if (gameMode == GameMode.Mode2)
         {
             var currentPlanet = gameMode2Control.GetCurrentPlanet();
             if (currentPlanet == planet1 || currentPlanet == planet2)
-                gameMode2Control.SetCurrentPlanet(newPlanet);
+                gameMode2Control.SetCurrentPlanet(mergedPlanet);
         }
 
         // Add the new planet to the scene
-        scene.AddPlanet(newPlanet);
+        scene.AddPlanet(mergedPlanet);
 
         // Update scores for game mode 1
-        if (gameMode != GameMode.Mode1) return;
-        UpdateScoreWithPlanetPoints(newPlanet.Points);
+        if (gameMode == GameMode.Mode1)
+            UpdateScoreWithPlanetPoints(mergedPlanet.Points);
+
+        return mergedPlanet;
     }
 
     private bool UnlockNextPlanetType(Planet planet1, Planet planet2)
@@ -129,7 +141,7 @@ public class CollisionHandler(
         switch (gameMode)
         {
             case GameMode.Mode1:
-                if (planet1.PlanetType + 1 >= 11) // if the largest planet is reached
+                if (planet1.PlanetType + 1 >= 11) // if two largest planets are merged
                 {
                     const int largestPlanetScore = 100;
                     UpdateScoreWithPlanetPoints(largestPlanetScore);
@@ -141,7 +153,7 @@ public class CollisionHandler(
                 break;
 
             case GameMode.Mode2:
-                if (planet2.PlanetType - 1 <= 0) // if the smallest planet is reached
+                if (planet2.PlanetType - 1 <= 0) // if two smallest planets are merged
                     return false; // No new planet to unlock
 
                 // Unlock the previous planet
